@@ -1,0 +1,49 @@
+name: hydromesh
+description: HydroMesh FloodNet Twin Mobile App
+version: 1.0.0
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # State Management
+  provider: ^6.1.1
+  
+  # HTTP & API
+  http: ^1.1.0
+  dio: ^5.4.0
+  
+  # Maps
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.0
+  geolocator: ^10.1.0
+  
+  # Storage
+  shared_preferences: ^2.2.2
+  sqflite: ^2.3.0
+  
+  # UI Components
+  flutter_svg: ^2.0.9
+  cached_network_image: ^3.3.0
+  
+  # Socket.io
+  socket_io_client: ^2.0.3+1
+  
+  # Utils
+  intl: ^0.18.1
+  permission_handler: ^11.1.0
+  image_picker: ^1.0.4
+  record: ^5.0.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+  mockito: ^5.4.4
+  build_runner: ^2.4.7
+
+flutter:
+  uses-material-design: true
