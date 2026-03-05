@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1772670370124" clover="3.2.0">
+  <project timestamp="1772670370124" name="All files">
+    <metrics statements="36" coveredstatements="26" conditionals="6" coveredconditionals="1" methods="13" coveredmethods="8" elements="55" coveredelements="35" complexity="0" loc="36" ncloc="36" packages="1" files="3" classes="3"/>
+    <file name="emergency.model.js" path="/Users/sakshammishra/Hydromesh/backend/src/models/emergency.model.js">
+      <metrics statements="13" coveredstatements="9" conditionals="2" coveredconditionals="0" methods="5" coveredmethods="3"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="13" count="1" type="stmt"/>
+      <line num="18" count="0" type="stmt"/>
+      <line num="35" count="0" type="stmt"/>
+      <line num="40" count="1" type="stmt"/>
+      <line num="47" count="1" type="stmt"/>
+      <line num="52" count="1" type="stmt"/>
+      <line num="59" count="1" type="stmt"/>
+      <line num="64" count="0" type="stmt"/>
+      <line num="71" count="0" type="stmt"/>
+      <line num="75" count="1" type="stmt"/>
+    </file>
+    <file name="report.model.js" path="/Users/sakshammishra/Hydromesh/backend/src/models/report.model.js">
+      <metrics statements="11" coveredstatements="9" conditionals="2" coveredconditionals="1" methods="4" coveredmethods="3"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="13" count="1" type="stmt"/>
+      <line num="18" count="1" type="stmt"/>
+      <line num="26" count="1" type="stmt"/>
+      <line num="31" count="1" type="stmt"/>
+      <line num="46" count="1" type="stmt"/>
+      <line num="51" count="0" type="stmt"/>
+      <line num="55" count="0" type="stmt"/>
+      <line num="59" count="1" type="stmt"/>
+    </file>
+    <file name="user.model.js" path="/Users/sakshammishra/Hydromesh/backend/src/models/user.model.js">
+      <metrics statements="12" coveredstatements="8" conditionals="2" coveredconditionals="0" methods="4" coveredmethods="2"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="7" count="0" type="stmt"/>
+      <line num="8" count="0" type="stmt"/>
+      <line num="14" count="0" type="stmt"/>
+      <line num="19" count="2" type="stmt"/>
+      <line num="23" count="2" type="stmt"/>
+      <line num="28" count="1" type="stmt"/>
+      <line num="32" count="1" type="stmt"/>
+      <line num="37" count="0" type="stmt"/>
+      <line num="41" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>
