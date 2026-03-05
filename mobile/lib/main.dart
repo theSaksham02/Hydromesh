@@ -7,6 +7,7 @@ import 'providers/auth_provider.dart';
 import 'providers/map_provider.dart';
 import 'providers/report_provider.dart';
 import 'providers/emergency_provider.dart';
+import 'providers/weather_provider.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
@@ -24,6 +25,7 @@ class HydroMeshApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MapProvider()),
         ChangeNotifierProvider(create: (_) => ReportProvider()),
         ChangeNotifierProvider(create: (_) => EmergencyProvider()),
+        ChangeNotifierProvider(create: (_) => WeatherProvider()),
       ],
       child: MaterialApp(
         title: AppConfig.appName,

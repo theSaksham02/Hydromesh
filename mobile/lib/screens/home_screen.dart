@@ -5,6 +5,8 @@ import '../providers/auth_provider.dart';
 import '../config/theme.dart';
 import '../widgets/common/glass_card.dart';
 
+import '../widgets/weather/weather_card.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -25,6 +27,8 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const WeatherCard(),
+                    const SizedBox(height: 32),
                     _buildSectionHeader('Critical Tools'),
                     const SizedBox(height: 16),
                     _buildHorizontalScroll(context),
