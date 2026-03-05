@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/auth_provider.dart';
 import '../config/theme.dart';
+import '../widgets/common/glass_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -9,132 +11,230 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
+    final userName = auth.user?.name ?? 'Citizen';
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('HydroMesh'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              auth.logout();
-              Navigator.pushReplacementNamed(context, '/login');
-            },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Welcome message
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
+      backgroundColor: AppTheme.background,
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            _buildAppBar(context, userName),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              sliver: SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Welcome, ${auth.user?.name ?? 'User'}',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Role: ${auth.user?.role ?? 'citizen'}',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
+                    _buildSectionHeader('Critical Tools'),
+                    const SizedBox(height: 16),
+                    _buildHorizontalScroll(context),
+                    const SizedBox(height: 32),
+                    _buildSectionHeader('Recent Activity'),
+                    const SizedBox(height: 16),
+                    _buildActivityList(),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppTheme.dangerColor,
+        child: const Icon(Icons.emergency, color: Colors.white),
+        onPressed: () => Navigator.pushNamed(context, '/emergency'),
+      ).animate(onPlay: (controller) => controller.repeat(reverse: true))
+       .scaleXY(end: 1.05, duration: 1.seconds),
+    );
+  }
 
-            // Feature buttons
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                children: [
-                  _buildFeatureCard(
-                    context,
-                    icon: Icons.map,
-                    title: 'Flood Map',
-                    subtitle: 'View real-time flood zones',
-                    color: AppTheme.primaryColor,
-                    onTap: () => Navigator.pushNamed(context, '/map'),
+  Widget _buildAppBar(BuildContext context, String name) {
+    return SliverAppBar(
+      backgroundColor: AppTheme.background,
+      elevation: 0,
+      pinned: true,
+      expandedHeight: 80,
+      flexibleSpace: FlexibleSpaceBar(
+        titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Good morning,',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppTheme.textSecondary,
+                    fontWeight: FontWeight.w500,
                   ),
-                  _buildFeatureCard(
-                    context,
-                    icon: Icons.report,
-                    title: 'Report Flood',
-                    subtitle: 'Submit flood observation',
-                    color: AppTheme.warningColor,
-                    onTap: () => Navigator.pushNamed(context, '/report'),
+                ),
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
                   ),
-                  _buildFeatureCard(
-                    context,
-                    icon: Icons.route,
-                    title: 'Safe Routes',
-                    subtitle: 'Find evacuation paths',
-                    color: AppTheme.safeColor,
-                    onTap: () => Navigator.pushNamed(context, '/route'),
-                  ),
-                  _buildFeatureCard(
-                    context,
-                    icon: Icons.emergency,
-                    title: 'Emergency',
-                    subtitle: 'Request help',
-                    color: AppTheme.dangerColor,
-                    onTap: () => Navigator.pushNamed(context, '/emergency'),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
+            GestureDetector(
+              onTap: () {
+                Provider.of<AuthProvider>(context, listen: false).logout();
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+              child: const CircleAvatar(
+                radius: 18,
+                backgroundColor: AppTheme.surfaceLight,
+                child: Icon(Icons.logout, size: 16, color: AppTheme.textSecondary),
+              ),
+            )
           ],
         ),
       ),
     );
   }
 
-  Widget _buildFeatureCard(
-    BuildContext context, {
-    required IconData icon,
+  Widget _buildSectionHeader(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.5,
+      ),
+    ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.05);
+  }
+
+  Widget _buildHorizontalScroll(BuildContext context) {
+    return SizedBox(
+      height: 180,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        clipBehavior: Clip.none,
+        children: [
+          _buildToolCard(
+            context,
+            title: 'Live Flood Map',
+            icon: Icons.map_outlined,
+            color: AppTheme.primaryColor,
+            route: '/map',
+            delay: 100,
+          ),
+          const SizedBox(width: 16),
+          _buildToolCard(
+            context,
+            title: 'Report Incident',
+            icon: Icons.add_a_photo_outlined,
+            color: AppTheme.warningColor,
+            route: '/report',
+            delay: 200,
+          ),
+          const SizedBox(width: 16),
+          _buildToolCard(
+            context,
+            title: 'Safe Routes',
+            icon: Icons.route_outlined,
+            color: AppTheme.safeColor,
+            route: '/route',
+            delay: 300,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildToolCard(BuildContext context, {
     required String title,
-    required String subtitle,
+    required IconData icon,
     required Color color,
-    required VoidCallback onTap,
+    required String route,
+    required int delay,
   }) {
-    return Card(
-      elevation: 4,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, route),
+      child: GlassCard(
+        padding: const EdgeInsets.all(20),
+        child: SizedBox(
+          width: 140,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(icon, size: 48, color: color),
-              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: color.withOpacity(0.3)),
+                ),
+                child: Icon(icon, color: color, size: 28),
+              ),
               Text(
                 title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  height: 1.2,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: Theme.of(context).textTheme.bodySmall,
-                textAlign: TextAlign.center,
               ),
             ],
           ),
         ),
       ),
+    ).animate().fadeIn(delay: delay.ms, duration: 400.ms).slideY(begin: 0.1);
+  }
+
+  Widget _buildActivityList() {
+    // Placeholder for actual list data
+    return Column(
+      children: List.generate(3, (index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12.0),
+          child: GlassCard(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppTheme.surfaceLight,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.check_circle_outline, color: AppTheme.safeColor),
+                ),
+                const SizedBox(width: 16),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Report Verified',
+                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Downtown river overflow alert',
+                        style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ),
+                const Text(
+                  '2h ago',
+                  style: TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+                ),
+              ],
+            ),
+          ).animate().fadeIn(delay: (400 + (index * 100)).ms).slideX(begin: 0.05),
+        );
+      }),
     );
   }
 }
