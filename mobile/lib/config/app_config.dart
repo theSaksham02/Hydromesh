@@ -1,7 +1,7 @@
 class AppConfig {
   static const String appName = 'HydroMesh';
-  static const String apiBaseUrl = 'http://localhost:3000/api';
-  static const String socketUrl = 'http://localhost:3000';
+  static const String apiBaseUrl = 'https://backend-six-omega-34.vercel.app/api';
+  static const String socketUrl = 'https://backend-six-omega-34.vercel.app';
   
   // Map settings
   static const double defaultLatitude = 51.5074;
