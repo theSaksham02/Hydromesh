@@ -1,15 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../models/flood_report.dart';
 import '../services/api_service.dart';
+import '../config/app_config.dart';
 
 class ReportProvider with ChangeNotifier {
   List<FloodReport> _reports = [];
   bool _isLoading = false;
   String? _error;
+  IO.Socket? _socket;
 
   List<FloodReport> get reports => _reports;
   bool get isLoading => _isLoading;
   String? get error => _error;
+
+  ReportProvider() {
+    _initSocket();
+  }
+
+  void _initSocket() {
+    _socket = IO.io(AppConfig.socketUrl, <String, dynamic>{
+      'transports': ['websocket'],
+      'autoConnect': true,
+    });
+
+    _socket?.on('new_report', (data) {
+      if (data != null) {
+        final newReport = FloodReport.fromJson(data);
+        _reports.insert(0, newReport);
+        notifyListeners();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _socket?.disconnect();
+    _socket?.dispose();
+    super.dispose();
+  }
 
   // Fetch all reports
   Future<void> fetchReports() async {

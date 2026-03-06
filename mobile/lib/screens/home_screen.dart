@@ -86,16 +86,29 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            GestureDetector(
-              onTap: () {
-                Provider.of<AuthProvider>(context, listen: false).logout();
-                Navigator.pushReplacementNamed(context, '/login');
-              },
-              child: const CircleAvatar(
-                radius: 18,
-                backgroundColor: AppTheme.surfaceLight,
-                child: Icon(Icons.logout, size: 16, color: AppTheme.textSecondary),
-              ),
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, '/simulation'),
+                  child: const CircleAvatar(
+                    radius: 18,
+                    backgroundColor: AppTheme.surfaceLight,
+                    child: Icon(Icons.terminal, size: 16, color: AppTheme.dangerColor),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                GestureDetector(
+                  onTap: () {
+                    Provider.of<AuthProvider>(context, listen: false).logout();
+                    Navigator.pushReplacementNamed(context, '/login');
+                  },
+                  child: const CircleAvatar(
+                    radius: 18,
+                    backgroundColor: AppTheme.surfaceLight,
+                    child: Icon(Icons.logout, size: 16, color: AppTheme.textSecondary),
+                  ),
+                ),
+              ],
             )
           ],
         ),

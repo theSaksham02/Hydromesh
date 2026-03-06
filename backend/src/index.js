@@ -26,6 +26,7 @@ app.use('/api/reports', require('./routes/reports.routes'));
 // app.use('/api/routes', require('./routes/routes.routes'));
 app.use('/api/emergency', require('./routes/emergency.routes'));
 app.use('/api/weather', require('./routes/weather.routes'));
+app.use('/api/simulation', require('./routes/simulation.routes'));
 
 // Health check
 app.get('/api/health', (req, res) => {
