@@ -1,5 +1,9 @@
 const { Pool } = require('pg');
+const dns = require('dns');
 require('dotenv').config();
+
+// Force IPv4 DNS resolution — Render cannot reach Supabase over IPv6
+dns.setDefaultResultOrder('ipv4first');
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -37,6 +41,7 @@ const pool = new Pool({
   port,
   database,
   ssl: { rejectUnauthorized: false },
+  connectionTimeoutMillis: 10000,
 });
 
 // Retry DB connection with exponential backoff — never crashes the server.
