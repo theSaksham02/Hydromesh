@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../config/app_config.dart';
 import '../config/theme.dart';
 import '../providers/report_provider.dart';
+import '../providers/emergency_provider.dart';
 import '../models/flood_report.dart';
 import '../widgets/common/glass_card.dart';
 
@@ -24,6 +25,7 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<ReportProvider>(context, listen: false).fetchReports();
+      Provider.of<EmergencyProvider>(context, listen: false).fetchPendingRequests();
     });
   }
 
@@ -64,6 +66,40 @@ class _MapScreenState extends State<MapScreen> {
                     markers: reportProvider.reports.map((report) {
                       return _buildMarker(report);
                     }).toList(),
+                  ),
+
+                  // F-15: Pending Emergency SOS markers
+                  Consumer<EmergencyProvider>(
+                    builder: (context, emergencyProvider, _) {
+                      final sos = emergencyProvider.pendingRequests;
+                      if (sos.isEmpty) return const SizedBox.shrink();
+                      return MarkerLayer(
+                        markers: sos.map((req) {
+                          final lat = (req['latitude'] as num?)?.toDouble() ?? 0;
+                          final lng = (req['longitude'] as num?)?.toDouble() ?? 0;
+                          return Marker(
+                            point: LatLng(lat, lng),
+                            width: 36,
+                            height: 36,
+                            child: GestureDetector(
+                              onTap: () => _showSosSheet(context, req),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppTheme.dangerColor,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white, width: 2),
+                                  boxShadow: [
+                                    BoxShadow(color: AppTheme.dangerColor.withOpacity(0.6), blurRadius: 12, spreadRadius: 4),
+                                  ],
+                                ),
+                                child: const Icon(Icons.sos, color: Colors.white, size: 20),
+                              ).animate(onPlay: (c) => c.repeat(reverse: true))
+                                  .scale(begin: const Offset(1, 1), end: const Offset(1.15, 1.15), duration: 800.ms),
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    },
                   ),
                 ],
               );
@@ -206,6 +242,51 @@ class _MapScreenState extends State<MapScreen> {
                 child: CircularProgressIndicator(strokeWidth: 2)
               )
             : Icon(icon, color: Colors.white, size: 24),
+      ),
+    );
+  }
+
+  void _showSosSheet(BuildContext context, Map<String, dynamic> req) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: AppTheme.dangerColor.withOpacity(0.4)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              const Icon(Icons.sos, color: AppTheme.dangerColor, size: 28),
+              const SizedBox(width: 12),
+              const Text('Emergency Request', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+            ]),
+            const SizedBox(height: 16),
+            Text(req['description'] ?? 'No description', style: const TextStyle(color: AppTheme.textSecondary)),
+            const SizedBox(height: 8),
+            Text('Status: ${req['status'] ?? 'pending'}', style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
+            const SizedBox(height: 24),
+            Row(children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(backgroundColor: AppTheme.safeColor, foregroundColor: Colors.black, padding: const EdgeInsets.symmetric(vertical: 14)),
+                  icon: const Icon(Icons.check),
+                  label: const Text('Accept'),
+                  onPressed: () {
+                    context.read<EmergencyProvider>().fetchPendingRequests();
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ]),
+          ],
+        ),
       ),
     );
   }

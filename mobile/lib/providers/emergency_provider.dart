@@ -5,10 +5,22 @@ class EmergencyProvider with ChangeNotifier {
   bool _isLoading = false;
   bool _requestSent = false;
   String? _error;
+  List<Map<String, dynamic>> _pendingRequests = [];
 
   bool get isLoading => _isLoading;
   bool get requestSent => _requestSent;
   String? get error => _error;
+  List<Map<String, dynamic>> get pendingRequests => _pendingRequests;
+
+  Future<void> fetchPendingRequests() async {
+    try {
+      final result = await ApiService.get('/emergency/pending');
+      if (result['success'] == true && result['data'] != null) {
+        _pendingRequests = List<Map<String, dynamic>>.from(result['data']);
+        notifyListeners();
+      }
+    } catch (_) {}
+  }
 
   Future<bool> sendEmergencyRequest({
     required double latitude,
@@ -29,6 +41,7 @@ class EmergencyProvider with ChangeNotifier {
       _isLoading = false;
       if (result['success']) {
         _requestSent = true;
+        await fetchPendingRequests();
         notifyListeners();
         return true;
       } else {
