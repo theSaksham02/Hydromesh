@@ -10,7 +10,8 @@ import 'providers/emergency_provider.dart';
 import 'providers/weather_provider.dart';
 import 'screens/splash_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const HydroMeshApp());
 }
 

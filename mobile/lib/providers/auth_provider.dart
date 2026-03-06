@@ -8,11 +8,13 @@ class AuthProvider with ChangeNotifier {
   User? _user;
   String? _token;
   bool _isLoading = false;
+  bool _isRestoring = true; // true until first session restore attempt completes
   String? _error;
 
   User? get user => _user;
   String? get token => _token;
   bool get isLoading => _isLoading;
+  bool get isRestoring => _isRestoring;
   bool get isAuthenticated => _token != null;
   String? get error => _error;
 
@@ -21,11 +23,17 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> _restoreSession() async {
-    final prefs = await SharedPreferences.getInstance();
-    final saved = prefs.getString('auth_token');
-    if (saved != null) {
-      _token = saved;
-      ApiService.setToken(saved); // restore into HTTP client too
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getString('auth_token');
+      if (saved != null) {
+        _token = saved;
+        ApiService.setToken(saved); // restore into HTTP client too
+      }
+    } catch (_) {
+      // If SharedPreferences fails, proceed as unauthenticated
+    } finally {
+      _isRestoring = false;
       notifyListeners();
     }
   }

@@ -23,11 +23,15 @@ class ApiService {
 
   // GET request
   static Future<Map<String, dynamic>> get(String endpoint) async {
-    final response = await http.get(
-      Uri.parse('${AppConfig.apiBaseUrl}$endpoint'),
-      headers: _headers,
-    );
-    return _handleResponse(response);
+    try {
+      final response = await http.get(
+        Uri.parse('${AppConfig.apiBaseUrl}$endpoint'),
+        headers: _headers,
+      );
+      return _handleResponse(response);
+    } catch (e) {
+      return {'success': false, 'error': 'Network error: ${e.runtimeType}'};
+    }
   }
 
   // POST request
@@ -35,25 +39,32 @@ class ApiService {
     String endpoint, 
     Map<String, dynamic> body
   ) async {
-    final response = await http.post(
-      Uri.parse('${AppConfig.apiBaseUrl}$endpoint'),
-      headers: _headers,
-      body: jsonEncode(body),
-    );
-    return _handleResponse(response);
+    try {
+      final response = await http.post(
+        Uri.parse('${AppConfig.apiBaseUrl}$endpoint'),
+        headers: _headers,
+        body: jsonEncode(body),
+      );
+      return _handleResponse(response);
+    } catch (e) {
+      return {'success': false, 'error': 'Network error: ${e.runtimeType}'};
+    }
   }
 
   // Handle response
   static Map<String, dynamic> _handleResponse(http.Response response) {
-    final data = jsonDecode(response.body);
-    
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return {'success': true, 'data': data};
-    } else {
-      return {
-        'success': false, 
-        'error': data['message'] ?? 'An error occurred'
-      };
+    try {
+      final data = jsonDecode(response.body);
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return {'success': true, 'data': data};
+      } else {
+        return {
+          'success': false,
+          'error': (data is Map ? data['message'] : null) ?? 'Server error ${response.statusCode}',
+        };
+      }
+    } catch (_) {
+      return {'success': false, 'error': 'Invalid server response (${response.statusCode})'};
     }
   }
 }

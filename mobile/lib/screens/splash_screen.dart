@@ -15,14 +15,28 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
+    // Wait for session restore then navigate after minimum splash duration
+    Future.wait([
+      Future.delayed(const Duration(seconds: 3)),
+      _waitForRestore(),
+    ]).then((_) {
       if (!mounted) return;
       final auth = context.read<AuthProvider>();
-      // Route to home if session was restored, otherwise login
       Navigator.pushReplacementNamed(
         context,
         auth.isAuthenticated ? '/home' : '/login',
       );
+    });
+  }
+
+  Future<void> _waitForRestore() async {
+    final auth = context.read<AuthProvider>();
+    // If already done, return immediately
+    if (!auth.isRestoring) return;
+    // Otherwise wait for the notifyListeners() from _restoreSession()
+    await Future.doWhile(() async {
+      await Future.delayed(const Duration(milliseconds: 50));
+      return context.read<AuthProvider>().isRestoring;
     });
   }
 
