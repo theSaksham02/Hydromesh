@@ -54,22 +54,9 @@ class _MapScreenState extends State<MapScreen> {
                     userAgentPackageName: 'com.hydromesh.app',
                   ),
                   
-                  // F-07: Example Risk Zones (Polygons)
+                  // F-07: Dynamic Risk Zones — driven by clustered flood reports
                   PolygonLayer(
-                    polygons: [
-                      Polygon(
-                        points: const [
-                          LatLng(51.515, -0.105),
-                          LatLng(51.510, -0.090),
-                          LatLng(51.500, -0.095),
-                          LatLng(51.505, -0.110),
-                        ],
-                        color: AppTheme.dangerColor.withOpacity(0.2),
-                        borderStrokeWidth: 2,
-                        borderColor: AppTheme.dangerColor.withOpacity(0.8),
-                        isFilled: true,
-                      ),
-                    ],
+                    polygons: _buildRiskZones(reportProvider.reports),
                   ),
 
                   // User Reports
@@ -223,8 +210,72 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Marker _buildMarker(FloodReport report) {
-    final color = _getWaterLevelColor(report.waterLevel);
+  // Builds dynamic risk zone polygons from report clusters (F-07)
+  List<Polygon> _buildRiskZones(List<FloodReport> reports) {
+    if (reports.isEmpty) return [];
+
+    final polygons = <Polygon>[];
+    final seen = <int>{};
+
+    for (int i = 0; i < reports.length; i++) {
+      if (seen.contains(i)) continue;
+
+      final r = reports[i];
+      final severity = _severityValue(r.waterLevel);
+
+      // Find nearby reports within ~0.01° (~1 km)
+      double minLat = r.latitude, maxLat = r.latitude;
+      double minLng = r.longitude, maxLng = r.longitude;
+      int maxSeverity = severity;
+
+      for (int j = i + 1; j < reports.length; j++) {
+        final other = reports[j];
+        if ((other.latitude - r.latitude).abs() < 0.01 &&
+            (other.longitude - r.longitude).abs() < 0.01) {
+          seen.add(j);
+          minLat = minLat < other.latitude ? minLat : other.latitude;
+          maxLat = maxLat > other.latitude ? maxLat : other.latitude;
+          minLng = minLng < other.longitude ? minLng : other.longitude;
+          maxLng = maxLng > other.longitude ? maxLng : other.longitude;
+          final s = _severityValue(other.waterLevel);
+          if (s > maxSeverity) maxSeverity = s;
+        }
+      }
+
+      const pad = 0.006; // ~600m padding around the zone
+      final color = _zoneColor(maxSeverity);
+
+      polygons.add(Polygon(
+        points: [
+          LatLng(minLat - pad, minLng - pad),
+          LatLng(maxLat + pad, minLng - pad),
+          LatLng(maxLat + pad, maxLng + pad),
+          LatLng(minLat - pad, maxLng + pad),
+        ],
+        color: color.withOpacity(0.15),
+        borderStrokeWidth: 1.5,
+        borderColor: color.withOpacity(0.7),
+        isFilled: true,
+      ));
+    }
+
+    return polygons;
+  }
+
+  int _severityValue(String waterLevel) {
+    const order = ['ankle', 'knee', 'waist', 'chest', 'above_head'];
+    return order.indexOf(waterLevel);
+  }
+
+  Color _zoneColor(int severity) {
+    if (severity >= 4) return AppTheme.accentColor;
+    if (severity >= 3) return AppTheme.dangerColor;
+    if (severity >= 2) return Colors.orange;
+    if (severity >= 1) return AppTheme.warningColor;
+    return AppTheme.safeColor;
+  }
+
+  Marker _buildMarker(FloodReport report) {    final color = _getWaterLevelColor(report.waterLevel);
     return Marker(
       point: LatLng(report.latitude, report.longitude),
       width: 60,
