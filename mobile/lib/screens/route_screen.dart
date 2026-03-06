@@ -20,11 +20,12 @@ class _RouteScreenState extends State<RouteScreen> {
   final MapController _mapController = MapController();
   bool _isCalculating = false;
   bool _routeFound = false;
+  bool _destinationSet = false;
   double _startLat = AppConfig.defaultLatitude;
   double _startLng = AppConfig.defaultLongitude;
 
-  // Destination: nearest safe zone (set dynamically once GPS resolves)
-  double _destLat = AppConfig.defaultLatitude + 0.018; // ~2km north fallback
+  // Destination: set by tap or defaults to ~2km north of user
+  double _destLat = AppConfig.defaultLatitude + 0.018;
   double _destLng = AppConfig.defaultLongitude;
   String _distanceText = '--';
   String _timeText = '--';
@@ -96,6 +97,14 @@ class _RouteScreenState extends State<RouteScreen> {
             options: MapOptions(
               initialCenter: LatLng(_startLat, _startLng),
               initialZoom: 13.5,
+              onTap: (tapPosition, point) {
+                setState(() {
+                  _destLat = point.latitude;
+                  _destLng = point.longitude;
+                  _destinationSet = true;
+                  _routeFound = false; // reset so user can recalculate
+                });
+              },
             ),
             children: [
               TileLayer(
@@ -117,23 +126,26 @@ class _RouteScreenState extends State<RouteScreen> {
                     ),
                   ],
                 ).animate().fadeIn(duration: 800.ms),
-              if (_routeFound)
-                MarkerLayer(
-                  markers: [
-                    Marker(
-                      point: LatLng(_startLat, _startLng),
-                      width: 20,
-                      height: 20,
-                      child: const Icon(Icons.circle, color: AppTheme.primaryColor, size: 20),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: LatLng(_startLat, _startLng),
+                    width: 20,
+                    height: 20,
+                    child: const Icon(Icons.circle, color: AppTheme.primaryColor, size: 20),
+                  ),
+                  Marker(
+                    point: LatLng(_destLat, _destLng),
+                    width: 24,
+                    height: 24,
+                    child: Icon(
+                      Icons.location_on,
+                      color: _destinationSet ? AppTheme.warningColor : AppTheme.safeColor,
+                      size: 24,
                     ),
-                    Marker(
-                      point: LatLng(_destLat, _destLng),
-                      width: 24,
-                      height: 24,
-                      child: const Icon(Icons.location_on, color: AppTheme.safeColor, size: 24),
-                    ),
-                  ],
-                ).animate().fadeIn(duration: 500.ms),
+                  ),
+                ],
+              ).animate().fadeIn(duration: 500.ms),
             ],
           ),
 
@@ -210,8 +222,13 @@ class _RouteScreenState extends State<RouteScreen> {
                         child: const Icon(Icons.location_city, color: AppTheme.safeColor),
                       ),
                       const SizedBox(width: 16),
-                      const Expanded(
-                        child: Text('Nearest Safe Zone (City Hall)', style: TextStyle(fontWeight: FontWeight.w600)),
+                      Expanded(
+                        child: Text(
+                          _destinationSet
+                              ? 'Custom Destination (${_destLat.toStringAsFixed(4)}, ${_destLng.toStringAsFixed(4)})'
+                              : 'Nearest Safe Zone (tap map to change)',
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ],
                   ),
