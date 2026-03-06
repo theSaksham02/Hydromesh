@@ -2,7 +2,7 @@ class AppConfig {
   static const String appName = 'HydroMesh';
 
   // Switch between local dev (true) and production Render (false)
-  static const bool _useLocalhost = true;
+  static const bool _useLocalhost = false;
 
   static const String _localIp = '192.168.0.170'; // your Mac's LAN IP
   static const String _localBaseUrl = 'http://$_localIp:3000/api';
