@@ -30,7 +30,7 @@ app.use('/api/simulation', require('./routes/simulation.routes'));
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', timestamp: new Date().toISOString(), version: '1.1.0' });
 });
 
 // Error handling middleware
