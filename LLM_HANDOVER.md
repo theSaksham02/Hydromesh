@@ -31,34 +31,41 @@ This document provides a comprehensive overview of the Hydromesh project, what h
 ## 3. What Has Been Completed
 1. **Database Schema:** Defined `users`, `flood_reports`, `emergency_requests`, and `user_locations` with geospatial indexing.
 2. **Backend API:** All endpoints built (`/api/auth`, `/api/reports`, `/api/emergency`, `/api/weather`, `/api/simulation`).
-3. **Frontend UI Rebuild:** Converted the entire mobile app to the Rive-inspired glassmorphism theme:
-   - `login_screen.dart`: Radial gradients, animated logo, auth toggle.
-   - `home_screen.dart`: CustomScrollView, pinned sliver app bar, horizontal scrolling glass tools.
-   - `map_screen.dart`: Floating UI elements, dark matter CartoDB tiles, animated bottom sheet for report details.
-   - `report_screen.dart`: Glass input cards, staggered animations.
-   - `route_screen.dart`: Simulated route polyline drawing.
-   - `emergency_screen.dart`: Pulsing neon SOS button with success states.
-   - `simulation_screen.dart`: "God Mode" trigger panel to spawn hundreds of fake reports.
-4. **Testing:** Jest unit tests for backend models; Flutter widget tests for UI elements (Both passing).
+3. **Frontend UI Rebuild:** Converted the entire mobile app to the Rive-inspired glassmorphism theme.
+4. **GPS Integration:** Real GPS in ReportScreen, EmergencyScreen, RouteScreen, WeatherCard.
+5. **Dynamic Risk Zones (F-07):** Clustering algorithm on map groups reports into coloured danger polygons.
+6. **Emergency SOS Markers (F-15):** Pulsing red markers on map for pending emergencies; tap → bottom sheet.
+7. **Socket.io Status Badge:** Live connection indicator on MapScreen title bar.
+8. **JWT Persistence:** Token saved to SharedPreferences; survives app restart; restored to API client.
+9. **Smart Splash Routing:** Splash goes to `/home` if session restored, `/login` otherwise.
+10. **CI/CD:** GitHub Actions builds release APK on every push to main (Flutter 3.41.4).
 
 ---
 
-## 4. Current Deployment State & Recent Issues
-- **Frontend (Web/Android):**
-  - Attempted to build `.apk` via Codemagic. Met an issue with the `record` package interface mismatch. Upgraded `record` to `^6.2.0` which fixed the build error. 
-  - Frontend points to the live backend via `mobile/lib/config/app_config.dart`.
-- **Backend (Render.com vs Vercel):**
-  - We initially deployed to Vercel. However, because Vercel is serverless, it crashed when trying to maintain persistent WebSocket (Socket.io) connections.
-  - **Action Taken:** We reverted the backend `index.js` to a standard Express server and migrated deployment to **Render.com**.
-  - **Database Connection Issue on Render:** Render's free tier does not support IPv6 outbound. Supabase defaults to IPv6. Render threw an `ENETUNREACH` error.
-  - **The Fix:** The user was instructed to update the Render `DATABASE_URL` environment variable to use the Supabase IPv4 connection pooler.
-    - *Old String:* `postgresql://postgres:Hydromesh@2025@db.zllbvvgufhhhktaxlpqp.supabase.co:5432/postgres`
-    - *New String:* `postgresql://postgres.zllbvvgufhhhktaxlpqp:Hydromesh%402025@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?pgbouncer=true`
+## 4. Current Deployment State
+
+### Backend — LIVE ✅
+- **URL:** `https://hydromesh-api.onrender.com`
+- **Health check:** `GET /hydromesh-api.onrender.com/api/health` → `{"status":"ok"}`
+- **Service name:** `hydromesh-api` (Render dashboard: srv-d6ledgnpm1nc739bndhg)
+- **DB connection:** Retries with exponential backoff; server stays alive even if DB is down.
+- **Key fix applied:** `database.js` uses a custom URL parser (splits on LAST `@`) so passwords containing `@` work whether encoded or raw.
+
+### Database — ⚠️ ACTION REQUIRED
+- **Supabase project is PAUSED** (free tier auto-pauses after 7 days inactivity).
+- Go to [supabase.com/dashboard](https://supabase.com/dashboard) → click "Restore project".
+- Once unpaused, the backend auto-reconnects within 60 seconds.
+- Direct connection URL (with encoded password): `postgresql://postgres:Hydromesh%402025@db.zllbvvgufhhhktaxlpqp.supabase.co:5432/postgres`
+
+### Mobile App — APK AVAILABLE ✅
+- Download from: GitHub → Actions → "Build Android APK" → latest run → `hydromesh-release-apk` artifact
+- `applicationId`: `com.hydromesh.app`
+- All API calls point to `https://hydromesh-api.onrender.com`
 
 ---
 
 ## 5. Next Steps for the AI Assistant
-1. **Verify Backend Status:** Ensure the Render backend is live and successfully connected to Supabase using the IPv4 pooler string.
-2. **Compile the Mobile App:** Since the Codemagic build should now pass, pull the final `.apk` to test the real-time Socket.io God Mode features on a physical Android device.
-3. **Refine Frontend Animations:** Add any additional Rive `.riv` files or Mapbox 3D elements if the user desires further visual polish.
-4. **Offline Caching (Shaazia's Feature):** Implement local SQLite / SharedPreferences caching for the map and reports so the app degrades gracefully without internet.
+1. **Unpause Supabase** — User must restore the paused project. After that, all DB-backed API calls work.
+2. **Offline Caching (Shaazia's Feature):** Implement local SQLite / SharedPreferences caching for the map and reports so the app degrades gracefully without internet.
+3. **Route Destination Input:** RouteScreen currently sets destination to 2km north of user. Could add a text field / tap-on-map to set custom destination.
+4. **Emergency Accept/Resolve flow:** The bottom sheet on SOS markers has an "Accept" button but doesn't call `POST /emergency/:id/accept` yet — needs the auth token and request ID wired in.
