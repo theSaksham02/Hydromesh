@@ -125,6 +125,7 @@ class _MapScreenState extends State<MapScreen> {
                   child: Consumer<ReportProvider>(
                     builder: (context, provider, _) {
                       final connected = provider.isSocketConnected;
+                      final cached = provider.fromCache;
                       return Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -132,17 +133,19 @@ class _MapScreenState extends State<MapScreen> {
                             width: 8, height: 8,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: connected ? AppTheme.safeColor : Colors.grey,
+                              color: connected ? AppTheme.safeColor : (cached ? AppTheme.warningColor : Colors.grey),
                               boxShadow: [
                                 if (connected)
                                   BoxShadow(color: AppTheme.safeColor.withOpacity(0.6), blurRadius: 6),
+                                if (cached && !connected)
+                                  BoxShadow(color: AppTheme.warningColor.withOpacity(0.6), blurRadius: 6),
                               ],
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Text(
-                            'Live Flood Map',
-                            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                          Text(
+                            cached ? 'Cached Map' : 'Live Flood Map',
+                            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
                           ),
                         ],
                       );
@@ -247,10 +250,11 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _showSosSheet(BuildContext context, Map<String, dynamic> req) {
+    final emergencyId = req['request_id']?.toString() ?? req['id']?.toString() ?? '';
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
+      builder: (sheetCtx) => Container(
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
@@ -277,10 +281,14 @@ class _MapScreenState extends State<MapScreen> {
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(backgroundColor: AppTheme.safeColor, foregroundColor: Colors.black, padding: const EdgeInsets.symmetric(vertical: 14)),
                   icon: const Icon(Icons.check),
-                  label: const Text('Accept'),
-                  onPressed: () {
-                    context.read<EmergencyProvider>().fetchPendingRequests();
-                    Navigator.pop(context);
+                  label: const Text('Accept & Respond'),
+                  onPressed: () async {
+                    Navigator.pop(sheetCtx);
+                    if (emergencyId.isNotEmpty) {
+                      await context.read<EmergencyProvider>().acceptEmergency(emergencyId);
+                    } else {
+                      context.read<EmergencyProvider>().fetchPendingRequests();
+                    }
                   },
                 ),
               ),

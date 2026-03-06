@@ -12,6 +12,17 @@ class EmergencyProvider with ChangeNotifier {
   String? get error => _error;
   List<Map<String, dynamic>> get pendingRequests => _pendingRequests;
 
+  Future<bool> acceptEmergency(String id) async {
+    try {
+      final result = await ApiService.post('/emergency/$id/accept', {});
+      if (result['success'] == true) {
+        await fetchPendingRequests();
+        return true;
+      }
+    } catch (_) {}
+    return false;
+  }
+
   Future<void> fetchPendingRequests() async {
     try {
       final result = await ApiService.get('/emergency/pending');
