@@ -82,9 +82,15 @@ class ReportProvider with ChangeNotifier {
 
     _isLoading = false;
     if (result['success']) {
-      _reports = (result['data'] as List)
-          .map((r) => FloodReport.fromJson(r))
-          .toList();
+      final data = result['data'];
+      if (data is List) {
+        _reports = data
+            .whereType<Map<String, dynamic>>()
+            .map((r) => FloodReport.fromJson(r))
+            .toList();
+      } else {
+        _reports = [];
+      }
       _fromCache = false;
       _error = null;
       _saveCache(_reports);

@@ -46,8 +46,8 @@ class WeatherProvider with ChangeNotifier {
     try {
       final result = await ApiService.get('/weather/current?latitude=$lat&longitude=$lng');
       
-      if (result['success'] && result['data'] != null) {
-        _currentWeather = result['data'] as Map<String, dynamic>;
+      if (result['success'] && result['data'] != null && result['data'] is Map) {
+        _currentWeather = Map<String, dynamic>.from(result['data'] as Map);
         _fromCache = false;
         await _saveCache(_currentWeather!);
       } else {

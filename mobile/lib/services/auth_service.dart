@@ -10,12 +10,16 @@ class AuthService {
     });
 
     if (result['success']) {
-      ApiService.setToken(result['data']['token']);
-      return {
-        'success': true,
-        'user': User.fromJson(result['data']['user']),
-        'token': result['data']['token'],
-      };
+      final data = result['data'];
+      if (data is Map && data['token'] != null && data['user'] is Map) {
+        ApiService.setToken(data['token']);
+        return {
+          'success': true,
+          'user': User.fromJson(Map<String, dynamic>.from(data['user'])),
+          'token': data['token'],
+        };
+      }
+      return {'success': false, 'error': 'Unexpected server response'};
     }
     return result;
   }
@@ -35,12 +39,16 @@ class AuthService {
     });
 
     if (result['success']) {
-      ApiService.setToken(result['data']['token']);
-      return {
-        'success': true,
-        'user': User.fromJson(result['data']['user']),
-        'token': result['data']['token'],
-      };
+      final data = result['data'];
+      if (data is Map && data['token'] != null && data['user'] is Map) {
+        ApiService.setToken(data['token']);
+        return {
+          'success': true,
+          'user': User.fromJson(Map<String, dynamic>.from(data['user'])),
+          'token': data['token'],
+        };
+      }
+      return {'success': false, 'error': 'Unexpected server response'};
     }
     return result;
   }

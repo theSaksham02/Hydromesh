@@ -25,17 +25,17 @@ class FloodReport {
 
   factory FloodReport.fromJson(Map<String, dynamic> json) {
     return FloodReport(
-      reportId: json['report_id'],
-      userId: json['user_id'],
-      latitude: double.parse(json['latitude'].toString()),
-      longitude: double.parse(json['longitude'].toString()),
-      waterLevel: json['water_level'],
-      description: json['description'],
-      photoUrl: json['photo_url'],
-      voiceUrl: json['voice_url'],
-      isValidated: json['is_validated'] ?? false,
-      createdAt: json['created_at'] != null 
-          ? DateTime.parse(json['created_at']) 
+      reportId: json['report_id']?.toString(),
+      userId: json['user_id']?.toString(),
+      latitude: double.tryParse(json['latitude']?.toString() ?? '') ?? 0.0,
+      longitude: double.tryParse(json['longitude']?.toString() ?? '') ?? 0.0,
+      waterLevel: json['water_level']?.toString() ?? 'ankle',
+      description: json['description']?.toString(),
+      photoUrl: json['photo_url']?.toString(),
+      voiceUrl: json['voice_url']?.toString(),
+      isValidated: json['is_validated'] == true,
+      createdAt: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at'].toString())
           : null,
     );
   }

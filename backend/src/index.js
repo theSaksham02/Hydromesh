@@ -77,6 +77,24 @@ app.use('/api/emergency', require('./routes/emergency.routes'));
 app.use('/api/weather', require('./routes/weather.routes'));
 app.use('/api/simulation', require('./routes/simulation.routes'));
 
+// Landing page
+app.get('/', (req, res) => {
+  res.json({
+    name: 'HydroMesh API',
+    description: 'Community-Driven Flood Prediction & Emergency Response',
+    version: '1.3.0',
+    endpoints: {
+      health: '/api/health',
+      reports: '/api/reports',
+      weather: '/api/weather/current?latitude=LAT&longitude=LNG',
+      forecast: '/api/weather/forecast?latitude=LAT&longitude=LNG',
+      auth: '/api/auth/login | /api/auth/register',
+      emergency: '/api/emergency/pending (auth required)',
+    },
+    mobile: 'Download APK from GitHub Actions artifacts',
+  });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   const { useRest } = require('./config/database');

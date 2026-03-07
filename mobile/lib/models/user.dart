@@ -17,12 +17,12 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      userId: json['user_id'],
-      name: json['name'],
-      email: json['email'],
-      role: json['role'],
-      phone: json['phone'],
-      createdAt: DateTime.parse(json['created_at']),
+      userId: json['user_id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      email: json['email']?.toString() ?? '',
+      role: json['role']?.toString() ?? 'citizen',
+      phone: json['phone']?.toString(),
+      createdAt: DateTime.tryParse(json['created_at']?.toString() ?? '') ?? DateTime.now(),
     );
   }
 

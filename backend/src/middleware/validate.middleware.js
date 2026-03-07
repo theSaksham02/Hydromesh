@@ -85,8 +85,8 @@ const validateCreateEmergency = [
 // UUID param validator
 const validateIdParam = [
   param('id')
-    .isInt({ min: 1 })
-    .withMessage('ID must be a positive integer'),
+    .isUUID()
+    .withMessage('ID must be a valid UUID'),
   handleValidation,
 ];
 

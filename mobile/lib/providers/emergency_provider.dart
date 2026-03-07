@@ -26,8 +26,11 @@ class EmergencyProvider with ChangeNotifier {
   Future<void> fetchPendingRequests() async {
     try {
       final result = await ApiService.get('/emergency/pending');
-      if (result['success'] == true && result['data'] != null) {
-        _pendingRequests = List<Map<String, dynamic>>.from(result['data']);
+      if (result['success'] == true && result['data'] != null && result['data'] is List) {
+        _pendingRequests = (result['data'] as List)
+            .whereType<Map>()
+            .map((e) => Map<String, dynamic>.from(e))
+            .toList();
         notifyListeners();
       }
     } catch (_) {}
