@@ -83,7 +83,7 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    version: '1.2.0',
+    version: '1.3.0',
     dbMode: useRest ? 'supabase-rest' : 'pg-direct',
     config: {
       weatherApi: !!process.env.WEATHER_API_URL,

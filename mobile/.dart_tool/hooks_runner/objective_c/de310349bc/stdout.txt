@@ -1,63 +1,62 @@
 Running `(cd /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/; TMPDIR=/var/folders/tv/6v77cnt56hqgxv7b5nzkf87m0000gn/T/ PATH=/opt/anaconda3/bin:/opt/anaconda3/condabin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/opt/pmk/env/global/bin HOME=/Users/sakshammishra /opt/homebrew/share/flutter/bin/cache/dart-sdk/bin/dart --packages=/Users/sakshammishra/Hydromesh/mobile/.dart_tool/package_config.json /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/objective_c/de310349bc/hook.dill --config=/Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/objective_c/de310349bc/input.json )`.
-INFO: 2026-03-05 04:25:28.498133: Running `/Library/Developer/CommandLineTools/usr/bin/clang --version`.
+INFO: 2026-03-07 00:27:32.974682: Running `/Library/Developer/CommandLineTools/usr/bin/clang --version`.
 
-INFO: 2026-03-05 04:25:28.632636: Running `/Library/Developer/CommandLineTools/usr/bin/clang --version`.
+INFO: 2026-03-07 00:27:33.113721: Running `/Library/Developer/CommandLineTools/usr/bin/clang --version`.
 
-INFO: 2026-03-05 04:25:28.644825: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/include/dart_api_dl.c -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/include/dart_api_dl.c.o
+INFO: 2026-03-07 00:27:33.126044: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/include/dart_api_dl.c -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/include/dart_api_dl.c.o
 
-INFO: 2026-03-05 04:25:28.645113: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/objective_c.c -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.c.o
+INFO: 2026-03-07 00:27:33.126341: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/objective_c.c -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.c.o
 
-INFO: 2026-03-05 04:25:28.645283: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/test/util.c -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/test/util.c.o
+INFO: 2026-03-07 00:27:33.126462: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/test/util.c -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/test/util.c.o
 
-INFO: 2026-03-05 04:25:28.645488: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/objective_c.m -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.m.o
+INFO: 2026-03-07 00:27:33.126649: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/objective_c.m -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.m.o
 
 ream_adapter.m.o
 
-INFO: 2026-03-05 04:25:28.645652: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/observer.m -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/observer.m.o
+INFO: 2026-03-07 00:27:33.126734: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/observer.m -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/observer.m.o
+INFO: 2026-03-07 00:27:33.126818: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/ns_number.m -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/ns_number.m.o
 
-INFO: 2026-03-05 04:25:28.645769: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/ns_number.m -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/ns_number.m.o
+INFO: 2026-03-07 00:27:33.126905: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/protocol.m -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/protocol.m.o
 
-INFO: 2026-03-05 04:25:28.645951: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/objective_c_bindings_generated.m -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c_bindings_generated.m.o
+INFO: 2026-03-07 00:27:33.126991: Running: /Library/Developer/CommandLineTools/usr/bin/clang -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 -x objective-c -fobjc-arc -c /Users/sakshammishra/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/objective_c_bindings_generated.m -fpic -I src -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c_bindings_generated.m.o
 
-INFO: 2026-03-05 04:25:28.739428: 
-INFO: 2026-03-05 04:25:28.739593: 
-INFO: 2026-03-05 04:25:28.739655: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.c.o
+INFO: 2026-03-07 00:27:33.219257: 
+INFO: 2026-03-07 00:27:33.219368: 
+INFO: 2026-03-07 00:27:33.219472: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.c.o
 
-INFO: 2026-03-05 04:25:28.740052: 
-INFO: 2026-03-05 04:25:28.740074: 
-INFO: 2026-03-05 04:25:28.740086: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/include/dart_api_dl.c.o
+INFO: 2026-03-07 00:27:33.219899: 
+INFO: 2026-03-07 00:27:33.219940: 
+INFO: 2026-03-07 00:27:33.219961: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/include/dart_api_dl.c.o
 
-INFO: 2026-03-05 04:25:28.746898: 
-INFO: 2026-03-05 04:25:28.746963: 
-INFO: 2026-03-05 04:25:28.746990: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/observer.m.o
+INFO: 2026-03-07 00:27:33.225644: 
+INFO: 2026-03-07 00:27:33.225680: 
+INFO: 2026-03-07 00:27:33.225691: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/test/util.c.o
 
-INFO: 2026-03-05 04:25:28.748633: 
-INFO: 2026-03-05 04:25:28.748662: 
-INFO: 2026-03-05 04:25:28.748673: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/protocol.m.o
+INFO: 2026-03-07 00:27:33.229525: 
+INFO: 2026-03-07 00:27:33.229560: 
+INFO: 2026-03-07 00:27:33.229571: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/observer.m.o
 
-INFO: 2026-03-05 04:25:28.749970: 
-INFO: 2026-03-05 04:25:28.749993: 
-INFO: 2026-03-05 04:25:28.750004: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/test/util.c.o
+INFO: 2026-03-07 00:27:33.231074: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/protocol.m.o
 
-INFO: 2026-03-05 04:25:28.965068: 
-INFO: 2026-03-05 04:25:28.965115: 
-INFO: 2026-03-05 04:25:28.965133: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/ns_number.m.o
+INFO: 2026-03-07 00:27:33.443392: 
+INFO: 2026-03-07 00:27:33.443541: 
+INFO: 2026-03-07 00:27:33.443554: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/ns_number.m.o
 
-INFO: 2026-03-05 04:25:28.971384: 
-INFO: 2026-03-05 04:25:28.971421: 
-INFO: 2026-03-05 04:25:28.971430: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.m.o
+INFO: 2026-03-07 00:27:33.448553: 
+INFO: 2026-03-07 00:27:33.448585: 
+INFO: 2026-03-07 00:27:33.448594: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.m.o
 
-INFO: 2026-03-05 04:25:28.972747: 
-INFO: 2026-03-05 04:25:28.972768: 
-INFO: 2026-03-05 04:25:28.972777: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/input_stream_adapter.m.o
+INFO: 2026-03-07 00:27:33.448997: 
+INFO: 2026-03-07 00:27:33.449014: 
+INFO: 2026-03-07 00:27:33.449023: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/input_stream_adapter.m.o
 
-INFO: 2026-03-05 04:25:28.985847: 
-INFO: 2026-03-05 04:25:28.985885: 
-INFO: 2026-03-05 04:25:28.985894: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c_bindings_generated.m.o
+INFO: 2026-03-07 00:27:33.461577: 
+INFO: 2026-03-07 00:27:33.461598: 
+INFO: 2026-03-07 00:27:33.461606: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c_bindings_generated.m.o
 
-INFO: 2026-03-05 04:25:28.986215: Running: /Library/Developer/CommandLineTools/usr/bin/clang -shared -Wl,-encryptable -undefined dynamic_lookup -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/include/dart_api_dl.c.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.c.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/test/util.c.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/input_stream_adapter.m.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.m.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/observer.m.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/ns_number.m.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/protocol.m.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c_bindings_generated.m.o -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/objective_c.dylib
+INFO: 2026-03-07 00:27:33.462003: Running: /Library/Developer/CommandLineTools/usr/bin/clang -shared -Wl,-encryptable -undefined dynamic_lookup -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -target arm64-apple-darwin -mmacos-version-min=13 /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/include/dart_api_dl.c.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.c.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/test/util.c.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/input_stream_adapter.m.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c.m.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/observer.m.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/ns_number.m.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/protocol.m.o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/obj/src/objective_c_bindings_generated.m.o -o /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/objective_c.dylib
 
-INFO: 2026-03-05 04:25:29.169954: 
-INFO: 2026-03-05 04:25:29.170004: 
-INFO: 2026-03-05 04:25:29.170011: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/objective_c.dylib
+INFO: 2026-03-07 00:27:33.629532: 
+INFO: 2026-03-07 00:27:33.629583: 
+INFO: 2026-03-07 00:27:33.629592: Generated /Users/sakshammishra/Hydromesh/mobile/.dart_tool/hooks_runner/shared/objective_c/build/de310349bc/objective_c.dylib
 

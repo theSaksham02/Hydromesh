@@ -1,6 +1,14 @@
 const axios = require('axios');
 
-const WEATHER_API = process.env.WEATHER_API_URL || 'https://api.open-meteo.com/v1';
+const DEFAULT_WEATHER_API = 'https://api.open-meteo.com/v1';
+let WEATHER_API = DEFAULT_WEATHER_API;
+try {
+  const envUrl = process.env.WEATHER_API_URL;
+  if (envUrl && envUrl.startsWith('http')) {
+    new URL(envUrl); // validate
+    WEATHER_API = envUrl;
+  }
+} catch { WEATHER_API = DEFAULT_WEATHER_API; }
 
 const weatherController = {
   // Get current weather
