@@ -16,10 +16,15 @@ services:
         value: "*"
       - key: WEATHER_API_URL
         value: https://api.open-meteo.com/v1
-      # Set DATABASE_URL in Render dashboard → Environment tab:
-      # USE THE POOLER URL (has IPv4, direct URL is IPv6-only):
-      # DATABASE_URL = postgresql://postgres.zllbvvgufhhhktaxlpqp:Hydromesh%402025@aws-0-eu-central-1.pooler.supabase.com:6543/postgres
-      # JWT_SECRET   = hydromesh_super_secret_key_2026
+      # Supabase REST API (HTTPS/IPv4) — set these in Render Environment tab:
+      # SUPABASE_URL = https://zllbvvgufhhhktaxlpqp.supabase.co
+      # SUPABASE_SERVICE_KEY = (from Supabase Dashboard → Settings → API → service_role key)
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      # DATABASE_URL is optional — only needed for direct pg mode (local dev)
+      # If SUPABASE_URL + SUPABASE_SERVICE_KEY are set, REST API is used instead
       - key: DATABASE_URL
         sync: false
       - key: JWT_SECRET

@@ -8,8 +8,8 @@ class AppConfig {
   static const String _localBaseUrl = 'http://$_localIp:3000/api';
   static const String _localSocketUrl = 'http://$_localIp:3000';
 
-  static const String _prodBaseUrl = 'https://hydromesh-api.onrender.com/api';
-  static const String _prodSocketUrl = 'https://hydromesh-api.onrender.com';
+  static const String _prodBaseUrl = 'https://hydromesh.onrender.com/api';
+  static const String _prodSocketUrl = 'https://hydromesh.onrender.com';
 
   static const String apiBaseUrl = _useLocalhost ? _localBaseUrl : _prodBaseUrl;
   static const String socketUrl = _useLocalhost ? _localSocketUrl : _prodSocketUrl;

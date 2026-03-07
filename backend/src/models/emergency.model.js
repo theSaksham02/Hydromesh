@@ -1,8 +1,17 @@
-const { query } = require('../config/database');
+const { query, useRest } = require('../config/database');
+const { getSupabase } = require('../config/supabase');
 
 const Emergency = {
-  // Create emergency request
   async create({ citizenId, latitude, longitude, description, priority = 'medium' }) {
+    if (useRest) {
+      const sb = getSupabase();
+      const { data, error } = await sb.from('emergency_requests').insert({
+        citizen_id: citizenId, latitude, longitude, description,
+        priority, status: 'pending', created_at: new Date().toISOString(),
+      }).select().single();
+      if (error) throw error;
+      return data;
+    }
     const result = await query(
       `INSERT INTO emergency_requests 
        (citizen_id, latitude, longitude, description, priority, status, created_at)
@@ -13,8 +22,15 @@ const Emergency = {
     return result.rows[0];
   },
 
-  // Find nearby responders
   async findNearbyResponders(latitude, longitude, radiusKm = 10) {
+    if (useRest) {
+      const sb = getSupabase();
+      const { data, error } = await sb.from('users')
+        .select('user_id, name, phone')
+        .eq('role', 'responder');
+      if (error) throw error;
+      return data;
+    }
     const result = await query(
       `SELECT u.user_id, u.name, u.phone,
        ST_Distance(
@@ -35,8 +51,15 @@ const Emergency = {
     return result.rows;
   },
 
-  // Assign responder
   async assignResponder(requestId, responderId) {
+    if (useRest) {
+      const sb = getSupabase();
+      const { data, error } = await sb.from('emergency_requests')
+        .update({ responder_id: responderId, status: 'assigned', assigned_at: new Date().toISOString() })
+        .eq('request_id', requestId).select().single();
+      if (error) throw error;
+      return data;
+    }
     const result = await query(
       `UPDATE emergency_requests 
        SET responder_id = $2, status = 'assigned', assigned_at = NOW()
@@ -47,8 +70,16 @@ const Emergency = {
     return result.rows[0];
   },
 
-  // Update status
   async updateStatus(requestId, status) {
+    if (useRest) {
+      const sb = getSupabase();
+      const update = { status };
+      if (status === 'resolved') update.resolved_at = new Date().toISOString();
+      const { data, error } = await sb.from('emergency_requests')
+        .update(update).eq('request_id', requestId).select().single();
+      if (error) throw error;
+      return data;
+    }
     const result = await query(
       `UPDATE emergency_requests 
        SET status = $2, resolved_at = CASE WHEN $2 = 'resolved' THEN NOW() ELSE NULL END
@@ -59,8 +90,20 @@ const Emergency = {
     return result.rows[0];
   },
 
-  // Get pending requests for responders
   async getPendingRequests() {
+    if (useRest) {
+      const sb = getSupabase();
+      const { data, error } = await sb.from('emergency_requests')
+        .select('*, users!emergency_requests_citizen_id_fkey(name, phone)')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: true });
+      if (error) throw error;
+      return data.map(r => ({
+        ...r,
+        citizen_name: r.users?.name,
+        citizen_phone: r.users?.phone,
+      }));
+    }
     const result = await query(
       `SELECT e.*, u.name as citizen_name, u.phone as citizen_phone
        FROM emergency_requests e

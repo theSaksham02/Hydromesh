@@ -1,8 +1,17 @@
-const { query } = require('../config/database');
+const { query, useRest } = require('../config/database');
+const { getSupabase } = require('../config/supabase');
 
 const Report = {
-  // Create flood report
   async create({ userId, latitude, longitude, waterLevel, description, photoUrl, voiceUrl }) {
+    if (useRest) {
+      const sb = getSupabase();
+      const { data, error } = await sb.from('flood_reports').insert({
+        user_id: userId, latitude, longitude, water_level: waterLevel,
+        description, photo_url: photoUrl, voice_url: voiceUrl, created_at: new Date().toISOString(),
+      }).select().single();
+      if (error) throw error;
+      return data;
+    }
     const result = await query(
       `INSERT INTO flood_reports 
        (user_id, latitude, longitude, water_level, description, photo_url, voice_url, created_at)
@@ -13,8 +22,16 @@ const Report = {
     return result.rows[0];
   },
 
-  // Get all reports
   async findAll(limit = 100) {
+    if (useRest) {
+      const sb = getSupabase();
+      const { data, error } = await sb.from('flood_reports')
+        .select('*, users(name)')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      return data.map(r => ({ ...r, reporter_name: r.users?.name }));
+    }
     const result = await query(
       `SELECT r.*, u.name as reporter_name
        FROM flood_reports r
@@ -26,8 +43,27 @@ const Report = {
     return result.rows;
   },
 
-  // Get reports within radius (PostGIS)
   async findNearby(latitude, longitude, radiusKm = 5) {
+    if (useRest) {
+      // Bounding box filter + JS distance calc (PostGIS not available via REST)
+      const sb = getSupabase();
+      const degPerKm = 1 / 111.32;
+      const latRange = radiusKm * degPerKm;
+      const lngRange = radiusKm * degPerKm / Math.cos(latitude * Math.PI / 180);
+      const { data, error } = await sb.from('flood_reports')
+        .select('*')
+        .gte('latitude', latitude - latRange)
+        .lte('latitude', latitude + latRange)
+        .gte('longitude', longitude - lngRange)
+        .lte('longitude', longitude + lngRange)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      // Calculate actual distance using haversine
+      return data.map(r => ({
+        ...r,
+        distance_km: haversine(latitude, longitude, r.latitude, r.longitude),
+      })).filter(r => r.distance_km <= radiusKm);
+    }
     const result = await query(
       `SELECT *, 
        ST_Distance(
@@ -46,8 +82,14 @@ const Report = {
     return result.rows;
   },
 
-  // Get report by ID
   async findById(reportId) {
+    if (useRest) {
+      const sb = getSupabase();
+      const { data, error } = await sb.from('flood_reports')
+        .select('*').eq('report_id', reportId).single();
+      if (error) throw error;
+      return data;
+    }
     const result = await query(
       'SELECT * FROM flood_reports WHERE report_id = $1',
       [reportId]
@@ -55,5 +97,15 @@ const Report = {
     return result.rows[0];
   }
 };
+
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
 
 module.exports = Report;
