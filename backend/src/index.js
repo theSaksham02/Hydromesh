@@ -82,7 +82,7 @@ app.get('/', (req, res) => {
   res.json({
     name: 'HydroMesh API',
     description: 'Community-Driven Flood Prediction & Emergency Response',
-    version: '1.3.0',
+    version: '1.4.0',
     endpoints: {
       health: '/api/health',
       reports: '/api/reports',
@@ -101,7 +101,7 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    version: '1.3.0',
+    version: '1.4.0',
     dbMode: useRest ? 'supabase-rest' : 'pg-direct',
     config: {
       weatherApi: !!process.env.WEATHER_API_URL,
