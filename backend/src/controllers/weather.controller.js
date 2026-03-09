@@ -9,15 +9,14 @@ const weatherController = {
       if (!latitude || !longitude) {
         return res.status(400).json({ message: 'Latitude and longitude required' });
       }
-      const response = await axios.get(`${WEATHER_API}/forecast`, {
-        params: { latitude, longitude, current_weather: true, hourly: 'precipitation,rain' },
-        timeout: 10000,
-      });
+      const url = `${WEATHER_API}/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=precipitation,rain`;
+      const response = await axios.get(url, { timeout: 15000 });
       res.json(response.data);
     } catch (error) {
-      console.error('Weather API error:', error.code || error.message);
+      console.error('Weather API error:', error.code, error.message, error.response?.status);
       res.status(502).json({
         message: 'Weather service temporarily unavailable',
+        debug: { code: error.code, msg: error.message?.substring(0, 100) },
         current_weather: { temperature: null, windspeed: null, weathercode: 0 },
       });
     }
