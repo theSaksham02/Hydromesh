@@ -8,6 +8,8 @@ import '../screens/route_screen.dart';
 import '../screens/emergency_screen.dart';
 import '../screens/simulation_screen.dart';
 import '../screens/button_showcase_screen.dart';
+import '../screens/alerts_screen.dart';
+import '../screens/profile_screen.dart';
 
 class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -30,6 +32,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const SimulationScreen());
       case '/buttons':
         return MaterialPageRoute(builder: (_) => const ButtonShowcaseScreen());
+      case '/alerts':
+        return MaterialPageRoute(builder: (_) => const AlertsScreen());
+      case '/profile':
+        return MaterialPageRoute(builder: (_) => const ProfileScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

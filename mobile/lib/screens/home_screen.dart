@@ -78,6 +78,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: (index) {
                   setState(() => _currentIndex = index);
                   if (index == 1) Navigator.pushNamed(context, '/map');
+                  if (index == 2) Navigator.pushNamed(context, '/alerts');
+                  if (index == 3) Navigator.pushNamed(context, '/profile');
                 },
               ),
             ),

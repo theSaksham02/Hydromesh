@@ -10,6 +10,8 @@ import '../providers/emergency_provider.dart';
 import '../models/flood_report.dart';
 import '../widgets/common/glass_card.dart';
 
+enum MapLayer { dark, satellite, light }
+
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
 
@@ -19,6 +21,7 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final MapController _mapController = MapController();
+  MapLayer _selectedLayer = MapLayer.dark;
 
   @override
   void initState() {
@@ -48,11 +51,11 @@ class _MapScreenState extends State<MapScreen> {
                   initialZoom: AppConfig.defaultZoom,
                 ),
                 children: [
-                  // Dark Mode Tile Layer 
-                  // (Using CartoDB Dark Matter as a placeholder for a dark map theme)
                   TileLayer(
-                    urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
-                    subdomains: const ['a', 'b', 'c', 'd'],
+                    urlTemplate: _tileUrl(_selectedLayer),
+                    subdomains: _selectedLayer == MapLayer.dark || _selectedLayer == MapLayer.light
+                        ? const ['a', 'b', 'c', 'd']
+                        : const [],
                     userAgentPackageName: 'com.hydromesh.app',
                   ),
                   
@@ -153,26 +156,37 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                 ).animate().fadeIn(duration: 400.ms).slideY(begin: -0.2),
 
-                Consumer<ReportProvider>(
-                  builder: (context, provider, child) {
-                    return _buildFloatingButton(
-                      icon: Icons.my_location,
-                      isLoading: provider.isLoading,
-                      onTap: () {
-                        provider.fetchReports();
-                        _mapController.move(
-                          LatLng(AppConfig.defaultLatitude, AppConfig.defaultLongitude),
-                          AppConfig.defaultZoom,
-                        );
+                Column(
+                  children: [
+                    Consumer<ReportProvider>(
+                      builder: (context, provider, child) {
+                        return _buildFloatingButton(
+                          icon: Icons.my_location,
+                          isLoading: provider.isLoading,
+                          onTap: () {
+                            provider.fetchReports();
+                            _mapController.move(
+                              LatLng(AppConfig.defaultLatitude, AppConfig.defaultLongitude),
+                              AppConfig.defaultZoom,
+                            );
+                          },
+                        ).animate().fadeIn(duration: 400.ms).slideX(begin: 0.2);
                       },
-                    ).animate().fadeIn(duration: 400.ms).slideX(begin: 0.2);
-                  },
+                    ),
+                    const SizedBox(height: 8),
+                    GestureDetector(
+                      onTap: _showLayerPicker,
+                      child: GlassCard(
+                        padding: const EdgeInsets.all(12),
+                        borderRadius: 16,
+                        child: const Icon(Icons.layers_outlined, color: Colors.white, size: 24),
+                      ),
+                    ).animate().fadeIn(duration: 400.ms).slideX(begin: 0.2),
+                  ],
                 ),
               ],
             ),
           ),
-
-          // 3. Bottom Legend and Action Panel
           Positioned(
             bottom: 24,
             left: 16,
@@ -364,7 +378,8 @@ class _MapScreenState extends State<MapScreen> {
     return AppTheme.safeColor;
   }
 
-  Marker _buildMarker(FloodReport report) {    final color = _getWaterLevelColor(report.waterLevel);
+  Marker _buildMarker(FloodReport report) {
+    final color = _getWaterLevelColor(report.waterLevel);
     return Marker(
       point: LatLng(report.latitude, report.longitude),
       width: 60,
@@ -499,6 +514,111 @@ class _MapScreenState extends State<MapScreen> {
                 )
               ],
             )
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _tileUrl(MapLayer layer) {
+    switch (layer) {
+      case MapLayer.satellite:
+        return 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+      case MapLayer.light:
+        return 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png';
+      case MapLayer.dark:
+        return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png';
+    }
+  }
+
+  void _showLayerPicker() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: AppTheme.surfaceLight),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Map Style', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            _LayerOption(
+              icon: Icons.brightness_2_outlined,
+              label: 'Dark (Flood Mode)',
+              subtitle: 'CartoDB Dark Matter',
+              selected: _selectedLayer == MapLayer.dark,
+              onTap: () { setState(() => _selectedLayer = MapLayer.dark); Navigator.pop(context); },
+            ),
+            const SizedBox(height: 8),
+            _LayerOption(
+              icon: Icons.satellite_alt,
+              label: 'Satellite',
+              subtitle: 'ESRI World Imagery',
+              selected: _selectedLayer == MapLayer.satellite,
+              onTap: () { setState(() => _selectedLayer = MapLayer.satellite); Navigator.pop(context); },
+            ),
+            const SizedBox(height: 8),
+            _LayerOption(
+              icon: Icons.map_outlined,
+              label: 'Light / B&W',
+              subtitle: 'CartoDB Positron',
+              selected: _selectedLayer == MapLayer.light,
+              onTap: () { setState(() => _selectedLayer = MapLayer.light); Navigator.pop(context); },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LayerOption extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String subtitle;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _LayerOption({
+    required this.icon,
+    required this.label,
+    required this.subtitle,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: selected ? AppTheme.primaryColor.withOpacity(0.15) : AppTheme.surfaceLight,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: selected ? AppTheme.primaryColor.withOpacity(0.5) : Colors.transparent),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: selected ? AppTheme.primaryColor : AppTheme.textSecondary, size: 22),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: TextStyle(fontWeight: FontWeight.w600, color: selected ? AppTheme.primaryColor : Colors.white)),
+                  Text(subtitle, style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
+                ],
+              ),
+            ),
+            if (selected) const Icon(Icons.check_circle, color: AppTheme.primaryColor, size: 20),
           ],
         ),
       ),
