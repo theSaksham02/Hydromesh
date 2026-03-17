@@ -1,12 +1,20 @@
+import 'dart:io' show Platform;
+
 class AppConfig {
   static const String appName = 'HydroMesh';
 
   // Switch between: 'local', 'render', 'azure'
-  static const String _env = 'render';
+  static const String _env = 'local';
 
-  static const String _localIp = '192.168.0.170'; // your Mac's LAN IP
-  static const String _localBaseUrl = 'http://$_localIp:3000/api';
-  static const String _localSocketUrl = 'http://$_localIp:3000';
+  static String get _localHost {
+    if (Platform.isAndroid) {
+      return '10.0.2.2'; // Android Emulator alias for host machine
+    }
+    return '127.0.0.1'; // iOS Simulator and Desktop
+  }
+
+  static String get _localBaseUrl => 'http://$_localHost:3000/api';
+  static String get _localSocketUrl => 'http://$_localHost:3000';
 
   static const String _renderBaseUrl = 'https://hydromesh-api.onrender.com/api';
   static const String _renderSocketUrl = 'https://hydromesh-api.onrender.com';
