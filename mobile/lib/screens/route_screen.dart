@@ -416,9 +416,9 @@ class _RouteScreenState extends State<RouteScreen> {
                           label: 'Calculate safe route',
                           button: true,
                           child: NeonButton(
-                            label: 'Calculate Route',
+                            text: 'Calculate Route',
                             icon: Icons.route,
-                            color: _isEmergencyRoute ? AppTheme.dangerColor : AppTheme.safeColor,
+                            neonColor: _isEmergencyRoute ? AppTheme.dangerColor : AppTheme.safeColor,
                             onPressed: _calculateSafeRoute,
                           ),
                         ),
