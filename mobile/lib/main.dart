@@ -9,6 +9,7 @@ import 'providers/report_provider.dart';
 import 'providers/emergency_provider.dart';
 import 'providers/simulation_provider.dart';
 import 'providers/weather_provider.dart';
+import 'providers/theme_provider.dart';
 import 'screens/splash_screen.dart';
 
 void main() async {
@@ -23,6 +24,7 @@ class HydroMeshApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => MapProvider()),
         ChangeNotifierProvider(create: (_) => ReportProvider()),
@@ -30,13 +32,15 @@ class HydroMeshApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SimulationProvider()),
         ChangeNotifierProvider(create: (_) => WeatherProvider()),
       ],
-      child: MaterialApp(
-        title: AppConfig.appName,
-        theme: AppTheme.darkTheme,
-        debugShowCheckedModeBanner: false,
-        initialRoute: '/',
-        onGenerateRoute: AppRoutes.generateRoute,
-        home: const SplashScreen(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) => MaterialApp(
+          title: AppConfig.appName,
+          theme: AppTheme.forMode(themeProvider.mode),
+          debugShowCheckedModeBanner: false,
+          initialRoute: '/',
+          onGenerateRoute: AppRoutes.generateRoute,
+          home: const SplashScreen(),
+        ),
       ),
     );
   }

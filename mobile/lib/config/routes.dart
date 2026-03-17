@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/splash_screen.dart';
+import '../screens/accessibility_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/map_screen.dart';
@@ -16,6 +17,8 @@ class AppRoutes {
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => const SplashScreen());
+      case '/accessibility':
+        return MaterialPageRoute(builder: (_) => const AccessibilityScreen());
       case '/login':
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case '/home':
