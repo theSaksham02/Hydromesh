@@ -20,12 +20,12 @@ class FluidNavBar extends StatelessWidget {
       margin: const EdgeInsets.only(left: 24, right: 24, bottom: 32),
       height: 72,
       decoration: BoxDecoration(
-        color: AppTheme.surface.withOpacity(0.8),
+        color: AppTheme.surface.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(36),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withValues(alpha: 0.5),
             blurRadius: 30,
             offset: const Offset(0, 10),
           )
@@ -35,34 +35,74 @@ class FluidNavBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(36),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _NavBarItem(
-                icon: Icons.home_rounded,
-                label: 'Home',
-                isSelected: currentIndex == 0,
-                onTap: () => _handleTap(0),
-              ),
-              _NavBarItem(
-                icon: Icons.map_rounded,
-                label: 'Map',
-                isSelected: currentIndex == 1,
-                onTap: () => _handleTap(1),
-              ),
-              _NavBarItem(
-                icon: Icons.notifications_rounded,
-                label: 'Alerts',
-                isSelected: currentIndex == 2,
-                onTap: () => _handleTap(2),
-              ),
-              _NavBarItem(
-                icon: Icons.person_rounded,
-                label: 'Profile',
-                isSelected: currentIndex == 3,
-                onTap: () => _handleTap(3),
-              ),
-            ],
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              const itemCount = 4;
+              final itemWidth = constraints.maxWidth / itemCount;
+              final pillLeft =
+                  currentIndex * itemWidth + (itemWidth - 36) / 2;
+
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // Sliding glowing pill — top edge
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 320),
+                    curve: Curves.easeOutCubic,
+                    left: pillLeft,
+                    top: 0,
+                    child: Container(
+                      width: 36,
+                      height: 3,
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryColor,
+                        borderRadius: const BorderRadius.vertical(
+                            bottom: Radius.circular(3)),
+                        boxShadow: [
+                          BoxShadow(
+                            color:
+                                AppTheme.primaryColor.withValues(alpha: 0.85),
+                            blurRadius: 10,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Nav items
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _NavBarItem(
+                        icon: Icons.home_rounded,
+                        label: 'Home',
+                        isSelected: currentIndex == 0,
+                        onTap: () => _handleTap(0),
+                      ),
+                      _NavBarItem(
+                        icon: Icons.map_rounded,
+                        label: 'Map',
+                        isSelected: currentIndex == 1,
+                        onTap: () => _handleTap(1),
+                      ),
+                      _NavBarItem(
+                        icon: Icons.notifications_rounded,
+                        label: 'Alerts',
+                        isSelected: currentIndex == 2,
+                        onTap: () => _handleTap(2),
+                      ),
+                      _NavBarItem(
+                        icon: Icons.person_rounded,
+                        label: 'Profile',
+                        isSelected: currentIndex == 3,
+                        onTap: () => _handleTap(3),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -97,46 +137,37 @@ class _NavBarItem extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
         width: 64,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              curve: const ElasticOutCurve(0.8),
-              padding: EdgeInsets.all(isSelected ? 10 : 8),
-              decoration: BoxDecoration(
-                color: isSelected ? AppTheme.primaryColor.withOpacity(0.15) : Colors.transparent,
-                shape: BoxShape.circle,
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: AppTheme.primaryColor.withOpacity(0.3),
-                          blurRadius: 12,
-                        )
-                      ]
-                    : null,
-              ),
-              child: Icon(
-                icon,
-                color: isSelected ? AppTheme.primaryColor : AppTheme.textSecondary,
-                size: isSelected ? 26 : 24,
-              ),
-            ),
-            AnimatedOpacity(
-              duration: const Duration(milliseconds: 200),
-              opacity: isSelected ? 1.0 : 0.0,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                height: isSelected ? 4 : 0,
-                margin: const EdgeInsets.only(top: 4),
-                width: 4,
-                decoration: const BoxDecoration(
-                  color: AppTheme.primaryColor,
-                  shape: BoxShape.circle,
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 220),
+          opacity: isSelected ? 1.0 : 0.45,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeOutBack,
+                padding: EdgeInsets.all(isSelected ? 9 : 8),
+                child: Icon(
+                  icon,
+                  color: isSelected
+                      ? AppTheme.primaryColor
+                      : AppTheme.textSecondary,
+                  size: isSelected ? 26 : 24,
                 ),
               ),
-            )
-          ],
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 220),
+                style: TextStyle(
+                  fontSize: 9,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
+                  color: isSelected
+                      ? AppTheme.primaryColor
+                      : AppTheme.textSecondary,
+                ),
+                child: Text(label),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -19,6 +19,8 @@ class _ExpandableFabState extends State<ExpandableFab> with SingleTickerProvider
     setState(() => _isOpen = !_isOpen);
   }
 
+  static const Color _fabColor = Color(0xFFFF6B35);
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -78,20 +80,24 @@ class _ExpandableFabState extends State<ExpandableFab> with SingleTickerProvider
                 width: 64,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: _isOpen ? ButtonStyles.darkSurface : AppTheme.dangerColor,
+                  color: _isOpen ? ButtonStyles.darkSurface : _fabColor,
                   border: Border.all(
-                    color: _isOpen ? Colors.white.withOpacity(0.1) : AppTheme.dangerColor,
+                    color: _isOpen
+                        ? Colors.white.withValues(alpha: 0.1)
+                        : _fabColor,
                     width: 1.5,
                   ),
-                  boxShadow: _isOpen ? null : ButtonStyles.getGlow(AppTheme.dangerColor),
+                  boxShadow: _isOpen
+                      ? null
+                      : ButtonStyles.getGlow(_fabColor),
                 ),
                 child: AnimatedRotation(
-                  turns: _isOpen ? 0.125 : 0.0, // Rotate 45 degrees to make an X
+                  turns: _isOpen ? 0.125 : 0.0,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeOutBack,
-                  child: Icon(
+                  child: const Icon(
                     Icons.add,
-                    color: _isOpen ? Colors.white : Colors.white,
+                    color: Colors.white,
                     size: 32,
                   ),
                 ),

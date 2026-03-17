@@ -334,16 +334,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ProgressRing(
-                    progress: reportProvider.reports.isNotEmpty
-                        ? (reportProvider.reports.length / 20.0).clamp(0.1, 1.0)
-                        : 0.1,
-                    size: 32,
-                    strokeWidth: 3,
-                    centerChild: Text(
-                      '${reportProvider.reports.length}',
-                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-                    ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ProgressRing(
+                        progress: reportProvider.reports.isNotEmpty
+                            ? (reportProvider.reports.length / 20.0)
+                                .clamp(0.1, 1.0)
+                            : 0.1,
+                        size: 32,
+                        strokeWidth: 3,
+                        centerChild: Text(
+                          '${reportProvider.reports.length}',
+                          style: const TextStyle(
+                              fontSize: 10, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      const Text(
+                        'Reports',
+                        style: TextStyle(
+                            fontSize: 7,
+                            color: AppTheme.textSecondary,
+                            letterSpacing: 0.3),
+                      ),
+                    ],
                   ),
                   const SizedBox(width: 10),
                   Flexible(
@@ -411,14 +426,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 if (role != 'citizen') const SizedBox(width: 12),
                 GestureDetector(
-                  onTap: () {
-                    Provider.of<AuthProvider>(context, listen: false).logout();
-                    Navigator.pushReplacementNamed(context, '/login');
-                  },
+                  onTap: () => Navigator.pushNamed(context, '/alerts'),
                   child: const CircleAvatar(
                     radius: 18,
                     backgroundColor: AppTheme.surfaceLight,
-                    child: Icon(Icons.logout, size: 16, color: AppTheme.textSecondary),
+                    child: Icon(Icons.notifications_outlined,
+                        size: 16, color: AppTheme.textSecondary),
                   ),
                 ),
               ],
@@ -444,11 +457,29 @@ class _HomeScreenState extends State<HomeScreen> {
         physics: const BouncingScrollPhysics(),
         clipBehavior: Clip.none,
         children: [
-          _buildToolCard(context, title: 'Live Flood Map', icon: Icons.map_outlined, color: AppTheme.primaryColor, route: '/map', delay: 100),
+          _buildToolCard(context,
+              title: 'Live Flood Map',
+              icon: Icons.map_outlined,
+              color: AppTheme.primaryColor,
+              route: '/map',
+              delay: 100,
+              gradient: [const Color(0xFF071426), const Color(0xFF0A3355)]),
           const SizedBox(width: 16),
-          _buildToolCard(context, title: 'Report Incident', icon: Icons.add_a_photo_outlined, color: AppTheme.warningColor, route: '/report', delay: 200),
+          _buildToolCard(context,
+              title: 'Report Incident',
+              icon: Icons.add_a_photo_outlined,
+              color: const Color(0xFFFF6B35),
+              route: '/report',
+              delay: 200,
+              gradient: [const Color(0xFF1A0D05), const Color(0xFF3D1A08)]),
           const SizedBox(width: 16),
-          _buildToolCard(context, title: 'Safe Routes', icon: Icons.route_outlined, color: AppTheme.safeColor, route: '/route', delay: 300),
+          _buildToolCard(context,
+              title: 'Safe Routes',
+              icon: Icons.route_outlined,
+              color: AppTheme.safeColor,
+              route: '/route',
+              delay: 300,
+              gradient: [const Color(0xFF071A0D), const Color(0xFF0D3D1F)]),
         ],
       ),
     );
@@ -460,28 +491,86 @@ class _HomeScreenState extends State<HomeScreen> {
     required Color color,
     required String route,
     required int delay,
+    List<Color>? gradient,
   }) {
-    return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, route),
-      child: GlassCard(
-        padding: const EdgeInsets.all(20),
-        child: SizedBox(
-          width: 140,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: color.withOpacity(0.3)),
-                ),
-                child: Icon(icon, color: color, size: 28),
+    final gradientColors = gradient ??
+        [const Color(0xFF0D1F3C), color.withValues(alpha: 0.35)];
+
+    return SizedBox(
+      width: 156,
+      height: 180,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          splashColor: color.withValues(alpha: 0.2),
+          highlightColor: color.withValues(alpha: 0.08),
+          onTap: () => Navigator.pushNamed(context, route),
+          child: Ink(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: gradientColors,
               ),
-              Text(title, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16, height: 1.2)),
-            ],
+              border: Border.all(color: color.withValues(alpha: 0.25)),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.12),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(14),
+                      border:
+                          Border.all(color: color.withValues(alpha: 0.35)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: color.withValues(alpha: 0.25),
+                            blurRadius: 10),
+                      ],
+                    ),
+                    child: Icon(icon, color: color, size: 30),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 15,
+                              height: 1.2,
+                              color: Colors.white)),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Text('Open',
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  color: color,
+                                  fontWeight: FontWeight.w600)),
+                          const SizedBox(width: 2),
+                          Icon(Icons.arrow_forward_rounded,
+                              size: 11, color: color),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -561,48 +650,64 @@ class _HomeScreenState extends State<HomeScreen> {
 
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
-          child: GlassCard(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: levelColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                        color: levelColor.withValues(alpha: 0.3)),
-                  ),
-                  child: Icon(levelIcon, color: levelColor, size: 22),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${level[0].toUpperCase()}${level.substring(1)}-level flood',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 14),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              splashColor: levelColor.withValues(alpha: 0.12),
+              onTap: () => Navigator.pushNamed(context, '/map'),
+              child: GlassCard(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: levelColor.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                            color: levelColor.withValues(alpha: 0.3)),
                       ),
-                      const SizedBox(height: 3),
-                      Text(
-                        r.description?.isNotEmpty == true
-                            ? r.description!
-                            : '${r.latitude.toStringAsFixed(3)}, ${r.longitude.toStringAsFixed(3)}',
-                        style: const TextStyle(
-                            color: AppTheme.textSecondary, fontSize: 12),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      child: Icon(levelIcon, color: levelColor, size: 22),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${level[0].toUpperCase()}${level.substring(1)}-level flood',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 14),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            r.description?.isNotEmpty == true
+                                ? r.description!
+                                : '${r.latitude.toStringAsFixed(3)}, ${r.longitude.toStringAsFixed(3)}',
+                            style: const TextStyle(
+                                color: AppTheme.textSecondary, fontSize: 12),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(timeAgo,
+                            style: const TextStyle(
+                                color: AppTheme.textSecondary, fontSize: 11)),
+                        const SizedBox(width: 4),
+                        Icon(Icons.chevron_right,
+                            size: 16, color: AppTheme.textSecondary),
+                      ],
+                    ),
+                  ],
                 ),
-                Text(timeAgo,
-                    style: const TextStyle(
-                        color: AppTheme.textSecondary, fontSize: 11)),
-              ],
+              ),
             ),
           ),
         ).animate().fadeIn(delay: (i * 80).ms, duration: 350.ms).slideX(begin: 0.04);
