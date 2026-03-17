@@ -25,19 +25,15 @@ const server = http.createServer(app);
 app.use(helmet());
 
 // CORS — restrict to known origins in production
-const allowedOrigins = process.env.CORS_ORIGINS
-  ? process.env.CORS_ORIGINS.split(',')
-  : ['http://localhost:3000', 'http://localhost:8080'];
+// CORS — Bulletproof configuration
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, etc.)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(null, true); // Allow all for now (mobile app sends no origin)
-    }
+  origin: function (origin, callback) {
+    // Reflect the request origin. This acts like origin: '*' but allows credentials: true.
+    callback(null, true); 
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
   maxAge: 86400, // Cache preflight for 24h
 }));
 
