@@ -60,14 +60,35 @@ class _WeatherCardState extends State<WeatherCard> {
         }
 
         if (weatherProvider.error != null || weatherProvider.currentWeather == null) {
-          return const GlassCard(
-            padding: EdgeInsets.all(20),
-            child: Row(
-              children: [
-                Icon(Icons.cloud_off, color: AppTheme.textSecondary),
-                SizedBox(width: 12),
-                Text('Weather data unavailable', style: TextStyle(color: AppTheme.textSecondary)),
-              ],
+          return GlassCard(
+            padding: const EdgeInsets.all(20),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: _fetchWithGps,
+              child: Row(
+                children: [
+                  const Icon(Icons.cloud_off, color: AppTheme.textSecondary),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Weather data unavailable',
+                            style:
+                                TextStyle(color: AppTheme.textSecondary)),
+                        SizedBox(height: 2),
+                        Text('Tap to retry',
+                            style: TextStyle(
+                                fontSize: 11,
+                                color: AppTheme.primaryColor,
+                                fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.refresh_rounded,
+                      color: AppTheme.primaryColor, size: 18),
+                ],
+              ),
             ),
           );
         }

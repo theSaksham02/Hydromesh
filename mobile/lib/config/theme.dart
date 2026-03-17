@@ -156,7 +156,7 @@ class AppTheme {
         hintStyle: const TextStyle(color: txtSecondary),
         prefixIconColor: txtSecondary,
       ),
-      cardTheme: CardTheme(color: surf, elevation: 2, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+      cardTheme: CardThemeData(color: surf, elevation: 2, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
       iconTheme: const IconThemeData(color: txtPrimary),
     );
   }
