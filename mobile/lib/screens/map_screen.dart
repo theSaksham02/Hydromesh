@@ -78,8 +78,9 @@ class _MapScreenState extends State<MapScreen> {
                       if (sos.isEmpty) return const SizedBox.shrink();
                       return MarkerLayer(
                         markers: sos.map((req) {
-                          final lat = (req['latitude'] as num?)?.toDouble() ?? 0;
-                          final lng = (req['longitude'] as num?)?.toDouble() ?? 0;
+                          // F-15 Fix: Using double.tryParse(toString()) to handle String values from some API versions
+                          final lat = double.tryParse(req['latitude']?.toString() ?? '') ?? 0.0;
+                          final lng = double.tryParse(req['longitude']?.toString() ?? '') ?? 0.0;
                           return Marker(
                             point: LatLng(lat, lng),
                             width: 36,

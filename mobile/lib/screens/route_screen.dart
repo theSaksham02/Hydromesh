@@ -43,8 +43,8 @@ class _RouteScreenState extends State<RouteScreen> {
       _argsLoaded = true;
       final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       if (args != null) {
-        _destLat = (args['destLat'] as num).toDouble();
-        _destLng = (args['destLng'] as num).toDouble();
+        _destLat = double.tryParse(args['destLat']?.toString() ?? '') ?? 0.0;
+        _destLng = double.tryParse(args['destLng']?.toString() ?? '') ?? 0.0;
         _destName = args['destName'] as String?;
         _destDesc = args['destDesc'] as String?;
         _destinationSet = true;
@@ -121,11 +121,14 @@ class _RouteScreenState extends State<RouteScreen> {
       }
 
       final route = (data['routes'] as List).first as Map<String, dynamic>;
-      final distanceM = (route['distance'] as num).toDouble();
-      final durationS = (route['duration'] as num).toDouble();
+      final distanceM = double.tryParse(route['distance']?.toString() ?? '') ?? 0.0;
+      final durationS = double.tryParse(route['duration']?.toString() ?? '') ?? 0.0;
 
       final coords = (route['geometry']['coordinates'] as List)
-          .map((c) => LatLng((c[1] as num).toDouble(), (c[0] as num).toDouble()))
+          .map((c) => LatLng(
+                double.tryParse(c[1]?.toString() ?? '') ?? 0.0,
+                double.tryParse(c[0]?.toString() ?? '') ?? 0.0,
+              ))
           .toList();
 
       final legs = route['legs'] as List;
@@ -135,7 +138,7 @@ class _RouteScreenState extends State<RouteScreen> {
         final type = maneuver['type'] as String? ?? '';
         final modifier = maneuver['modifier'] as String? ?? '';
         final name = s['name'] as String? ?? '';
-        final dist = (s['distance'] as num).toDouble();
+        final dist = double.tryParse(s['distance']?.toString() ?? '') ?? 0.0;
 
         IconData icon;
         String instruction;
