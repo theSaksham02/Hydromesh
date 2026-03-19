@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io' show Platform;
 
 class AppConfig {
@@ -7,10 +8,13 @@ class AppConfig {
   static const String _env = 'local';
 
   static String get _localHost {
-    if (Platform.isAndroid) {
+    if (kIsWeb) {
+      return 'localhost';
+    } else if (Platform.isAndroid) {
       return '10.0.2.2'; // Android Emulator alias for host machine
+    } else {
+      return '127.0.0.1'; // iOS Simulator and Desktop
     }
-    return '127.0.0.1'; // iOS Simulator and Desktop
   }
 
   static String get _localBaseUrl => 'http://$_localHost:3000/api';

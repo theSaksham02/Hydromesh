@@ -26,29 +26,22 @@ if (!useRest) {
     process.exit(1);
   }
 
-  // Robust parser: splits on the LAST @ so passwords containing @ work correctly
-  function parsePostgresUrl(raw) {
-    const withoutProto = raw.replace(/^[^:]+:\/\//, '');
-    const lastAt = withoutProto.lastIndexOf('@');
-    const userInfo = withoutProto.slice(0, lastAt);
-    const rest = withoutProto.slice(lastAt + 1);
+  // Parse using Node.js built-in URL to handle URL-encoded passwords (like %40 to @)
+  const dbUrl = new URL(connectionString);
+  const user = dbUrl.username;
+  const password = decodeURIComponent(dbUrl.password);
+  const host = dbUrl.hostname;
+  const port = dbUrl.port ? parseInt(dbUrl.port, 10) : 5432;
+  const database = dbUrl.pathname.slice(1); // remove leading slash
 
-    const colonIdx = userInfo.indexOf(':');
-    const user = userInfo.slice(0, colonIdx);
-    const password = decodeURIComponent(userInfo.slice(colonIdx + 1));
-
-    const [hostPart, ...pathParts] = rest.split('/');
-    const [host, portStr] = hostPart.split(':');
-    const database = pathParts.join('/').split('?')[0];
-
-    return { user, password, host, port: portStr ? parseInt(portStr, 10) : 5432, database };
-  }
-
-  const { user, password, host, port, database } = parsePostgresUrl(connectionString);
   console.log(`🔗 Connecting via pg to: ${host}:${port}/${database} as ${user}`);
 
   pool = new Pool({
-    user, password, host, port, database,
+    user,
+    password,
+    host,
+    port,
+    database,
     ssl: { rejectUnauthorized: false },
     connectionTimeoutMillis: 10000,
   });

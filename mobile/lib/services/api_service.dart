@@ -24,9 +24,11 @@ class ApiService {
 
   // GET request
   static Future<Map<String, dynamic>> get(String endpoint) async {
+    final url = '${AppConfig.apiBaseUrl}$endpoint';
+    print('[API] GET: $url');
     try {
       final response = await http.get(
-        Uri.parse('${AppConfig.apiBaseUrl}$endpoint'),
+        Uri.parse(url),
         headers: _headers,
       ).timeout(const Duration(seconds: 20));
       return _handleResponse(response);
@@ -42,9 +44,11 @@ class ApiService {
     String endpoint, 
     Map<String, dynamic> body
   ) async {
+    final url = '${AppConfig.apiBaseUrl}$endpoint';
+    print('[API] POST: $url');
     try {
       final response = await http.post(
-        Uri.parse('${AppConfig.apiBaseUrl}$endpoint'),
+        Uri.parse(url),
         headers: _headers,
         body: jsonEncode(body),
       ).timeout(const Duration(seconds: 20));
