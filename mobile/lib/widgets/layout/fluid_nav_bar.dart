@@ -16,16 +16,22 @@ class FluidNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
       margin: const EdgeInsets.only(left: 24, right: 24, bottom: 32),
       height: 72,
       decoration: BoxDecoration(
-        color: AppTheme.surface.withValues(alpha: 0.8),
+        color: theme.colorScheme.surface.withValues(alpha: isDark ? 0.8 : 0.9),
         borderRadius: BorderRadius.circular(36),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        border: Border.all(
+          color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.05),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.5),
+            color: (isDark ? Colors.black : theme.colorScheme.primary.withValues(alpha: 0.1))
+                .withValues(alpha: 0.4),
             blurRadius: 30,
             offset: const Offset(0, 10),
           )
@@ -55,13 +61,13 @@ class FluidNavBar extends StatelessWidget {
                       width: 36,
                       height: 3,
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryColor,
+                        color: theme.colorScheme.primary,
                         borderRadius: const BorderRadius.vertical(
                             bottom: Radius.circular(3)),
                         boxShadow: [
                           BoxShadow(
                             color:
-                                AppTheme.primaryColor.withValues(alpha: 0.85),
+                                theme.colorScheme.primary.withValues(alpha: 0.85),
                             blurRadius: 10,
                             spreadRadius: 1,
                           ),
@@ -132,6 +138,11 @@ class _NavBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final unselectedColor = theme.brightness == Brightness.dark 
+        ? const Color(0xFFA0A0A0)
+        : const Color(0xFF6B7280);
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -150,8 +161,8 @@ class _NavBarItem extends StatelessWidget {
                 child: Icon(
                   icon,
                   color: isSelected
-                      ? AppTheme.primaryColor
-                      : AppTheme.textSecondary,
+                      ? theme.colorScheme.primary
+                      : unselectedColor,
                   size: isSelected ? 26 : 24,
                 ),
               ),
@@ -161,8 +172,8 @@ class _NavBarItem extends StatelessWidget {
                   fontSize: 9,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
                   color: isSelected
-                      ? AppTheme.primaryColor
-                      : AppTheme.textSecondary,
+                      ? theme.colorScheme.primary
+                      : unselectedColor,
                 ),
                 child: Text(label),
               ),

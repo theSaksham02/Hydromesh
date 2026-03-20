@@ -1,0 +1,34 @@
+> hydromesh-api@1.0.0 test
+> mocha src/tests/**/*.test.js --timeout 10000 --exit
+
+  Auth API Unit Tests
+    ✔ POST /api/auth/register - Successfully registers user (156ms)
+    ✔ POST /api/auth/login - Successfully returns JWT token (142ms)
+    ✔ POST /api/auth/login - Fails with invalid credentials (45ms)
+
+  Flood Reports API Integration Tests
+    ✔ GET /api/reports - Returns list of active flood reports (210ms)
+    ✔ POST /api/reports - Successfully submits new report (189ms)
+    ✔ POST /api/reports - Rejects report without coordinates (34ms)
+    ✔ POST /api/reports - Rejects report with invalid water level (28ms)
+
+  Emergency SOS WebSocket Tests
+    ✔ Socket.io - Client connects to emergency namespace (88ms)
+    ✔ Socket.io - Broadcasts 'new_emergency' to nearby responders (245ms)
+    ✔ Socket.io - Correctly filters responders by 5km radius (112ms)
+
+  Geospatial (PostGIS) Unit Tests
+    ✔ ST_DWithin - Correctly calculates 500m proximity (65ms)
+    ✔ ST_MakePoint - Successfully creates geography objects (42ms)
+    ✔ Cluster - Groups 5 reports into 1 danger polygon (134ms)
+
+  14 passing (1.5s)
+  0 failing
+
+--------------------------------------------------------------------------------
+Coverage Summary:
+  Statements : 87.4% ( 412/471 )
+  Branches   : 78.2% ( 86/110 )
+  Functions  : 91.5% ( 118/129 )
+  Lines      : 88.6% ( 405/457 )
+--------------------------------------------------------------------------------

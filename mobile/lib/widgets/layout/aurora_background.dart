@@ -10,10 +10,13 @@ class AuroraBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Stack(
       children: [
-        // Base Dark Background
-        Container(color: AppTheme.background),
+        // Base Theme Background
+        Container(color: theme.scaffoldBackgroundColor),
         
         // Animated Mesh Gradients (Aurora Effect)
         Positioned(
@@ -24,7 +27,7 @@ class AuroraBackground extends StatelessWidget {
             height: 300,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppTheme.primaryColor.withOpacity(0.15),
+              color: theme.colorScheme.primary.withOpacity(isDark ? 0.15 : 0.08),
             ),
           )
           .animate(onPlay: (c) => c.repeat(reverse: true))
@@ -40,7 +43,7 @@ class AuroraBackground extends StatelessWidget {
             height: 400,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppTheme.accentColor.withOpacity(0.1),
+              color: theme.colorScheme.secondary.withOpacity(isDark ? 0.1 : 0.05),
             ),
           )
           .animate(onPlay: (c) => c.repeat(reverse: true))
@@ -48,8 +51,7 @@ class AuroraBackground extends StatelessWidget {
           .scaleXY(begin: 1.0, end: 1.2, duration: 10.seconds, curve: Curves.easeInOut),
         ),
 
-        // Noise/Grain Texture Overlay (Simulated with blend mode or subtle opacity pattern if we had an asset, 
-        // but we'll use a very heavy blur to blend the orbs into an aurora)
+        // Heavy blur to blend the orbs into an aurora
         Positioned.fill(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),

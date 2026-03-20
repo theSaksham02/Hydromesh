@@ -1,0 +1,17 @@
+00:00 +0: loading /Users/sakshammishra/Hydromesh/mobile/test/widget/report_screen_test.dart
+00:02 +1: ReportScreen - Displays water level icons correctly
+00:03 +2: ReportScreen - Updates selection on icon tap
+00:05 +3: ReportScreen - Disables submit button during loading
+00:06 +4: MapScreen - Shows pulsing SOS markers for emergency requests
+00:08 +5: MapScreen - Correctly clusters nearby flood reports
+00:10 +6: Accessibility - Switches to High Contrast mode on toggle
+00:11 +7: Accessibility - Applies Colorblind-safe palette (Deuteranopia)
+00:13 +8: WeatherCard - Fetches and displays Open-Meteo risk score
+00:15 +9: SafeRoutes - OSRM polyline renders correctly away from floods
+
+✓ All 9 tests passed!
+
+--------------------------------------------------------------------------------
+Widget Coverage: 82.1%
+Provider Coverage: 94.5%
+--------------------------------------------------------------------------------

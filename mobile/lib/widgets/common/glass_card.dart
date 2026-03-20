@@ -19,6 +19,19 @@ class GlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    // In Light mode, use a slightly dark/tinted translucent color
+    // In Dark mode, use a white translucent color
+    final defaultColor = isDark 
+        ? Colors.white.withOpacity(0.05) 
+        : Colors.black.withOpacity(0.03);
+        
+    final defaultBorderColor = isDark
+        ? Colors.white.withOpacity(0.1)
+        : Colors.black.withOpacity(0.08);
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: BackdropFilter(
@@ -26,10 +39,10 @@ class GlassCard extends StatelessWidget {
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
-            color: color ?? Colors.white.withOpacity(0.05),
+            color: color ?? defaultColor,
             borderRadius: BorderRadius.circular(borderRadius),
             border: Border.all(
-              color: Colors.white.withOpacity(0.1),
+              color: defaultBorderColor,
               width: 1.0,
             ),
           ),
