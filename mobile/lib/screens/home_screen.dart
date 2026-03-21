@@ -275,6 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSimulationBanner(SimulationProvider sim) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: GlassCard(
@@ -306,14 +307,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Text(
                     '${sim.activeCity[0].toUpperCase()}${sim.activeCity.substring(1)} · Press SOS ← to evacuate',
-                    style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                    style: TextStyle(fontSize: 11, color: theme.colorScheme.onSurfaceVariant),
                   ),
                 ],
               ),
             ),
             GestureDetector(
               onTap: () => Navigator.pushNamed(context, '/simulation'),
-              child: const Icon(Icons.chevron_right, color: AppTheme.textSecondary, size: 20),
+              child: Icon(Icons.chevron_right, color: theme.colorScheme.onSurfaceVariant, size: 20),
             ),
           ],
         ),
@@ -323,6 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildAppBar(BuildContext context, String name,
       SimulationProvider sim, String role, ReportProvider reportProvider) {
+    final theme = Theme.of(context);
     final hour = DateTime.now().hour;
     String greeting = 'Good evening';
     if (hour < 12) greeting = 'Good morning';
@@ -356,16 +358,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         strokeWidth: 3,
                         centerChild: Text(
                           '${reportProvider.reports.length}',
-                          style: const TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 10, fontWeight: FontWeight.bold, color: theme.colorScheme.onSurface),
                         ),
                       ),
                       const SizedBox(height: 2),
-                      const Text(
+                      Text(
                         'Reports',
                         style: TextStyle(
                             fontSize: 7,
-                            color: AppTheme.textSecondary,
+                            color: theme.colorScheme.onSurfaceVariant,
                             letterSpacing: 0.3),
                       ),
                     ],
@@ -379,9 +381,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Text(
                             '$greeting,',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 10,
-                              color: AppTheme.textSecondary,
+                              color: theme.colorScheme.onSurfaceVariant,
                               fontWeight: FontWeight.w500,
                               height: 1.1,
                             ),
@@ -389,10 +391,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           Text(
                             name,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w800,
-                              color: Colors.white,
+                              color: theme.colorScheme.onSurface,
                               height: 1.1,
                             ),
                             overflow: TextOverflow.ellipsis,
@@ -411,10 +413,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTap: () => Navigator.pushNamed(context, '/simulation'),
                     child: Stack(
                       children: [
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: 18,
-                          backgroundColor: AppTheme.surfaceLight,
-                          child: Icon(Icons.terminal, size: 16, color: AppTheme.dangerColor),
+                          backgroundColor: theme.colorScheme.surfaceContainerHigh,
+                          child: const Icon(Icons.terminal, size: 16, color: AppTheme.dangerColor),
                         ),
                         if (sim.isActive)
                           Positioned(
@@ -426,7 +428,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: AppTheme.dangerColor,
-                                border: Border.all(color: AppTheme.background, width: 1.5),
+                                border: Border.all(color: theme.colorScheme.surface, width: 1.5),
                               ),
                             ).animate(onPlay: (c) => c.repeat(reverse: true))
                                 .scaleXY(end: 1.3, duration: 600.ms),
@@ -437,11 +439,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (role != 'citizen') const SizedBox(width: 12),
                 GestureDetector(
                   onTap: () => Navigator.pushNamed(context, '/alerts'),
-                  child: const CircleAvatar(
+                  child: CircleAvatar(
                     radius: 18,
-                    backgroundColor: AppTheme.surfaceLight,
+                    backgroundColor: theme.colorScheme.surfaceContainerHigh,
                     child: Icon(Icons.notifications_outlined,
-                        size: 16, color: AppTheme.textSecondary),
+                        size: 16, color: theme.colorScheme.onSurfaceVariant),
                   ),
                 ),
               ],
@@ -455,11 +457,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildSectionHeader(String title) {
     return Text(
       title,
-      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, letterSpacing: 0.5),
+      style: TextStyle(
+        fontSize: 18, 
+        fontWeight: FontWeight.w700, 
+        letterSpacing: 0.5,
+        color: Theme.of(context).colorScheme.onSurface,
+      ),
     ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.05);
   }
 
   Widget _buildHorizontalScroll(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return SizedBox(
       height: 180,
       child: ListView(
@@ -473,7 +482,9 @@ class _HomeScreenState extends State<HomeScreen> {
               color: AppTheme.primaryColor,
               route: '/map',
               delay: 100,
-              gradient: [const Color(0xFF071426), const Color(0xFF0A3355)]),
+              gradient: isDark 
+                ? [const Color(0xFF071426), const Color(0xFF0A3355)]
+                : [const Color(0xFFE0E7FF), const Color(0xFFC7D2FE)]),
           const SizedBox(width: 16),
           _buildToolCard(context,
               title: 'Report Incident',
@@ -481,7 +492,9 @@ class _HomeScreenState extends State<HomeScreen> {
               color: const Color(0xFFFF6B35),
               route: '/report',
               delay: 200,
-              gradient: [const Color(0xFF1A0D05), const Color(0xFF3D1A08)]),
+              gradient: isDark
+                ? [const Color(0xFF1A0D05), const Color(0xFF3D1A08)]
+                : [const Color(0xFFFFEDD5), const Color(0xFFFED7AA)]),
           const SizedBox(width: 16),
           _buildToolCard(context,
               title: 'Safe Routes',
@@ -489,7 +502,9 @@ class _HomeScreenState extends State<HomeScreen> {
               color: AppTheme.safeColor,
               route: '/route',
               delay: 300,
-              gradient: [const Color(0xFF071A0D), const Color(0xFF0D3D1F)]),
+              gradient: isDark
+                ? [const Color(0xFF071A0D), const Color(0xFF0D3D1F)]
+                : [const Color(0xFFDCFCE7), const Color(0xFFBBF7D0)]),
         ],
       ),
     );
@@ -503,8 +518,12 @@ class _HomeScreenState extends State<HomeScreen> {
     required int delay,
     List<Color>? gradient,
   }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final gradientColors = gradient ??
-        [const Color(0xFF0D1F3C), color.withValues(alpha: 0.35)];
+        (isDark 
+          ? [const Color(0xFF0D1F3C), color.withValues(alpha: 0.35)]
+          : [theme.colorScheme.surface, color.withValues(alpha: 0.15)]);
 
     return SizedBox(
       width: 156,
@@ -524,10 +543,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 end: Alignment.bottomRight,
                 colors: gradientColors,
               ),
-              border: Border.all(color: color.withValues(alpha: 0.25)),
+              border: Border.all(
+                color: isDark ? color.withValues(alpha: 0.25) : color.withValues(alpha: 0.4),
+                width: isDark ? 1.0 : 1.5,
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: color.withValues(alpha: 0.12),
+                  color: color.withValues(alpha: isDark ? 0.12 : 0.08),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -542,15 +564,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.18),
+                      color: color.withValues(alpha: isDark ? 0.18 : 0.12),
                       borderRadius: BorderRadius.circular(14),
                       border:
-                          Border.all(color: color.withValues(alpha: 0.35)),
-                      boxShadow: [
+                          Border.all(color: color.withValues(alpha: isDark ? 0.35 : 0.25)),
+                      boxShadow: isDark ? [
                         BoxShadow(
                             color: color.withValues(alpha: 0.25),
                             blurRadius: 10),
-                      ],
+                      ] : [],
                     ),
                     child: Icon(icon, color: color, size: 30),
                   ),
@@ -558,11 +580,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(title,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 15,
                               height: 1.2,
-                              color: Colors.white)),
+                              color: theme.colorScheme.onSurface)),
                       const SizedBox(height: 4),
                       Row(
                         children: [
@@ -588,12 +610,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildActivityList(ReportProvider reportProvider) {
+    final theme = Theme.of(context);
     // Loading shimmer
     if (reportProvider.isLoading && reportProvider.reports.isEmpty) {
       return Column(
         children: List.generate(
           3,
-          (i) => Padding(
+          (i) => const Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: ShimmerSkeleton(width: double.infinity, height: 80, borderRadius: 16),
           ),
@@ -613,17 +636,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 size: 48,
                 color: AppTheme.primaryColor.withValues(alpha: 0.4)),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'No reports yet in your area',
               textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: theme.colorScheme.onSurface),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Be the first to flag a flood condition near you.',
               textAlign: TextAlign.center,
               style:
-                  TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                  TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 13),
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
@@ -688,16 +711,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Text(
                             '${level[0].toUpperCase()}${level.substring(1)}-level flood',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 14),
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 14, color: theme.colorScheme.onSurface),
                           ),
                           const SizedBox(height: 3),
                           Text(
                             r.description?.isNotEmpty == true
                                 ? r.description!
                                 : '${r.latitude.toStringAsFixed(3)}, ${r.longitude.toStringAsFixed(3)}',
-                            style: const TextStyle(
-                                color: AppTheme.textSecondary, fontSize: 12),
+                            style: TextStyle(
+                                color: theme.colorScheme.onSurfaceVariant, fontSize: 12),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -708,11 +731,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(timeAgo,
-                            style: const TextStyle(
-                                color: AppTheme.textSecondary, fontSize: 11)),
+                            style: TextStyle(
+                                color: theme.colorScheme.onSurfaceVariant, fontSize: 11)),
                         const SizedBox(width: 4),
                         Icon(Icons.chevron_right,
-                            size: 16, color: AppTheme.textSecondary),
+                            size: 16, color: theme.colorScheme.onSurfaceVariant),
                       ],
                     ),
                   ],

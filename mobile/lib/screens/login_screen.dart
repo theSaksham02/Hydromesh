@@ -102,11 +102,14 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final isLoading = context.watch<AuthProvider>().isLoading;
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       body: Stack(
         children: [
-          Positioned.fill(child: CustomPaint(painter: _AquaticWavePainter())),
+          Positioned.fill(child: CustomPaint(painter: _AquaticWavePainter(isDark: isDark))),
           Center(
             child: SingleChildScrollView(
               padding:
@@ -118,18 +121,16 @@ class _LoginScreenState extends State<LoginScreen>
                 child: Column(
                   children: [
                     // ── Logo ───────────────────────────────────────
-                    const Icon(Icons.water_drop_outlined,
-                            size: 64, color: AppTheme.primaryColor)
+                    Icon(Icons.water_drop_outlined,
+                            size: 64, color: theme.colorScheme.primary)
                         .animate(onPlay: (c) => c.repeat(reverse: true))
                         .scaleXY(end: 1.08, duration: 2.seconds, curve: Curves.easeInOut)
                         .shimmer(duration: 3.seconds),
                     const SizedBox(height: 12),
                     Text(
                       _isLogin ? 'Welcome Back' : 'Join HydroMesh',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineMedium
-                          ?.copyWith(fontWeight: FontWeight.w800),
+                      style: theme.textTheme.headlineMedium
+                          ?.copyWith(fontWeight: FontWeight.w900, color: theme.colorScheme.onSurface),
                       textAlign: TextAlign.center,
                     ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.15),
                     const SizedBox(height: 4),
@@ -137,8 +138,8 @@ class _LoginScreenState extends State<LoginScreen>
                       _isLogin
                           ? 'Sign in to your account'
                           : 'Create your citizen account',
-                      style: const TextStyle(
-                          color: AppTheme.textSecondary, fontSize: 14),
+                      style: TextStyle(
+                          color: theme.colorScheme.onSurfaceVariant, fontSize: 14, fontWeight: FontWeight.w500),
                     ).animate().fadeIn(delay: 100.ms, duration: 400.ms),
                     const SizedBox(height: 32),
 
@@ -178,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen>
                                               style: const TextStyle(
                                                 color: AppTheme.dangerColor,
                                                 fontSize: 13,
-                                                fontWeight: FontWeight.w500,
+                                                fontWeight: FontWeight.w600,
                                               ),
                                             ),
                                           ),
@@ -239,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen>
                                   _obscurePassword
                                       ? Icons.visibility_off_outlined
                                       : Icons.visibility_outlined,
-                                  color: AppTheme.textSecondary,
+                                  color: theme.colorScheme.onSurfaceVariant,
                                   size: 20,
                                 ),
                               ),
@@ -281,19 +282,19 @@ class _LoginScreenState extends State<LoginScreen>
                           child: Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: AppTheme.surfaceLight,
+                              color: theme.colorScheme.surfaceContainerHigh,
                               shape: BoxShape.circle,
                               border: Border.all(
                                   color:
-                                      Colors.white.withValues(alpha: 0.1)),
+                                      theme.colorScheme.onSurface.withValues(alpha: 0.1)),
                             ),
-                            child: const Icon(Icons.fingerprint,
-                                color: AppTheme.primaryColor, size: 32),
+                            child: Icon(Icons.fingerprint,
+                                color: theme.colorScheme.primary, size: 32),
                           )
                               .animate(onPlay: (c) => c.repeat(reverse: true))
                               .shimmer(
                                   duration: 2.5.seconds,
-                                  color: AppTheme.primaryColor
+                                  color: theme.colorScheme.primary
                                       .withValues(alpha: 0.3)),
                         ),
                       ).animate().fadeIn(delay: 650.ms),
@@ -307,11 +308,12 @@ class _LoginScreenState extends State<LoginScreen>
                         _formKey.currentState?.reset();
                       }),
                       style: TextButton.styleFrom(
-                          foregroundColor: AppTheme.textSecondary),
+                          foregroundColor: theme.colorScheme.onSurfaceVariant),
                       child: Text(
                         _isLogin
                             ? "Don't have an account? Sign Up"
                             : 'Already have an account? Sign In',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ).animate().fadeIn(delay: 700.ms),
                   ],
@@ -327,25 +329,33 @@ class _LoginScreenState extends State<LoginScreen>
 
 // ── Aquatic wave background ───────────────────────────────────────────────────
 class _AquaticWavePainter extends CustomPainter {
+  final bool isDark;
+  _AquaticWavePainter({required this.isDark});
+
   @override
   void paint(Canvas canvas, Size size) {
-    // Deep ocean gradient base
+    // Dynamic gradient base based on theme
+    final colors = isDark 
+      ? [const Color(0xFF050D1A), const Color(0xFF0A1628), const Color(0xFF0D1F3C)]
+      : [const Color(0xFFF1F5F9), const Color(0xFFE2E8F0), const Color(0xFFCBD5E1)];
+
     final bg = Paint()
-      ..shader = const LinearGradient(
+      ..shader = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [Color(0xFF050D1A), Color(0xFF0A1628), Color(0xFF0D1F3C)],
+        colors: colors,
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), bg);
 
     // Ambient glow
+    final glowColor = isDark ? const Color(0xFF1A6EFF) : const Color(0xFF3B82F6);
     canvas.drawCircle(
       Offset(size.width * 0.15, size.height * 0.2),
       size.width * 0.7,
       Paint()
         ..shader = RadialGradient(
           colors: [
-            const Color(0xFF1A6EFF).withValues(alpha: 0.18),
+            glowColor.withValues(alpha: isDark ? 0.18 : 0.12),
             Colors.transparent
           ],
         ).createShader(Rect.fromCircle(
@@ -354,14 +364,16 @@ class _AquaticWavePainter extends CustomPainter {
         )),
     );
 
+    final waveBaseColor = isDark ? const Color(0xFF1A6EFF) : const Color(0xFF3B82F6);
+
     _wave(canvas, size,
-        color: const Color(0xFF00BFFF).withValues(alpha: 0.06),
+        color: waveBaseColor.withValues(alpha: isDark ? 0.06 : 0.04),
         amp: 28, freq: 1.6, phase: 0, y: size.height * 0.72);
     _wave(canvas, size,
-        color: const Color(0xFF1A6EFF).withValues(alpha: 0.09),
+        color: waveBaseColor.withValues(alpha: isDark ? 0.09 : 0.06),
         amp: 20, freq: 2.2, phase: math.pi / 3, y: size.height * 0.80);
     _wave(canvas, size,
-        color: const Color(0xFF0D3B75).withValues(alpha: 0.35),
+        color: waveBaseColor.withValues(alpha: isDark ? 0.35 : 0.15),
         amp: 16, freq: 1.0, phase: math.pi / 6, y: size.height * 0.88);
   }
 
@@ -416,6 +428,9 @@ class _HydroTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
@@ -423,38 +438,39 @@ class _HydroTextField extends StatelessWidget {
       textInputAction: textInputAction,
       onFieldSubmitted: onSubmitted,
       validator: validator,
-      style: const TextStyle(color: Colors.white, fontSize: 15),
+      style: TextStyle(color: theme.colorScheme.onSurface, fontSize: 15, fontWeight: FontWeight.w600),
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon,
-            color: AppTheme.primaryColor.withValues(alpha: 0.7), size: 20),
+            color: theme.colorScheme.primary.withValues(alpha: 0.7), size: 20),
         suffixIcon: suffixIcon,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide:
-              BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+              BorderSide(color: theme.colorScheme.onSurface.withValues(alpha: 0.1)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide:
-              const BorderSide(color: AppTheme.primaryColor, width: 1.5),
+              BorderSide(color: theme.colorScheme.primary, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide:
-              BorderSide(color: AppTheme.dangerColor.withValues(alpha: 0.7)),
+              BorderSide(color: theme.colorScheme.error.withValues(alpha: 0.7)),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide:
-              const BorderSide(color: AppTheme.dangerColor, width: 1.5),
+              BorderSide(color: theme.colorScheme.error, width: 1.5),
         ),
         filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.04),
+        fillColor: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.black.withValues(alpha: 0.03),
         labelStyle: TextStyle(
-            color: AppTheme.textSecondary.withValues(alpha: 0.8)),
+            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+            fontWeight: FontWeight.w500),
       ),
     );
   }

@@ -49,14 +49,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showPrivacyDialog(BuildContext context) {
+    final theme = Theme.of(context);
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppTheme.surface,
+        backgroundColor: theme.colorScheme.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Privacy Policy',
-            style: TextStyle(fontWeight: FontWeight.w700)),
-        content: const SingleChildScrollView(
+        title: Text('Privacy Policy',
+            style: TextStyle(fontWeight: FontWeight.w800, color: theme.colorScheme.onSurface)),
+        content: SingleChildScrollView(
           child: Text(
             'HydroMesh collects location data, flood reports, and emergency requests to provide real-time '
             'flood prediction and community emergency response services.\n\n'
@@ -66,13 +67,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             '• All data is stored securely on Supabase (EU servers).\n'
             '• You can request data deletion by contacting support.\n\n'
             'Open-source under MIT License. View source at github.com/theSaksham02/Hydromesh.',
-            style: TextStyle(color: AppTheme.textSecondary, height: 1.6, fontSize: 13),
+            style: TextStyle(color: theme.colorScheme.onSurfaceVariant, height: 1.6, fontSize: 13),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Close', style: TextStyle(color: AppTheme.primaryColor)),
+            child: Text('Close', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -81,6 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final auth = Provider.of<AuthProvider>(context);
     final themeMode = context.watch<ThemeProvider>().mode;
     final user = auth.user;
@@ -101,17 +103,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final themeLabel = _themeModeLabel(themeMode);
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Profile', style: TextStyle(fontWeight: FontWeight.w700)),
+        title: Text('Profile', style: TextStyle(fontWeight: FontWeight.w800, color: theme.colorScheme.onSurface)),
         actions: [
           Semantics(
             label: 'Logout',
             button: true,
             child: IconButton(
-              icon: const Icon(Icons.logout, color: AppTheme.textSecondary),
+              icon: Icon(Icons.logout, color: theme.colorScheme.onSurfaceVariant),
               tooltip: 'Logout',
               onPressed: () {
                 auth.logout();
@@ -137,8 +139,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
                         colors: [
-                          AppTheme.primaryColor.withValues(alpha: 0.8),
-                          AppTheme.accentColor.withValues(alpha: 0.6),
+                          theme.colorScheme.primary.withOpacity(0.8),
+                          theme.colorScheme.secondary.withOpacity(0.6),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -150,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               initials,
                               style: const TextStyle(
                                 fontSize: 26,
-                                fontWeight: FontWeight.w800,
+                                fontWeight: FontWeight.w900,
                                 color: Colors.white,
                               ),
                             )
@@ -164,12 +166,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(name,
-                            style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w700)),
+                            style: TextStyle(
+                                fontSize: 20, 
+                                fontWeight: FontWeight.w800,
+                                color: theme.colorScheme.onSurface)),
                         const SizedBox(height: 4),
                         Text(email,
-                            style: const TextStyle(
-                                color: AppTheme.textSecondary, fontSize: 14)),
+                            style: TextStyle(
+                                color: theme.colorScheme.onSurfaceVariant, fontSize: 14)),
                         const SizedBox(height: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -184,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             role.toUpperCase(),
                             style: TextStyle(
                                 fontSize: 11,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.black,
                                 color: roleColor),
                           ),
                         ),
@@ -204,14 +208,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Settings',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w700)),
+                      style: theme.textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w800, color: theme.colorScheme.onSurface)),
                   const SizedBox(height: 16),
                   _SettingRow(
                     icon: Icons.notifications_rounded,
-                    iconColor: AppTheme.primaryColor,
+                    iconColor: theme.colorScheme.primary,
                     label: 'Push Notifications',
                     subtitle: 'Receive flood & emergency alerts',
                     trailing: Semantics(
@@ -219,14 +221,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Switch(
                         value: _notificationsEnabled,
                         onChanged: _toggleNotifications,
-                        activeColor: AppTheme.primaryColor,
+                        activeColor: theme.colorScheme.primary,
                       ),
                     ),
                   ),
-                  const Divider(color: AppTheme.surfaceLight, height: 24),
+                  Divider(color: theme.dividerColor.withOpacity(0.1), height: 24),
                   _SettingRow(
                     icon: Icons.palette_outlined,
-                    iconColor: AppTheme.accentColor,
+                    iconColor: theme.colorScheme.secondary,
                     label: 'Appearance',
                     subtitle: themeLabel,
                     trailing: Row(
@@ -234,20 +236,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         _ThemeDot(mode: themeMode),
                         const SizedBox(width: 8),
-                        const Icon(Icons.arrow_forward_ios,
-                            size: 14, color: AppTheme.textSecondary),
+                        Icon(Icons.arrow_forward_ios,
+                            size: 14, color: theme.colorScheme.onSurfaceVariant),
                       ],
                     ),
                     onTap: () => _showThemePicker(context),
                   ),
-                  const Divider(color: AppTheme.surfaceLight, height: 24),
+                  Divider(color: theme.dividerColor.withOpacity(0.1), height: 24),
                   _SettingRow(
                     icon: Icons.map_outlined,
                     iconColor: AppTheme.safeColor,
                     label: 'View Live Map',
                     subtitle: 'Open flood & report map',
-                    trailing: const Icon(Icons.arrow_forward_ios,
-                        size: 14, color: AppTheme.textSecondary),
+                    trailing: Icon(Icons.arrow_forward_ios,
+                        size: 14, color: theme.colorScheme.onSurfaceVariant),
                     onTap: () => Navigator.pushNamed(context, '/map'),
                   ),
                 ],
@@ -263,25 +265,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('About',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w700)),
+                      style: theme.textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w800, color: theme.colorScheme.onSurface)),
                   const SizedBox(height: 16),
-                  const _SettingRow(
+                  _SettingRow(
                     icon: Icons.info_outline,
-                    iconColor: AppTheme.textSecondary,
+                    iconColor: theme.colorScheme.onSurfaceVariant,
                     label: 'Version',
                     subtitle: 'Hydromesh v1.0.0  ·  Open Source (MIT)',
                   ),
-                  const Divider(color: AppTheme.surfaceLight, height: 24),
+                  Divider(color: theme.dividerColor.withOpacity(0.1), height: 24),
                   _SettingRow(
                     icon: Icons.shield_outlined,
-                    iconColor: AppTheme.textSecondary,
+                    iconColor: theme.colorScheme.onSurfaceVariant,
                     label: 'Privacy Policy',
                     subtitle: 'How we handle your data',
-                    trailing: const Icon(Icons.arrow_forward_ios,
-                        size: 14, color: AppTheme.textSecondary),
+                    trailing: Icon(Icons.arrow_forward_ios,
+                        size: 14, color: theme.colorScheme.onSurfaceVariant),
                     onTap: () => _showPrivacyDialog(context),
                   ),
                 ],
@@ -310,7 +310,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: const Icon(Icons.logout),
                   label: const Text('Sign Out',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16)),
+                          fontWeight: FontWeight.w900, fontSize: 16)),
                   onPressed: () {
                     context.read<AuthProvider>().logout();
                     Navigator.pushReplacementNamed(context, '/login');
@@ -325,19 +325,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
-  String _themeModeLabel(AppThemeMode mode) {
-    switch (mode) {
-      case AppThemeMode.dark:
-        return 'Dark (current)';
-      case AppThemeMode.light:
-        return 'Light';
-      case AppThemeMode.highContrast:
-        return 'High Contrast';
-      case AppThemeMode.colorblind:
-        return 'Colorblind-Friendly';
-    }
-  }
 }
 
 // ── Theme Dot ─────────────────────────────────────────────────────────────────
@@ -347,8 +334,9 @@ class _ThemeDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final color = switch (mode) {
-      AppThemeMode.dark => AppTheme.primaryColor,
+      AppThemeMode.dark => theme.colorScheme.primary,
       AppThemeMode.light => const Color(0xFF1A6EFF),
       AppThemeMode.highContrast => const Color(0xFFFFD600),
       AppThemeMode.colorblind => const Color(0xFF3B82F6),
@@ -383,21 +371,24 @@ class _ThemePickerSheetState extends State<_ThemePickerSheet> {
     _selected = widget.current;
   }
 
-  static const _options = [
-    (mode: AppThemeMode.dark, label: 'Dark', icon: Icons.dark_mode_rounded, color: Color(0xFF4F8EF7)),
-    (mode: AppThemeMode.light, label: 'Light', icon: Icons.light_mode_rounded, color: Color(0xFF1A6EFF)),
-    (mode: AppThemeMode.highContrast, label: 'High Contrast', icon: Icons.contrast_rounded, color: Color(0xFFFFD600)),
-    (mode: AppThemeMode.colorblind, label: 'Colorblind-Friendly', icon: Icons.remove_red_eye_outlined, color: Color(0xFF3B82F6)),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final options = [
+      (mode: AppThemeMode.dark, label: 'Dark', icon: Icons.dark_mode_rounded, color: theme.colorScheme.primary),
+      (mode: AppThemeMode.light, label: 'Light', icon: Icons.light_mode_rounded, color: const Color(0xFF1A6EFF)),
+      (mode: AppThemeMode.highContrast, label: 'High Contrast', icon: Icons.contrast_rounded, color: const Color(0xFFFFD600)),
+      (mode: AppThemeMode.colorblind, label: 'Colorblind-Friendly', icon: Icons.remove_red_eye_outlined, color: const Color(0xFF3B82F6)),
+    ];
+
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 32),
       decoration: BoxDecoration(
-        color: AppTheme.surface,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.05)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -407,7 +398,7 @@ class _ThemePickerSheetState extends State<_ThemePickerSheet> {
             width: 36,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
+              color: isDark ? Colors.white.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -416,15 +407,15 @@ class _ThemePickerSheetState extends State<_ThemePickerSheet> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
-                const Text('Appearance',
+                Text('Appearance',
                     style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: theme.colorScheme.onSurface)),
               ],
             ),
           ),
           const SizedBox(height: 16),
-          ...List.generate(_options.length, (i) {
-            final opt = _options[i];
+          ...List.generate(options.length, (i) {
+            final opt = options[i];
             final isSelected = _selected == opt.mode;
             return InkWell(
               onTap: () async {
@@ -463,9 +454,9 @@ class _ThemePickerSheetState extends State<_ThemePickerSheet> {
                     Text(opt.label,
                         style: TextStyle(
                           fontWeight: isSelected
-                              ? FontWeight.w700
-                              : FontWeight.w500,
-                          color: isSelected ? opt.color : null,
+                              ? FontWeight.w800
+                              : FontWeight.w600,
+                          color: isSelected ? opt.color : theme.colorScheme.onSurface,
                         )),
                     const Spacer(),
                     if (isSelected)
@@ -502,6 +493,7 @@ class _SettingRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -524,11 +516,13 @@ class _SettingRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(label,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: 14)),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700, 
+                          fontSize: 14,
+                          color: theme.colorScheme.onSurface)),
                   Text(subtitle,
-                      style: const TextStyle(
-                          color: AppTheme.textSecondary, fontSize: 12)),
+                      style: TextStyle(
+                          color: theme.colorScheme.onSurfaceVariant, fontSize: 12)),
                 ],
               ),
             ),

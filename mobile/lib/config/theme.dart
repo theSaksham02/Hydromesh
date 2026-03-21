@@ -15,10 +15,6 @@ class AppTheme {
   static const Color warningColor = Color(0xFFFFD60A); // Neon Yellow
   static const Color safeColor = Color(0xFF00E676); // Neon Green
 
-  // Text Colors
-  static const Color textPrimary = Color(0xFFFFFFFF);
-  static const Color textSecondary = Color(0xFFA0A0A0);
-
   static ThemeData forMode(AppThemeMode mode) {
     switch (mode) {
       case AppThemeMode.light:       return lightTheme;
@@ -29,6 +25,9 @@ class AppTheme {
   }
 
   static ThemeData get darkTheme {
+    const txtPrimary = Color(0xFFFFFFFF);
+    const txtSecondary = Color(0xFFA0A0A0);
+
     return ThemeData(
       brightness: Brightness.dark,
       scaffoldBackgroundColor: background,
@@ -37,38 +36,24 @@ class AppTheme {
         primary: primaryColor,
         secondary: accentColor,
         surface: surface,
+        surfaceContainerHigh: surfaceLight,
         error: dangerColor,
-        onBackground: textPrimary,
-        onSurface: textPrimary,
+        onSurface: txtPrimary,
+        onSurfaceVariant: txtSecondary,
       ),
       textTheme: GoogleFonts.interTextTheme().copyWith(
-        headlineLarge: GoogleFonts.inter(
-          color: textPrimary,
-          fontWeight: FontWeight.w800,
-          letterSpacing: -1.0,
-        ),
-        headlineMedium: GoogleFonts.inter(
-          color: textPrimary,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.5,
-        ),
-        headlineSmall: GoogleFonts.inter(
-          color: textPrimary,
-          fontWeight: FontWeight.w600,
-        ),
-        bodyLarge: GoogleFonts.inter(color: textPrimary),
-        bodyMedium: GoogleFonts.inter(color: textSecondary),
-        labelLarge: GoogleFonts.inter(
-          color: textPrimary,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-        ),
+        headlineLarge: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w800, letterSpacing: -1.0),
+        headlineMedium: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w700, letterSpacing: -0.5),
+        headlineSmall: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w600),
+        bodyLarge: GoogleFonts.inter(color: txtPrimary),
+        bodyMedium: GoogleFonts.inter(color: txtSecondary),
+        labelLarge: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w600, letterSpacing: 0.5),
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
-        iconTheme: IconThemeData(color: textPrimary),
+        iconTheme: IconThemeData(color: txtPrimary),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -76,9 +61,7 @@ class AppTheme {
           foregroundColor: Colors.white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
       ),
@@ -86,29 +69,22 @@ class AppTheme {
         filled: true,
         fillColor: surfaceLight,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: primaryColor, width: 1.5),
-        ),
-        hintStyle: const TextStyle(color: textSecondary),
-        prefixIconColor: textSecondary,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: primaryColor, width: 1.5)),
+        hintStyle: const TextStyle(color: txtSecondary),
+        prefixIconColor: txtSecondary,
       ),
     );
   }
 
-  // ── Light Theme ──────────────────────────────────────────────────────────
   static ThemeData get lightTheme {
-    const bg = Color(0xFFF5F7FA);
+    const bg = Color(0xFFF8FAFC);
     const surf = Color(0xFFFFFFFF);
-    const surfL = Color(0xFFEEF1F6);
-    const primary = Color(0xFF1A6EFF);
+    const surfL = Color(0xFFF1F5F9);
+    const primary = Color(0xFF2563EB); // Deep Blue
     const accent = Color(0xFF7C3AED);
-    const txtPrimary = Color(0xFF0D0D0D);
-    const txtSecondary = Color(0xFF6B7280);
+    const txtPrimary = Color(0xFF0F172A); // Slate 900
+    const txtSecondary = Color(0xFF64748B); // Slate 500
 
     return ThemeData(
       brightness: Brightness.light,
@@ -118,9 +94,11 @@ class AppTheme {
         primary: primary,
         secondary: accent,
         surface: surf,
+        surfaceContainerHigh: surfL,
         error: Color(0xFFDC2626),
         onPrimary: Colors.white,
         onSurface: txtPrimary,
+        onSurfaceVariant: txtSecondary,
       ),
       textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme).copyWith(
         headlineLarge: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w800, letterSpacing: -1.0),
@@ -131,11 +109,11 @@ class AppTheme {
         labelLarge: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w600, letterSpacing: 0.5),
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: surf,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
         iconTheme: IconThemeData(color: txtPrimary),
-        titleTextStyle: TextStyle(color: txtPrimary, fontSize: 18, fontWeight: FontWeight.w700),
+        titleTextStyle: TextStyle(color: txtPrimary, fontSize: 20, fontWeight: FontWeight.w800),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -156,19 +134,18 @@ class AppTheme {
         hintStyle: const TextStyle(color: txtSecondary),
         prefixIconColor: txtSecondary,
       ),
-      cardTheme: CardThemeData(color: surf, elevation: 2, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+      cardTheme: CardThemeData(color: surf, elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: const BorderSide(color: Color(0xFFE2E8F0)))),
       iconTheme: const IconThemeData(color: txtPrimary),
     );
   }
 
-  // ── High Contrast Theme ──────────────────────────────────────────────────
   static ThemeData get highContrastTheme {
     const bg = Color(0xFF000000);
-    const surf = Color(0xFF0D0D0D);
-    const surfL = Color(0xFF1A1A1A);
-    const primary = Color(0xFFFFD600); // Bold yellow
+    const surf = Color(0xFF111111);
+    const surfL = Color(0xFF222222);
+    const primary = Color(0xFFFFD600); // High-vis yellow
     const txtPrimary = Color(0xFFFFFFFF);
-    const txtSecondary = Color(0xFFCCCCCC);
+    const txtSecondary = Color(0xFFFFFFFF); // Keep secondary white for contrast
 
     return ThemeData(
       brightness: Brightness.dark,
@@ -178,60 +155,45 @@ class AppTheme {
         primary: primary,
         secondary: Color(0xFF00E5FF),
         surface: surf,
+        surfaceContainerHigh: surfL,
         error: Color(0xFFFF1744),
         onPrimary: Colors.black,
         onSurface: txtPrimary,
+        onSurfaceVariant: txtSecondary,
       ),
       textTheme: GoogleFonts.interTextTheme().copyWith(
-        headlineLarge: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w900, letterSpacing: -1.0, fontSize: 38),
-        headlineMedium: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w800, letterSpacing: -0.5),
+        headlineLarge: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w900, letterSpacing: -1.0),
+        headlineMedium: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w800),
         headlineSmall: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w700),
-        bodyLarge: GoogleFonts.inter(color: txtPrimary, fontSize: 16),
-        bodyMedium: GoogleFonts.inter(color: txtSecondary, fontSize: 15),
-        labelLarge: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w700, letterSpacing: 0.5, fontSize: 16),
+        bodyLarge: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w600),
+        bodyMedium: GoogleFonts.inter(color: txtSecondary, fontWeight: FontWeight.w500),
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        centerTitle: false,
-        iconTheme: IconThemeData(color: primary),
+        iconTheme: IconThemeData(color: primary, size: 28),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primary,
           foregroundColor: Colors.black,
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: const BorderSide(color: primary, width: 2),
-          ),
-          textStyle: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: primary, width: 3)),
+          textStyle: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
         ),
       ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: surfL,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: primary, width: 2)),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFF444444), width: 1.5)),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: primary, width: 2.5)),
-        hintStyle: const TextStyle(color: txtSecondary),
-        prefixIconColor: primary,
-      ),
-      iconTheme: const IconThemeData(color: primary),
+      iconTheme: const IconThemeData(color: primary, size: 28),
     );
   }
 
-  // ── Colorblind-Friendly Theme (Deuteranopia-safe: blue/yellow palette) ───
   static ThemeData get colorblindTheme {
     const bg = Color(0xFF0C0E1A);
     const surf = Color(0xFF141828);
     const surfL = Color(0xFF1E2236);
-    const primary = Color(0xFF3B82F6);   // Safe blue
-    const accent = Color(0xFFF59E0B);    // Amber/gold — never red/green
-    const safe = Color(0xFF60A5FA);      // Light blue for "safe"
-    const danger = Color(0xFFF59E0B);    // Amber for "danger" (not red)
+    const primary = Color(0xFF3B82F6);
+    const accent = Color(0xFFF59E0B);
+    const safe = Color(0xFF60A5FA);
+    const danger = Color(0xFFF59E0B);
     const txtPrimary = Color(0xFFE8EAED);
     const txtSecondary = Color(0xFF9AA5B4);
 
@@ -243,49 +205,24 @@ class AppTheme {
         primary: primary,
         secondary: accent,
         surface: surf,
+        surfaceContainerHigh: surfL,
         error: danger,
         onPrimary: Colors.white,
         onSurface: txtPrimary,
+        onSurfaceVariant: txtSecondary,
       ),
       textTheme: GoogleFonts.interTextTheme().copyWith(
-        headlineLarge: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w800, letterSpacing: -1.0),
-        headlineMedium: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w700, letterSpacing: -0.5),
-        headlineSmall: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w600),
+        headlineLarge: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w800),
+        headlineMedium: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w700),
         bodyLarge: GoogleFonts.inter(color: txtPrimary),
         bodyMedium: GoogleFonts.inter(color: txtSecondary),
-        labelLarge: GoogleFonts.inter(color: txtPrimary, fontWeight: FontWeight.w600, letterSpacing: 0.5),
       ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: false,
-        iconTheme: IconThemeData(color: txtPrimary),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: primary,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: surfL,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: primary, width: 1.5)),
-        hintStyle: const TextStyle(color: txtSecondary),
-        prefixIconColor: primary,
-      ),
+      appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent, elevation: 0),
       extensions: const [_ColorblindColors(safe: safe, danger: danger)],
     );
   }
 }
 
-// Extension for colorblind-specific semantic colors accessible anywhere via Theme.of(ctx).extension
 @immutable
 class _ColorblindColors extends ThemeExtension<_ColorblindColors> {
   const _ColorblindColors({required this.safe, required this.danger});
@@ -293,8 +230,7 @@ class _ColorblindColors extends ThemeExtension<_ColorblindColors> {
   final Color danger;
 
   @override
-  _ColorblindColors copyWith({Color? safe, Color? danger}) =>
-      _ColorblindColors(safe: safe ?? this.safe, danger: danger ?? this.danger);
+  _ColorblindColors copyWith({Color? safe, Color? danger}) => _ColorblindColors(safe: safe ?? this.safe, danger: danger ?? this.danger);
 
   @override
   _ColorblindColors lerp(_ColorblindColors? other, double t) {

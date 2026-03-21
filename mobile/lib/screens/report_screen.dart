@@ -115,14 +115,15 @@ class _ReportScreenState extends State<ReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final isLoading = Provider.of<ReportProvider>(context).isLoading;
 
     if (_submitted) return _buildSuccessState(context);
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('New Incident Report'),
+        title: Text('New Incident Report', style: TextStyle(fontWeight: FontWeight.w800, color: theme.colorScheme.onSurface)),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -137,13 +138,13 @@ class _ReportScreenState extends State<ReportScreen> {
               child: Row(
                 children: [
                   _isLocating
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 20, height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          child: CircularProgressIndicator(strokeWidth: 2, color: theme.colorScheme.primary),
                         )
                       : Icon(
                           _currentLat != null ? Icons.location_on : Icons.location_off,
-                          color: _currentLat != null ? AppTheme.safeColor : AppTheme.textSecondary,
+                          color: _currentLat != null ? AppTheme.safeColor : theme.colorScheme.onSurfaceVariant,
                         ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -154,15 +155,16 @@ class _ReportScreenState extends State<ReportScreen> {
                               ? 'GPS: ${_currentLat!.toStringAsFixed(4)}, ${_currentLng!.toStringAsFixed(4)}'
                               : 'Location unavailable — using default',
                       style: TextStyle(
-                        color: _currentLat != null ? Colors.white : AppTheme.textSecondary,
+                        color: _currentLat != null ? theme.colorScheme.onSurface : theme.colorScheme.onSurfaceVariant,
                         fontSize: 13,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
                   if (_currentLat == null && !_isLocating)
                     GestureDetector(
                       onTap: _getLocation,
-                      child: const Icon(Icons.refresh, color: AppTheme.primaryColor, size: 20),
+                      child: Icon(Icons.refresh, color: theme.colorScheme.primary, size: 20),
                     ),
                 ],
               ),
@@ -189,14 +191,15 @@ class _ReportScreenState extends State<ReportScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Details & Observations',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: theme.colorScheme.onSurface),
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _descriptionController,
                     maxLines: 4,
+                    style: TextStyle(color: theme.colorScheme.onSurface),
                     decoration: const InputDecoration(
                       hintText: 'Describe the situation (e.g. road blocked, rapid flow)...',
                       alignLabelWithHint: true,
@@ -221,13 +224,14 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   Widget _buildSuccessState(BuildContext context) {
+    final theme = Theme.of(context);
     final level = _submittedData?['level'] as String? ?? _selectedLevel;
     final desc = _submittedData?['description'] as String?;
     final lat = _submittedData?['lat'] as double?;
     final lng = _submittedData?['lng'] as double?;
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(32),
@@ -248,18 +252,18 @@ class _ReportScreenState extends State<ReportScreen> {
 
               const SizedBox(height: 24),
 
-              const Text(
+              Text(
                 'Report Submitted!',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800),
+                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: theme.colorScheme.onSurface),
                 textAlign: TextAlign.center,
               ).animate().fadeIn(delay: 150.ms),
 
               const SizedBox(height: 8),
 
-              const Text(
+              Text(
                 'Thank you for helping your community stay safe.',
                 style:
-                    TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+                    TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 14, fontWeight: FontWeight.w500),
                 textAlign: TextAlign.center,
               ).animate().fadeIn(delay: 250.ms),
 
@@ -271,17 +275,19 @@ class _ReportScreenState extends State<ReportScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _summaryRow(
+                      context,
                       Icons.water_drop_outlined,
                       'Water Level',
                       '${level[0].toUpperCase()}${level.substring(1)}',
                     ),
-                    const Divider(color: AppTheme.surfaceLight, height: 20),
+                    Divider(color: theme.dividerColor.withOpacity(0.1), height: 20),
                     if (desc != null && desc.isNotEmpty) ...[
                       _summaryRow(
-                          Icons.notes_rounded, 'Description', desc),
-                      const Divider(color: AppTheme.surfaceLight, height: 20),
+                          context, Icons.notes_rounded, 'Description', desc),
+                      Divider(color: theme.dividerColor.withOpacity(0.1), height: 20),
                     ],
                     _summaryRow(
+                      context,
                       Icons.location_on_outlined,
                       'Location',
                       lat != null
@@ -299,9 +305,9 @@ class _ReportScreenState extends State<ReportScreen> {
                   Expanded(
                     child: OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: AppTheme.primaryColor,
+                        foregroundColor: theme.colorScheme.primary,
                         side: BorderSide(
-                            color: AppTheme.primaryColor.withValues(alpha: 0.5)),
+                            color: theme.colorScheme.primary.withValues(alpha: 0.5)),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14)),
@@ -319,8 +325,8 @@ class _ReportScreenState extends State<ReportScreen> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            AppTheme.primaryColor.withValues(alpha: 0.15),
-                        foregroundColor: AppTheme.primaryColor,
+                            theme.colorScheme.primary.withValues(alpha: 0.15),
+                        foregroundColor: theme.colorScheme.primary,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14)),
@@ -328,7 +334,7 @@ class _ReportScreenState extends State<ReportScreen> {
                       ),
                       onPressed: () => Navigator.pop(context),
                       child: const Text('Done',
-                          style: TextStyle(fontWeight: FontWeight.w700)),
+                          style: TextStyle(fontWeight: FontWeight.w800)),
                     ),
                   ),
                 ],
@@ -340,23 +346,24 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
-  Widget _summaryRow(IconData icon, String label, String value) {
+  Widget _summaryRow(BuildContext context, IconData icon, String label, String value) {
+    final theme = Theme.of(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 18, color: AppTheme.primaryColor),
+        Icon(icon, size: 18, color: theme.colorScheme.primary),
         const SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(label,
-                  style: const TextStyle(
-                      color: AppTheme.textSecondary, fontSize: 11)),
+                  style: TextStyle(
+                      color: theme.colorScheme.onSurfaceVariant, fontSize: 11, fontWeight: FontWeight.w600)),
               const SizedBox(height: 2),
               Text(value,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 14)),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w700, fontSize: 14, color: theme.colorScheme.onSurface)),
             ],
           ),
         ),

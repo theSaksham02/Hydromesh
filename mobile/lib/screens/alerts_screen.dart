@@ -34,17 +34,20 @@ class _AlertsScreenState extends State<AlertsScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Alerts & Notifications', style: TextStyle(fontWeight: FontWeight.w700)),
+        title: Text('Alerts & Notifications', 
+          style: TextStyle(fontWeight: FontWeight.w800, color: theme.colorScheme.onSurface)),
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: AppTheme.primaryColor,
-          labelColor: AppTheme.primaryColor,
-          unselectedLabelColor: AppTheme.textSecondary,
+          indicatorColor: theme.colorScheme.primary,
+          labelColor: theme.colorScheme.primary,
+          unselectedLabelColor: theme.colorScheme.onSurfaceVariant,
+          indicatorWeight: 3,
           tabs: const [
             Tab(text: 'Emergency SOS'),
             Tab(text: 'Flood Reports'),
@@ -65,10 +68,11 @@ class _AlertsScreenState extends State<AlertsScreen> with SingleTickerProviderSt
 class _EmergencyTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Consumer<EmergencyProvider>(
       builder: (context, provider, _) {
         if (provider.isLoading) {
-          return const Center(child: CircularProgressIndicator(color: AppTheme.primaryColor));
+          return Center(child: CircularProgressIndicator(color: theme.colorScheme.primary));
         }
         final requests = provider.pendingRequests;
         if (requests.isEmpty) {
@@ -78,15 +82,16 @@ class _EmergencyTab extends StatelessWidget {
               children: [
                 const Icon(Icons.check_circle_outline, size: 64, color: AppTheme.safeColor),
                 const SizedBox(height: 16),
-                const Text('No active emergencies', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                Text('No active emergencies', 
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: theme.colorScheme.onSurface)),
                 const SizedBox(height: 8),
-                const Text('All clear — no SOS requests pending', style: TextStyle(color: AppTheme.textSecondary)),
+                Text('All clear — no SOS requests pending', 
+                  style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
                 const SizedBox(height: 24),
                 ElevatedButton.icon(
                   onPressed: () => context.read<EmergencyProvider>().fetchPendingRequests(),
                   icon: const Icon(Icons.refresh),
                   label: const Text('Refresh'),
-                  style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor),
                 ),
               ],
             ),
@@ -94,7 +99,7 @@ class _EmergencyTab extends StatelessWidget {
         }
         return RefreshIndicator(
           onRefresh: () => context.read<EmergencyProvider>().fetchPendingRequests(),
-          color: AppTheme.primaryColor,
+          color: theme.colorScheme.primary,
           child: ListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount: requests.length,
@@ -127,7 +132,11 @@ class _EmergencyTab extends StatelessWidget {
                           children: [
                             Text(
                               req['description']?.toString() ?? 'Emergency request',
-                              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700, 
+                                fontSize: 15,
+                                color: theme.colorScheme.onSurface,
+                              ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -139,22 +148,19 @@ class _EmergencyTab extends StatelessWidget {
                                   color: color.withOpacity(0.15),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: Text(priority.toUpperCase(), style: TextStyle(fontSize: 10, color: color, fontWeight: FontWeight.bold)),
+                                child: Text(priority.toUpperCase(), 
+                                  style: TextStyle(fontSize: 10, color: color, fontWeight: FontWeight.w900)),
                               ),
                               const SizedBox(width: 8),
                               Text(
                                 req['status']?.toString() ?? 'pending',
-                                style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+                                style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 12),
                               ),
                             ]),
                           ],
                         ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.arrow_forward_ios, size: 16),
-                        onPressed: () => Navigator.pushNamed(context, '/emergency'),
-                        color: AppTheme.textSecondary,
-                      ),
+                      Icon(Icons.arrow_forward_ios, size: 14, color: theme.colorScheme.onSurfaceVariant),
                     ],
                   ),
                 ).animate().fadeIn(delay: (i * 80).ms).slideX(begin: 0.05),
@@ -180,10 +186,11 @@ class _ReportsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Consumer<ReportProvider>(
       builder: (context, provider, _) {
         if (provider.isLoading && provider.reports.isEmpty) {
-          return const Center(child: CircularProgressIndicator(color: AppTheme.primaryColor));
+          return Center(child: CircularProgressIndicator(color: theme.colorScheme.primary));
         }
         final reports = provider.reports;
         if (reports.isEmpty) {
@@ -191,18 +198,20 @@ class _ReportsTab extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.water_drop_outlined, size: 64, color: AppTheme.textSecondary),
+                Icon(Icons.water_drop_outlined, size: 64, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
                 const SizedBox(height: 16),
-                const Text('No flood reports yet', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                Text('No flood reports yet', 
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: theme.colorScheme.onSurface)),
                 const SizedBox(height: 8),
-                const Text('Community reports will appear here', style: TextStyle(color: AppTheme.textSecondary)),
+                Text('Community reports will appear here', 
+                  style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
               ],
             ),
           );
         }
         return RefreshIndicator(
           onRefresh: () => provider.fetchReports(),
-          color: AppTheme.primaryColor,
+          color: theme.colorScheme.primary,
           child: ListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount: reports.length,
@@ -230,19 +239,24 @@ class _ReportsTab extends StatelessWidget {
                           children: [
                             Text(
                               '${r.waterLevel.toUpperCase()} water level',
-                              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: color),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w800, 
+                                fontSize: 15, 
+                                color: color,
+                                letterSpacing: 0.5,
+                              ),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               r.description ?? 'No description',
-                              style: const TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                              style: TextStyle(color: theme.colorScheme.onSurface, fontSize: 13, fontWeight: FontWeight.w500),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 4),
                             Text(
                               '${r.latitude.toStringAsFixed(4)}, ${r.longitude.toStringAsFixed(4)}',
-                              style: const TextStyle(color: AppTheme.textSecondary, fontSize: 11),
+                              style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 11),
                             ),
                           ],
                         ),

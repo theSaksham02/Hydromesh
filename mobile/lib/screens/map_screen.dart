@@ -34,8 +34,9 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Stack(
         children: [
           // 1. The Map Layer
@@ -119,6 +120,7 @@ class _MapScreenState extends State<MapScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildFloatingButton(
+                  context,
                   icon: Icons.arrow_back_ios_new_rounded,
                   onTap: () => Navigator.pop(context),
                 ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
@@ -149,7 +151,7 @@ class _MapScreenState extends State<MapScreen> {
                           const SizedBox(width: 8),
                           Text(
                             cached ? 'Cached Map' : 'Live Flood Map',
-                            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                            style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: theme.colorScheme.onSurface),
                           ),
                         ],
                       );
@@ -162,6 +164,7 @@ class _MapScreenState extends State<MapScreen> {
                     Consumer<ReportProvider>(
                       builder: (context, provider, child) {
                         return _buildFloatingButton(
+                          context,
                           icon: Icons.my_location,
                           isLoading: provider.isLoading,
                           onTap: () {
@@ -180,7 +183,7 @@ class _MapScreenState extends State<MapScreen> {
                       child: GlassCard(
                         padding: const EdgeInsets.all(12),
                         borderRadius: 16,
-                        child: const Icon(Icons.layers_outlined, color: Colors.white, size: 24),
+                        child: Icon(Icons.layers_outlined, color: theme.colorScheme.onSurface, size: 24),
                       ),
                     ).animate().fadeIn(duration: 400.ms).slideX(begin: 0.2),
                   ],
@@ -196,7 +199,7 @@ class _MapScreenState extends State<MapScreen> {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildLegendCard().animate().fadeIn(delay: 200.ms).slideX(begin: -0.2),
+                _buildLegendCard(context).animate().fadeIn(delay: 200.ms).slideX(begin: -0.2),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -208,26 +211,26 @@ class _MapScreenState extends State<MapScreen> {
                         height: 56,
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         decoration: BoxDecoration(
-                          color: AppTheme.primaryColor,
+                          color: theme.colorScheme.primary,
                           borderRadius: BorderRadius.circular(28),
                           boxShadow: [
                             BoxShadow(
-                              color: AppTheme.primaryColor.withOpacity(0.4),
+                              color: theme.colorScheme.primary.withOpacity(0.4),
                               blurRadius: 20,
                               offset: const Offset(0, 8),
                             )
                           ],
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.add, color: Colors.white),
-                            SizedBox(width: 8),
+                            Icon(Icons.add, color: theme.colorScheme.onPrimary),
+                            const SizedBox(width: 8),
                             Text(
                               'Report Flood',
                               style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.onPrimary,
+                                fontWeight: FontWeight.w900,
                                 fontSize: 16,
                               ),
                             ),
@@ -248,24 +251,28 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Widget _buildFloatingButton({required IconData icon, required VoidCallback onTap, bool isLoading = false}) {
+  Widget _buildFloatingButton(BuildContext context, {required IconData icon, required VoidCallback onTap, bool isLoading = false}) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: GlassCard(
         padding: const EdgeInsets.all(12),
         borderRadius: 16,
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 width: 24, height: 24, 
-                child: CircularProgressIndicator(strokeWidth: 2)
+                child: CircularProgressIndicator(strokeWidth: 2, color: theme.colorScheme.primary)
               )
-            : Icon(icon, color: Colors.white, size: 24),
+            : Icon(icon, color: theme.colorScheme.onSurface, size: 24),
       ),
     );
   }
 
   void _showSosSheet(BuildContext context, Map<String, dynamic> req) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final emergencyId = req['request_id']?.toString() ?? req['id']?.toString() ?? '';
+    
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -273,9 +280,9 @@ class _MapScreenState extends State<MapScreen> {
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: AppTheme.surface,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: AppTheme.dangerColor.withOpacity(0.4)),
+          border: Border.all(color: isDark ? AppTheme.dangerColor.withOpacity(0.4) : Colors.black.withOpacity(0.05)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -284,19 +291,24 @@ class _MapScreenState extends State<MapScreen> {
             Row(children: [
               const Icon(Icons.sos, color: AppTheme.dangerColor, size: 28),
               const SizedBox(width: 12),
-              const Text('Emergency Request', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+              Text('Emergency Request', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: theme.colorScheme.onSurface)),
             ]),
             const SizedBox(height: 16),
-            Text(req['description'] ?? 'No description', style: const TextStyle(color: AppTheme.textSecondary)),
+            Text(req['description'] ?? 'No description', style: TextStyle(color: theme.colorScheme.onSurface, fontWeight: FontWeight.w500)),
             const SizedBox(height: 8),
-            Text('Status: ${req['status'] ?? 'pending'}', style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
+            Text('Status: ${req['status'] ?? 'pending'}', style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 12, fontWeight: FontWeight.w600)),
             const SizedBox(height: 24),
             Row(children: [
               Expanded(
                 child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(backgroundColor: AppTheme.safeColor, foregroundColor: Colors.black, padding: const EdgeInsets.symmetric(vertical: 14)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.safeColor, 
+                    foregroundColor: Colors.black, 
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
                   icon: const Icon(Icons.check),
-                  label: const Text('Accept & Respond'),
+                  label: const Text('Accept & Respond', style: TextStyle(fontWeight: FontWeight.w900)),
                   onPressed: () async {
                     Navigator.pop(sheetCtx);
                     if (emergencyId.isNotEmpty) {
@@ -419,14 +431,15 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  Widget _buildLegendCard() {
+  Widget _buildLegendCard(BuildContext context) {
+    final theme = Theme.of(context);
     return GlassCard(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('Risk Level', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppTheme.textSecondary)),
+          Text('Risk Level', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12, color: theme.colorScheme.onSurfaceVariant)),
           const SizedBox(height: 12),
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -462,6 +475,9 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _showReportDetails(FloodReport report) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -477,7 +493,7 @@ class _MapScreenState extends State<MapScreen> {
               child: Container(
                 width: 40, height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.3),
+                  color: isDark ? Colors.white.withOpacity(0.3) : Colors.black.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -489,7 +505,7 @@ class _MapScreenState extends State<MapScreen> {
                 const SizedBox(width: 12),
                 Text(
                   '${report.waterLevel.toUpperCase()} LEVEL',
-                  style: Theme.of(context).textTheme.headlineSmall,
+                  style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w900, color: theme.colorScheme.onSurface),
                 ),
               ],
             ),
@@ -497,18 +513,20 @@ class _MapScreenState extends State<MapScreen> {
             if (report.description != null) ...[
               Text(
                 report.description!,
-                style: const TextStyle(fontSize: 16, color: AppTheme.textSecondary, height: 1.5),
+                style: TextStyle(fontSize: 16, color: theme.colorScheme.onSurface, height: 1.5, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 24),
             ],
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Reported Just Now', style: TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
+                Text('Reported Just Now', style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 12, fontWeight: FontWeight.w600)),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.surfaceLight,
+                    backgroundColor: theme.colorScheme.surfaceContainerHigh,
+                    foregroundColor: theme.colorScheme.onSurface,
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                   onPressed: () => Navigator.pop(context),
                   child: const Text('Close'),
@@ -533,6 +551,9 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _showLayerPicker() {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -540,15 +561,15 @@ class _MapScreenState extends State<MapScreen> {
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: AppTheme.surface,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: AppTheme.surfaceLight),
+          border: Border.all(color: isDark ? theme.colorScheme.surfaceContainerHigh : Colors.black.withOpacity(0.05)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Map Style', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('Map Style', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: theme.colorScheme.onSurface)),
             const SizedBox(height: 16),
             _LayerOption(
               icon: Icons.brightness_2_outlined,
@@ -597,29 +618,31 @@ class _LayerOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: selected ? AppTheme.primaryColor.withOpacity(0.15) : AppTheme.surfaceLight,
+          color: selected ? theme.colorScheme.primary.withOpacity(0.15) : theme.colorScheme.surfaceContainerHigh,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: selected ? AppTheme.primaryColor.withOpacity(0.5) : Colors.transparent),
+          border: Border.all(color: selected ? theme.colorScheme.primary.withOpacity(0.5) : Colors.transparent),
         ),
         child: Row(
           children: [
-            Icon(icon, color: selected ? AppTheme.primaryColor : AppTheme.textSecondary, size: 22),
+            Icon(icon, color: selected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant, size: 22),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label, style: TextStyle(fontWeight: FontWeight.w600, color: selected ? AppTheme.primaryColor : Colors.white)),
-                  Text(subtitle, style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
+                  Text(label, style: TextStyle(fontWeight: FontWeight.w800, color: selected ? theme.colorScheme.primary : theme.colorScheme.onSurface)),
+                  Text(subtitle, style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 12, fontWeight: FontWeight.w500)),
                 ],
               ),
             ),
-            if (selected) const Icon(Icons.check_circle, color: AppTheme.primaryColor, size: 20),
+            if (selected) Icon(Icons.check_circle, color: theme.colorScheme.primary, size: 20),
           ],
         ),
       ),

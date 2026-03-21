@@ -58,16 +58,18 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Consumer<EmergencyProvider>(
       builder: (context, provider, _) {
         final isRequesting = provider.isLoading;
         final requestSent = provider.requestSent;
 
         return Scaffold(
-          backgroundColor: AppTheme.background,
+          backgroundColor: theme.scaffoldBackgroundColor,
           appBar: AppBar(
-            title: const Text('Emergency Response'),
+            title: Text('Emergency Response', style: TextStyle(fontWeight: FontWeight.w800, color: theme.colorScheme.onSurface)),
             backgroundColor: Colors.transparent,
+            elevation: 0,
           ),
           body: Center(
             child: SingleChildScrollView(
@@ -85,7 +87,7 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
                           children: [
                             const Icon(Icons.error_outline, color: AppTheme.dangerColor),
                             const SizedBox(width: 12),
-                            Expanded(child: Text(provider.error!, style: const TextStyle(color: AppTheme.dangerColor))),
+                            Expanded(child: Text(provider.error!, style: const TextStyle(color: AppTheme.dangerColor, fontWeight: FontWeight.w600))),
                           ],
                         ),
                       ),
@@ -110,7 +112,7 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
                       ),
                       child: Center(
                     child: isRequesting
-                            ? const CircularProgressIndicator(color: AppTheme.dangerColor)
+                            ? CircularProgressIndicator(color: theme.colorScheme.onPrimary)
                           : const Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -121,7 +123,7 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: AppTheme.dangerColor,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w900,
                                     fontSize: 14,
                                     letterSpacing: 1.2,
                                   ),
@@ -140,16 +142,16 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'What happens next?',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: theme.colorScheme.onSurface),
                       ),
                       const SizedBox(height: 16),
-                      _buildInfoRow(Icons.location_on, 'Your GPS location is shared instantly'),
+                      _buildInfoRow(context, Icons.location_on, 'Your GPS location is shared instantly'),
                       const SizedBox(height: 12),
-                      _buildInfoRow(Icons.notifications_active, 'Nearby responders are alerted'),
+                      _buildInfoRow(context, Icons.notifications_active, 'Nearby responders are alerted'),
                       const SizedBox(height: 12),
-                      _buildInfoRow(Icons.chat_bubble, 'A direct line is opened for communication'),
+                      _buildInfoRow(context, Icons.chat_bubble, 'A direct line is opened for communication'),
                     ],
                   ),
                 ).animate().slideY(begin: 0.1).fadeIn(delay: 200.ms),
@@ -175,18 +177,19 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 26,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w900,
                           color: AppTheme.safeColor),
                     ).animate().fadeIn(delay: 200.ms),
 
                     const SizedBox(height: 12),
 
-                    const Text(
+                    Text(
                       'Stay calm. Your exact location has been shared with responders within 10 km.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 15,
-                          color: AppTheme.textSecondary,
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w500,
                           height: 1.6),
                     ).animate().fadeIn(delay: 350.ms),
 
@@ -198,17 +201,17 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('While you wait',
+                          Text('While you wait',
                               style: TextStyle(
-                                  fontWeight: FontWeight.w700, fontSize: 16)),
+                                  fontWeight: FontWeight.w800, fontSize: 16, color: theme.colorScheme.onSurface)),
                           const SizedBox(height: 16),
-                          _buildCheckItem(
+                          _buildCheckItem(context,
                               'Stay at your current location if it is safe'),
-                          _buildCheckItem(
+                          _buildCheckItem(context,
                               'Keep your phone charged and nearby'),
-                          _buildCheckItem(
+                          _buildCheckItem(context,
                               'Move to higher ground only if water rises'),
-                          _buildCheckItem(
+                          _buildCheckItem(context,
                               'Signal your location with a flashlight or noise'),
                         ],
                       ),
@@ -230,29 +233,30 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
                                 color: AppTheme.dangerColor, size: 20),
                           ),
                           const SizedBox(width: 14),
-                          const Expanded(
+                          Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text('Connecting to responders…',
                                     style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14)),
-                                SizedBox(height: 3),
-                                Text('Avg response time · 6–10 min',
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14,
+                                        color: theme.colorScheme.onSurface)),
+                                const SizedBox(height: 3),
+                                const Text('Avg response time · 6–10 min',
                                     style: TextStyle(
                                         color: AppTheme.dangerColor,
                                         fontSize: 12,
-                                        fontWeight: FontWeight.bold)),
+                                        fontWeight: FontWeight.w900)),
                               ],
                             ),
                           ),
-                          const SizedBox(
+                          SizedBox(
                             width: 24,
                             height: 24,
                             child: CircularProgressIndicator(
                                 strokeWidth: 2.5,
-                                color: AppTheme.primaryColor),
+                                color: theme.colorScheme.primary),
                           ),
                         ],
                       ),
@@ -263,7 +267,7 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
                     NeonButton(
                       text: 'CANCEL REQUEST',
                       icon: Icons.cancel_outlined,
-                      neonColor: Colors.grey.shade700,
+                      neonColor: Colors.grey.shade600,
                       onPressed: () => provider.resetRequest(),
                     ).animate().fadeIn(delay: 700.ms),
                   ],
@@ -276,7 +280,8 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
     );
   }
 
-  Widget _buildCheckItem(String text) {
+  Widget _buildCheckItem(BuildContext context, String text) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
@@ -295,21 +300,22 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
           const SizedBox(width: 10),
           Expanded(
             child: Text(text,
-                style: const TextStyle(
-                    color: AppTheme.textSecondary, fontSize: 13, height: 1.4)),
+                style: TextStyle(
+                    color: theme.colorScheme.onSurface, fontSize: 13, height: 1.4, fontWeight: FontWeight.w500)),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String text) {
+  Widget _buildInfoRow(BuildContext context, IconData icon, String text) {
+    final theme = Theme.of(context);
     return Row(
       children: [
-        Icon(icon, color: AppTheme.primaryColor, size: 20),
+        Icon(icon, color: theme.colorScheme.primary, size: 20),
         const SizedBox(width: 12),
         Expanded(
-          child: Text(text, style: const TextStyle(color: AppTheme.textSecondary)),
+          child: Text(text, style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontWeight: FontWeight.w500)),
         ),
       ],
     );

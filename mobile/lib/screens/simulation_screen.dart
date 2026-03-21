@@ -50,17 +50,19 @@ class SimulationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final sim = context.watch<SimulationProvider>();
     final isActive = sim.isActive;
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        elevation: 0,
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('God Mode'),
+            Text('God Mode', style: TextStyle(fontWeight: FontWeight.w900, color: theme.colorScheme.onSurface)),
             if (isActive) ...[
               const SizedBox(width: 10),
               Container(
@@ -78,7 +80,7 @@ class SimulationScreen extends StatelessWidget {
         ),
       ),
       body: sim.isLoading
-          ? const Center(child: CircularProgressIndicator(color: AppTheme.primaryColor))
+          ? Center(child: CircularProgressIndicator(color: theme.colorScheme.primary))
           : SingleChildScrollView(
               padding: const EdgeInsets.all(24),
               child: Column(
@@ -91,7 +93,7 @@ class SimulationScreen extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.warning_amber_rounded, color: AppTheme.dangerColor, size: 28),
+                              const Icon(Icons.warning_amber_rounded, color: AppTheme.dangerColor, size: 28),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
@@ -99,11 +101,11 @@ class SimulationScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       'Active: ${sim.activeSimName}',
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+                                      style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: theme.colorScheme.onSurface),
                                     ),
                                     Text(
                                       'Region: ${sim.activeCity[0].toUpperCase()}${sim.activeCity.substring(1)}',
-                                      style: const TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                                      style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 13, fontWeight: FontWeight.w600),
                                     ),
                                   ],
                                 ),
@@ -111,9 +113,9 @@ class SimulationScreen extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 8),
-                          Text(
+                          const Text(
                             'Press SOS on the home screen to get your evacuation route.',
-                            style: TextStyle(color: AppTheme.safeColor, fontSize: 12),
+                            style: TextStyle(color: AppTheme.safeColor, fontSize: 12, fontWeight: FontWeight.w700),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 16),
@@ -133,7 +135,7 @@ class SimulationScreen extends StatelessWidget {
                                 icon: sim.isStopping
                                     ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                                     : const Icon(Icons.stop_circle_outlined),
-                                label: Text(sim.isStopping ? 'Stopping...' : 'Stop & Reset Simulation'),
+                                label: Text(sim.isStopping ? 'Stopping...' : 'Stop & Reset Simulation', style: const TextStyle(fontWeight: FontWeight.w900)),
                               ),
                             ),
                           ),
@@ -143,7 +145,7 @@ class SimulationScreen extends StatelessWidget {
                     const SizedBox(height: 24),
                   ],
 
-                  const Text('Select Target Region', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text('Select Target Region', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: theme.colorScheme.onSurface)),
                   const SizedBox(height: 16),
                   Wrap(
                     spacing: 12,
@@ -154,19 +156,19 @@ class SimulationScreen extends StatelessWidget {
                         label: 'Select ${city['name']} as target region',
                         selected: isSelected,
                         child: ChoiceChip(
-                          label: Text(city['name'] as String),
+                          label: Text(city['name'] as String, style: TextStyle(color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface, fontWeight: FontWeight.w700)),
                           selected: isSelected,
                           onSelected: (_) => context.read<SimulationProvider>().setActiveCity(city['id'] as String),
-                          selectedColor: AppTheme.primaryColor.withOpacity(0.3),
-                          backgroundColor: AppTheme.surfaceLight,
-                          side: BorderSide(color: isSelected ? AppTheme.primaryColor : Colors.transparent),
+                          selectedColor: theme.colorScheme.primary,
+                          backgroundColor: theme.colorScheme.surfaceContainerHigh,
+                          side: BorderSide(color: isSelected ? theme.colorScheme.primary : Colors.transparent),
                         ),
                       );
                     }).toList(),
-                  ).animate().fadeIn().slideY(begin: 0.1),
+                  ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.1),
 
                   const SizedBox(height: 32),
-                  const Text('Trigger Simulation Events', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text('Trigger Simulation Events', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: theme.colorScheme.onSurface)),
                   const SizedBox(height: 16),
 
                   ..._simulations.map((sim_item) => Padding(
@@ -186,18 +188,18 @@ class SimulationScreen extends StatelessWidget {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(sim_item['name'] as String, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                        Text(sim_item['name'] as String, style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: theme.colorScheme.onSurface)),
                                         const SizedBox(height: 4),
-                                        Text(sim_item['desc'] as String, style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
+                                        Text(sim_item['desc'] as String, style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 12, fontWeight: FontWeight.w600)),
                                       ],
                                     ),
                                   ),
-                                  const Icon(Icons.play_arrow, color: Colors.white),
+                                  Icon(Icons.play_arrow_rounded, color: theme.colorScheme.primary),
                                 ],
                               ),
                             ),
                           ),
-                        ).animate().fadeIn(delay: (100 * (sim_item['type'] as int)).ms).slideX(begin: 0.1),
+                        ).animate().fadeIn(delay: (150 * (sim_item['type'] as int)).ms).slideX(begin: 0.1),
                       )),
                 ],
               ),

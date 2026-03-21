@@ -47,13 +47,14 @@ class _WeatherCardState extends State<WeatherCard> {
   Widget build(BuildContext context) {
     return Consumer<WeatherProvider>(
       builder: (context, weatherProvider, child) {
+        final theme = Theme.of(context);
         if (weatherProvider.isLoading) {
           return GlassCard(
             padding: const EdgeInsets.all(20),
-            child: const Center(
+            child: Center(
               child: SizedBox(
                 width: 24, height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2),
+                child: CircularProgressIndicator(strokeWidth: 2, color: theme.colorScheme.primary),
               ),
             ),
           ).animate().shimmer();
@@ -67,26 +68,26 @@ class _WeatherCardState extends State<WeatherCard> {
               onTap: _fetchWithGps,
               child: Row(
                 children: [
-                  const Icon(Icons.cloud_off, color: AppTheme.textSecondary),
+                  Icon(Icons.cloud_off, color: theme.colorScheme.onSurfaceVariant),
                   const SizedBox(width: 12),
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Weather data unavailable',
                             style:
-                                TextStyle(color: AppTheme.textSecondary)),
-                        SizedBox(height: 2),
+                                TextStyle(color: theme.colorScheme.onSurfaceVariant)),
+                        const SizedBox(height: 2),
                         Text('Tap to retry',
                             style: TextStyle(
                                 fontSize: 11,
-                                color: AppTheme.primaryColor,
+                                color: theme.colorScheme.primary,
                                 fontWeight: FontWeight.w600)),
                       ],
                     ),
                   ),
-                  const Icon(Icons.refresh_rounded,
-                      color: AppTheme.primaryColor, size: 18),
+                  Icon(Icons.refresh_rounded,
+                      color: theme.colorScheme.primary, size: 18),
                 ],
               ),
             ),
@@ -100,31 +101,31 @@ class _WeatherCardState extends State<WeatherCard> {
 
         return GlassCard(
           padding: const EdgeInsets.all(20),
-          color: isRaining ? AppTheme.primaryColor.withOpacity(0.1) : null,
+          color: isRaining ? theme.colorScheme.primary.withOpacity(0.1) : null,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Current Conditions', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                  Text('Current Conditions', style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurfaceVariant)),
                   const SizedBox(height: 8),
                   Row(
                     children: [
                       Text(
                         '$temp°C',
-                        style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: theme.colorScheme.onSurface),
                       ),
                       const SizedBox(width: 12),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Wind: $wind km/h', style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                          Text('Wind: $wind km/h', style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurfaceVariant)),
                           Text(isRaining ? 'Rain Expected' : 'Clear', 
                             style: TextStyle(
                               fontSize: 12, 
                               fontWeight: FontWeight.bold,
-                              color: isRaining ? AppTheme.primaryColor : AppTheme.safeColor,
+                              color: isRaining ? theme.colorScheme.primary : AppTheme.safeColor,
                             )
                           ),
                         ],
@@ -136,7 +137,7 @@ class _WeatherCardState extends State<WeatherCard> {
               Icon(
                 isRaining ? Icons.storm : Icons.wb_sunny,
                 size: 48,
-                color: isRaining ? AppTheme.primaryColor : AppTheme.warningColor,
+                color: isRaining ? theme.colorScheme.primary : AppTheme.warningColor,
               ).animate(onPlay: (c) => c.repeat(reverse: true)).slideY(end: 0.1, duration: 2.seconds),
             ],
           ),

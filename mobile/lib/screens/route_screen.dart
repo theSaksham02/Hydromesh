@@ -208,8 +208,11 @@ class _RouteScreenState extends State<RouteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Stack(
         children: [
           FlutterMap(
@@ -230,7 +233,9 @@ class _RouteScreenState extends State<RouteScreen> {
             ),
             children: [
               TileLayer(
-                urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+                urlTemplate: isDark 
+                  ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'
+                  : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png',
                 subdomains: const ['a', 'b', 'c', 'd'],
                 userAgentPackageName: 'com.hydromesh.app',
               ),
@@ -253,10 +258,10 @@ class _RouteScreenState extends State<RouteScreen> {
                     child: Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppTheme.primaryColor.withOpacity(0.2),
-                        border: Border.all(color: AppTheme.primaryColor, width: 2),
+                        color: theme.colorScheme.primary.withOpacity(0.2),
+                        border: Border.all(color: theme.colorScheme.primary, width: 2),
                       ),
-                      child: const Icon(Icons.my_location, color: AppTheme.primaryColor, size: 20),
+                      child: Icon(Icons.my_location, color: theme.colorScheme.primary, size: 20),
                     ),
                   ),
                   if (_destinationSet)
@@ -283,7 +288,7 @@ class _RouteScreenState extends State<RouteScreen> {
               onTap: () => Navigator.pop(context),
               child: GlassCard(
                 padding: const EdgeInsets.all(10),
-                child: const Icon(Icons.arrow_back, color: Colors.white, size: 22),
+                child: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface, size: 22),
               ),
             ),
           ),
@@ -298,7 +303,7 @@ class _RouteScreenState extends State<RouteScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 child: Row(
                   children: [
-                    Icon(Icons.health_and_safety, color: AppTheme.dangerColor, size: 18),
+                    const Icon(Icons.health_and_safety, color: AppTheme.dangerColor, size: 18),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Column(
@@ -309,14 +314,14 @@ class _RouteScreenState extends State<RouteScreen> {
                             style: TextStyle(
                               color: AppTheme.dangerColor,
                               fontSize: 10,
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w900,
                               letterSpacing: 1,
                             ),
                           ),
                           if (_destName != null)
                             Text(
                               _destName!,
-                              style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
+                              style: TextStyle(color: theme.colorScheme.onSurface, fontSize: 11, fontWeight: FontWeight.w700),
                               overflow: TextOverflow.ellipsis,
                             ),
                         ],
@@ -336,7 +341,8 @@ class _RouteScreenState extends State<RouteScreen> {
               child: Center(
                 child: GlassCard(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: const Text('Tap on the map to set destination', style: TextStyle(color: AppTheme.textSecondary, fontSize: 13)),
+                  child: Text('Tap on the map to set destination', 
+                    style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 13, fontWeight: FontWeight.w600)),
                 ),
               ).animate().fadeIn(duration: 400.ms),
             ),
@@ -349,9 +355,9 @@ class _RouteScreenState extends State<RouteScreen> {
             builder: (context, scrollController) {
               return Container(
                 decoration: BoxDecoration(
-                  color: AppTheme.surface,
+                  color: theme.colorScheme.surface,
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 20)],
+                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(isDark ? 0.4 : 0.1), blurRadius: 20)],
                 ),
                 child: ListView(
                   controller: scrollController,
@@ -360,16 +366,20 @@ class _RouteScreenState extends State<RouteScreen> {
                     Center(
                       child: Container(
                         width: 40, height: 4,
-                        decoration: BoxDecoration(color: AppTheme.surfaceLight, borderRadius: BorderRadius.circular(2)),
+                        decoration: BoxDecoration(
+                          color: isDark ? theme.colorScheme.surfaceContainerHigh : Colors.black.withOpacity(0.1), 
+                          borderRadius: BorderRadius.circular(2)
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _statChip(Icons.directions_walk, _timeText, 'Walk Time'),
-                        _statChip(Icons.straighten, _distanceText, 'Distance'),
+                        _statChip(context, Icons.directions_walk, _timeText, 'Walk Time'),
+                        _statChip(context, Icons.straighten, _distanceText, 'Distance'),
                         _statChip(
+                          context,
                           Icons.shield,
                           _isEmergencyRoute ? 'Evac' : 'Safe',
                           'Status',
@@ -379,14 +389,14 @@ class _RouteScreenState extends State<RouteScreen> {
                     ),
                     const SizedBox(height: 16),
                     if (_isCalculating)
-                      const Center(
+                      Center(
                         child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 24),
+                          padding: const EdgeInsets.symmetric(vertical: 24),
                           child: Column(
                             children: [
-                              CircularProgressIndicator(color: AppTheme.primaryColor),
-                              SizedBox(height: 12),
-                              Text('Calculating route...', style: TextStyle(color: AppTheme.textSecondary)),
+                              CircularProgressIndicator(color: theme.colorScheme.primary),
+                              const SizedBox(height: 12),
+                              Text('Calculating route...', style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontWeight: FontWeight.w600)),
                             ],
                           ),
                         ),
@@ -396,21 +406,24 @@ class _RouteScreenState extends State<RouteScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         child: Column(
                           children: [
-                            Text(_routeError!, style: const TextStyle(color: AppTheme.dangerColor), textAlign: TextAlign.center),
+                            Text(_routeError!, 
+                              style: const TextStyle(color: AppTheme.dangerColor, fontWeight: FontWeight.w700), 
+                              textAlign: TextAlign.center),
                             const SizedBox(height: 12),
                             ElevatedButton.icon(
                               onPressed: _calculateSafeRoute,
                               icon: const Icon(Icons.refresh),
                               label: const Text('Retry'),
-                              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor),
                             ),
                           ],
                         ),
                       )
                     else if (!_destinationSet)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Text('Tap the map to choose a destination', style: TextStyle(color: AppTheme.textSecondary), textAlign: TextAlign.center),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Text('Tap the map to choose a destination', 
+                          style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontWeight: FontWeight.w600), 
+                          textAlign: TextAlign.center),
                       )
                     else if (!_routeFound)
                       Padding(
@@ -432,15 +445,15 @@ class _RouteScreenState extends State<RouteScreen> {
                           padding: const EdgeInsets.only(bottom: 12),
                           child: Row(
                             children: [
-                              Icon(Icons.health_and_safety, color: AppTheme.dangerColor, size: 16),
+                              const Icon(Icons.health_and_safety, color: AppTheme.dangerColor, size: 16),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(_destName!, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                    Text(_destName!, style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: theme.colorScheme.onSurface)),
                                     if (_destDesc != null)
-                                      Text(_destDesc!, style: const TextStyle(color: AppTheme.textSecondary, fontSize: 11)),
+                                      Text(_destDesc!, style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 11, fontWeight: FontWeight.w500)),
                                   ],
                                 ),
                               ),
@@ -465,8 +478,10 @@ class _RouteScreenState extends State<RouteScreen> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(step['instruction'] as String, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-                                      Text(step['distance'] as String, style: const TextStyle(color: AppTheme.textSecondary, fontSize: 11)),
+                                      Text(step['instruction'] as String, 
+                                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: theme.colorScheme.onSurface)),
+                                      Text(step['distance'] as String, 
+                                        style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 11, fontWeight: FontWeight.w600)),
                                     ],
                                   ),
                                 ),
@@ -485,14 +500,15 @@ class _RouteScreenState extends State<RouteScreen> {
     );
   }
 
-  Widget _statChip(IconData icon, String value, String label, {Color? color}) {
-    final c = color ?? AppTheme.primaryColor;
+  Widget _statChip(BuildContext context, IconData icon, String value, String label, {Color? color}) {
+    final theme = Theme.of(context);
+    final c = color ?? theme.colorScheme.primary;
     return Column(
       children: [
         Icon(icon, color: c, size: 22),
         const SizedBox(height: 4),
-        Text(value, style: TextStyle(color: c, fontWeight: FontWeight.bold, fontSize: 16)),
-        Text(label, style: const TextStyle(color: AppTheme.textSecondary, fontSize: 11)),
+        Text(value, style: TextStyle(color: c, fontWeight: FontWeight.w900, fontSize: 16)),
+        Text(label, style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 11, fontWeight: FontWeight.w700)),
       ],
     );
   }
