@@ -82,7 +82,7 @@ class _IconButtonCircularState extends State<IconButtonCircular> {
                 curve: ButtonAnimationConfig.springCurve,
                 child: Icon(
                   widget.icon,
-                  color: isActive ? Colors.white : AppTheme.textPrimary,
+                  color: isActive ? Colors.white : Theme.of(context).colorScheme.onSurface,
                   size: 20,
                 ),
               ),

@@ -69,13 +69,13 @@ class _GhostButtonState extends State<GhostButton> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (widget.icon != null) ...[
-                        Icon(widget.icon, color: AppTheme.textPrimary, size: 20),
+                        Icon(widget.icon, color: Theme.of(context).colorScheme.onSurface, size: 20),
                         const SizedBox(width: 8),
                       ],
                       Text(
                         widget.text,
                         style: TextStyle(
-                          color: AppTheme.textPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                           letterSpacing: 0.3,

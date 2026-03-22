@@ -56,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? AppTheme.background : const Color(0xFFF5F7FA);
     final textColor = isDark ? Colors.white : const Color(0xFF0D0D0D);
-    final subtitleColor = isDark ? AppTheme.textSecondary : const Color(0xFF6B7280);
+    final subtitleColor = isDark ? const Color(0xFFA0A0A0) : const Color(0xFF6B7280);
 
     return Scaffold(
       backgroundColor: bg,

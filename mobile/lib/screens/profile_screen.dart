@@ -188,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             role.toUpperCase(),
                             style: TextStyle(
                                 fontSize: 11,
-                                fontWeight: FontWeight.black,
+                                fontWeight: FontWeight.w900,
                                 color: roleColor),
                           ),
                         ),
@@ -324,6 +324,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  String _themeModeLabel(AppThemeMode mode) {
+    switch (mode) {
+      case AppThemeMode.dark:
+        return 'Dark';
+      case AppThemeMode.light:
+        return 'Light';
+      case AppThemeMode.highContrast:
+        return 'High Contrast';
+      case AppThemeMode.colorblind:
+        return 'Colorblind-Friendly';
+    }
   }
 }
 

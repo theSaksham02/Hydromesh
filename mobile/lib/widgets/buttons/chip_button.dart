@@ -64,7 +64,7 @@ class _ChipButtonState extends State<ChipButton> {
           child: AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 200),
             style: TextStyle(
-              color: widget.isSelected ? Colors.white : AppTheme.textSecondary,
+              color: widget.isSelected ? Colors.white : Theme.of(context).colorScheme.onSurfaceVariant,
               fontWeight: widget.isSelected ? FontWeight.bold : FontWeight.w500,
               fontSize: 14,
             ),

@@ -64,6 +64,7 @@ class _ButtonShowcaseScreenState extends State<ButtonShowcaseScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildSection(
+              context: context,
               title: '1. Primary CTA',
               child: PrimaryButton(
                 text: 'CONTINUE',
@@ -73,6 +74,7 @@ class _ButtonShowcaseScreenState extends State<ButtonShowcaseScreen> {
             ),
             
             _buildSection(
+              context: context,
               title: '2. Secondary / Outlined',
               child: SecondaryButton(
                 text: 'Save Draft',
@@ -82,6 +84,7 @@ class _ButtonShowcaseScreenState extends State<ButtonShowcaseScreen> {
             ),
             
             _buildSection(
+              context: context,
               title: '3. Ghost / Text',
               child: Row(
                 children: [
@@ -100,6 +103,7 @@ class _ButtonShowcaseScreenState extends State<ButtonShowcaseScreen> {
             ),
             
             _buildSection(
+              context: context,
               title: '4. Icon Buttons',
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -122,6 +126,7 @@ class _ButtonShowcaseScreenState extends State<ButtonShowcaseScreen> {
             ),
 
             _buildSection(
+              context: context,
               title: '5. Floating Action (FAB)',
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -141,11 +146,12 @@ class _ButtonShowcaseScreenState extends State<ButtonShowcaseScreen> {
             ),
 
             _buildSection(
+              context: context,
               title: '6. Custom Toggle',
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Enable Notifications', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  Text('Enable Notifications', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold)),
                   ToggleButton(
                     value: _toggleValue,
                     onChanged: (val) => setState(() => _toggleValue = val),
@@ -155,6 +161,7 @@ class _ButtonShowcaseScreenState extends State<ButtonShowcaseScreen> {
             ),
 
             _buildSection(
+              context: context,
               title: '7. Loading & Morphing',
               child: PrimaryButton(
                 text: 'SAVE CHANGES',
@@ -165,6 +172,7 @@ class _ButtonShowcaseScreenState extends State<ButtonShowcaseScreen> {
             ),
 
             _buildSection(
+              context: context,
               title: '8. Destructive (Hold to Confirm)',
               child: DestructiveButton(
                 text: 'DELETE ACCOUNT',
@@ -177,6 +185,7 @@ class _ButtonShowcaseScreenState extends State<ButtonShowcaseScreen> {
             ),
 
             _buildSection(
+              context: context,
               title: '9. Social Login',
               child: SocialButton(
                 text: 'Continue with Google',
@@ -186,6 +195,7 @@ class _ButtonShowcaseScreenState extends State<ButtonShowcaseScreen> {
             ),
 
             _buildSection(
+              context: context,
               title: '10. Filter Chips',
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -220,7 +230,8 @@ class _ButtonShowcaseScreenState extends State<ButtonShowcaseScreen> {
     );
   }
 
-  Widget _buildSection({required String title, required Widget child}) {
+  Widget _buildSection({required BuildContext context, required String title, required Widget child}) {
+    final theme = Theme.of(context);
     // Generate staggered fade-in animations for the showcase
     return Padding(
       padding: const EdgeInsets.only(bottom: 32.0),
@@ -229,8 +240,8 @@ class _ButtonShowcaseScreenState extends State<ButtonShowcaseScreen> {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              color: AppTheme.textSecondary,
+            style: TextStyle(
+              color: theme.colorScheme.onSurfaceVariant,
               fontSize: 13,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.0,
