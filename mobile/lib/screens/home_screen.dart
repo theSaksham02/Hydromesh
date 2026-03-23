@@ -288,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: AppTheme.dangerColor,
-                boxShadow: [BoxShadow(color: AppTheme.dangerColor.withOpacity(0.8), blurRadius: 6)],
+                boxShadow: [BoxShadow(color: AppTheme.dangerColor.withValues(alpha: 0.8), blurRadius: 6)],
               ),
             ).animate(onPlay: (c) => c.repeat(reverse: true)).scaleXY(end: 1.5, duration: 600.ms),
             const SizedBox(width: 12),
@@ -312,6 +312,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
+            GestureDetector(
+              onTap: () async {
+                await context.read<SimulationProvider>().stopSimulation();
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Simulation stopped'), backgroundColor: AppTheme.warningColor),
+                  );
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppTheme.dangerColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppTheme.dangerColor.withValues(alpha: 0.4)),
+                ),
+                child: const Text('STOP', style: TextStyle(color: AppTheme.dangerColor, fontWeight: FontWeight.w900, fontSize: 10)),
+              ),
+            ),
+            const SizedBox(width: 8),
             GestureDetector(
               onTap: () => Navigator.pushNamed(context, '/simulation'),
               child: Icon(Icons.chevron_right, color: theme.colorScheme.onSurfaceVariant, size: 20),
