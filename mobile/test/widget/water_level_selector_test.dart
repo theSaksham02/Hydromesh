@@ -3,16 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hydromesh/widgets/report/water_level_selector.dart';
 
 void main() {
-  group('WaterLevelSelector', () {
-    testWidgets('should display all water levels', (tester) async {
-      String? selectedLevel;
-
+  group('WaterLevelSelector Widget Tests', () {
+    testWidgets('should render 5 level options', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: WaterLevelSelector(
-              onSelected: (level) => selectedLevel = level,
-            ),
+            body: WaterLevelSelector(onSelected: (_) {}),
           ),
         ),
       );
@@ -24,23 +20,20 @@ void main() {
       expect(find.text('Above Head'), findsOneWidget);
     });
 
-    testWidgets('should call onSelected when level tapped', (tester) async {
-      String? selectedLevel;
-
+    testWidgets('tapping an option triggers the callback', (tester) async {
+      String? selected;
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: WaterLevelSelector(
-              onSelected: (level) => selectedLevel = level,
-            ),
+            body: WaterLevelSelector(onSelected: (val) => selected = val),
           ),
         ),
       );
 
-      await tester.tap(find.text('Knee'));
+      await tester.tap(find.text('Chest'));
       await tester.pump();
-
-      expect(selectedLevel, 'knee');
+      
+      expect(selected, 'chest');
     });
   });
 }

@@ -1,54 +1,50 @@
 # HydroMesh API Documentation 📖
 
-This document outlines the available REST API endpoints for the HydroMesh backend.
+Detailed documentation for the HydroMesh FloodNet Twin backend services.
 
 ## Base URL
-*   **Local:** `http://localhost:3000/api`
-*   **Production:** `https://hydromesh-api.onrender.com/api`
+- **Local Development:** `http://localhost:3000/api`
+- **Production (Azure/Render):** `https://hydromesh-api.azurewebsites.net/api`
 
 ---
 
-## 1. Authentication
-Endpoints for user registration and login.
+## 1. Authentication (`/auth`)
+| Method | Endpoint | Description | Auth Required |
+|:--- | :--- | :--- | :--- |
+| POST | `/register` | Create a new Citizen or Responder account | No |
+| POST | `/login` | Authenticate and receive a JWT token | No |
 
-### POST `/auth/register`
-Creates a new user account.
-*   **Body:** `{ "name": "...", "email": "...", "password": "...", "role": "citizen|responder" }`
-*   **Response:** `{ "token": "...", "user": { ... } }`
-
-### POST `/auth/login`
-Authenticates an existing user.
-*   **Body:** `{ "email": "...", "password": "..." }`
-*   **Response:** `{ "token": "...", "user": { ... } }`
-
----
-
-## 2. Flood Reports
-Endpoints for crowdsourced flood monitoring.
-
-### GET `/reports`
-Returns all active flood reports within the last 24 hours.
-*   **Response:** `[ { "id": "...", "latitude": 0.0, "longitude": 0.0, "waterLevel": "...", "createdAt": "..." }, ... ]`
-
-### POST `/reports` (Auth Required)
-Submits a new flood report.
-*   **Body:** `{ "latitude": 0.0, "longitude": 0.0, "waterLevel": "ankle|knee|waist|chest|above_head", "description": "..." }`
+### Sample Register Body
+```json
+{
+  "name": "Saksham Mishra",
+  "email": "saksham@test.com",
+  "password": "password123",
+  "role": "citizen"
+}
+```
 
 ---
 
-## 3. Emergency SOS
-Endpoints for critical assistance.
-
-### GET `/emergency/pending` (Auth Required - Responder Only)
-Returns all active SOS requests.
-
-### POST `/emergency/request` (Auth Required)
-Broadcasts an SOS signal to nearby responders.
-*   **Body:** `{ "latitude": 0.0, "longitude": 0.0, "description": "..." }`
+## 2. Flood Reports (`/reports`)
+| Method | Endpoint | Description | Auth Required |
+|:--- | :--- | :--- | :--- |
+| GET | `/` | Fetch all active flood reports (last 24h) | No |
+| POST | `/` | Submit a new crowdsourced flood report | Yes |
 
 ---
 
-## 4. Weather & Intelligence
-### GET `/weather/current`
-Fetches real-time weather from Open-Meteo based on coordinates.
-*   **Params:** `?latitude=...&longitude=...`
+## 3. Emergency SOS (`/emergency`)
+| Method | Endpoint | Description | Auth Required |
+|:--- | :--- | :--- | :--- |
+| POST | `/request` | Trigger a high-priority SOS signal | Yes |
+| GET | `/pending` | List all active SOS requests for responders | Yes (Responder) |
+| POST | `/:id/accept` | Responder accepts an SOS request | Yes (Responder) |
+
+---
+
+## 4. Weather (`/weather`)
+| Method | Endpoint | Description | Auth Required |
+|:--- | :--- | :--- | :--- |
+| GET | `/current` | Real-time rain and wind data from Open-Meteo | No |
+| GET | `/forecast` | 7-day hyper-local flood risk forecast | No |

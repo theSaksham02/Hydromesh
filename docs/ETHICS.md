@@ -1,18 +1,15 @@
-# Ethical Considerations & Data Responsibility ⚖️
+# Ethical Framework & Responsibility ⚖️
 
-HydroMesh is built with a commitment to public safety, privacy, and community trust. This document outlines the ethical framework guiding our development.
+HydroMesh is built on the principle of "Technology for Good," aligning with **UN Sustainable Development Goal 11**.
 
-## 1. Safety-First Prioritization
-*   **Accuracy:** We acknowledge that crowdsourced data can be inaccurate. The app explicitly states that it should be used as a supplementary tool, not a primary survival guide.
-*   **Emergency Services:** Users are encouraged to contact official government emergency services (e.g., 999/911) before relying on the in-app SOS feature.
+## 1. Data Accuracy & Life Safety
+- **Disclaimer:** The app explicitly states that crowdsourced data is unverified.
+- **Emergency Priority:** The in-app SOS is a secondary backup; users are always prompted to call official emergency services (999/911) first.
 
-## 2. Privacy & Data Minimization
-*   **Location Tracking:** GPS data is only collected at the moment of report submission or SOS request. We do not track users' movements in the background.
-*   **Anonymity:** Flood reports are displayed on the map without user names to prevent social targeting or harassment.
+## 2. Privacy by Design
+- **Selective Tracking:** GPS data is only captured during a report or SOS event. We do not maintain background movement logs.
+- **Data Minimization:** We only collect what is strictly necessary for flood prediction.
 
-## 3. Inclusivity (SDG 11)
-*   **Literacy Barriers:** By using icon-based reporting (F-13), we ensure that users with varying literacy levels can still contribute to community safety.
-*   **Accessibility:** Our dedicated accessibility modes ensure that elderly users and those with visual impairments are not left behind during a crisis.
-
-## 4. Open Source Transparency
-*   The system's logic is fully open-source to allow for community audit and to ensure that no hidden data-harvesting or biased algorithms are used.
+## 3. Equitable Access
+- **Low Literacy Support:** Icon-based reporting (F-13) ensures that language or literacy barriers do not prevent people from staying safe.
+- **Hardware Agnostic:** Optimized for low-end devices and offline mesh scenarios to serve the Global South.

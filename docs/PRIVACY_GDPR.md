@@ -1,29 +1,19 @@
-# Privacy Policy & GDPR Compliance 🛡️
+# GDPR & Privacy Policy 🛡️
 
-This document explains how HydroMesh (Output Outlaws) handles personal data in accordance with the General Data Protection Regulation (GDPR).
+## 1. Information We Collect
+- **Identity:** Name and email for account management.
+- **Geospatial:** Latitude and longitude coordinates during incident reporting.
+- **Communications:** Descriptions or voice notes attached to flood reports.
 
-## 1. Data Collected
-*   **User Profile:** Name, Email, Password (hashed via bcrypt).
-*   **Location Data:** GPS coordinates (Latitude/Longitude).
-*   **Multimedia:** Optional photos or voice descriptions of flood events.
-
-## 2. Purpose of Processing
-We process data solely to:
-*   Identify and display flood risks on a community map.
-*   Route users to safety during active floods.
-*   Notify responders of emergency SOS signals.
+## 2. Your Rights under GDPR
+- **Right to Access:** Users can request a full export of their data.
+- **Right to Erasure:** Users can delete their account at any time, which nukes all personal identifiers from our database.
+- **Right to Rectification:** Users can update their profile information via the app.
 
 ## 3. Data Retention
-*   **Active Reports:** Retained for 24–48 hours to provide real-time relevance.
-*   **SOS Requests:** Logged for audit purposes but removed from the live map once resolved.
-*   **User Accounts:** Retained until the user requests deletion.
+- Flood reports are automatically archived after 48 hours to ensure map relevance and minimize data footprint.
+- SOS logs are kept for 30 days for emergency response auditing, then anonymized.
 
-## 4. User Rights
-Under GDPR, users have the right to:
-*   **Access:** Request a copy of their stored data.
-*   **Rectification:** Correct inaccurate data.
-*   **Erasure ("Right to be Forgotten"):** Request full deletion of their account and data.
-*   **Withdraw Consent:** Disable location permissions at any time via OS settings.
-
-## 5. Security
-All data is stored on **Supabase** with SSL/TLS encryption in transit and AES-256 encryption at rest. JWT tokens are used for secure session management.
+## 4. Security
+- All passwords are hashed using **bcrypt**.
+- Data in transit is protected via **TLS/SSL**.
