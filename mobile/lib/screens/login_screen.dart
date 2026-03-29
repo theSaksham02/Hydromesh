@@ -56,7 +56,8 @@ class _LoginScreenState extends State<LoginScreen>
     final l = raw.toLowerCase();
     if (l.contains('network') || l.contains('socket') ||
         l.contains('timeout') || l.contains('connect')) {
-      return 'No connection — check your internet and try again.';
+      final url = AppConfig.apiBaseUrl;
+      return 'No connection to server at $url. Check your internet or IP settings.';
     }
     if (l.contains('invalid') || l.contains('credentials') ||
         l.contains('password') || l.contains('401')) {

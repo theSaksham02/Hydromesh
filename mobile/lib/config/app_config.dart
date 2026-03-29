@@ -7,11 +7,15 @@ class AppConfig {
   // Switch between: 'local', 'render', 'azure'
   static const String _env = 'local';
 
+  // If using a PHYSICAL DEVICE, change this to your computer's LAN IP (e.g. 192.168.1.5)
+  // If using an EMULATOR, keep it as '10.0.2.2'
+  static const String _localIp = '10.0.2.2'; 
+
   static String get _localHost {
     if (kIsWeb) {
       return 'localhost';
     } else if (Platform.isAndroid) {
-      return '10.0.2.2'; // Android Emulator alias for host machine
+      return _localIp; 
     } else {
       return '127.0.0.1'; // iOS Simulator and Desktop
     }
