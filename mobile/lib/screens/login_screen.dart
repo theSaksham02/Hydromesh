@@ -7,6 +7,7 @@ import '../providers/auth_provider.dart';
 import '../widgets/common/glass_card.dart';
 import '../widgets/common/neon_button.dart';
 import '../config/theme.dart';
+import '../config/app_config.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
