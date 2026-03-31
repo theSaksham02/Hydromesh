@@ -497,6 +497,7 @@ class _HomeScreenState extends State<HomeScreen> {
         clipBehavior: Clip.none,
         children: [
           _buildToolCard(context,
+              key: const ValueKey('tool_map'),
               title: 'Live Flood Map',
               icon: Icons.map_outlined,
               color: AppTheme.primaryColor,
@@ -507,6 +508,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 : [const Color(0xFFE0E7FF), const Color(0xFFC7D2FE)]),
           const SizedBox(width: 16),
           _buildToolCard(context,
+              key: const ValueKey('tool_report'),
               title: 'Report Incident',
               icon: Icons.campaign_outlined,
               color: const Color(0xFFFF6B35),
@@ -517,6 +519,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 : [const Color(0xFFFFEDD5), const Color(0xFFFED7AA)]),
           const SizedBox(width: 16),
           _buildToolCard(context,
+              key: const ValueKey('tool_routes'),
               title: 'Safe Routes',
               icon: Icons.route_outlined,
               color: AppTheme.safeColor,
@@ -531,6 +534,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildToolCard(BuildContext context, {
+    Key? key,
     required String title,
     required IconData icon,
     required Color color,
@@ -546,6 +550,7 @@ class _HomeScreenState extends State<HomeScreen> {
           : [theme.colorScheme.surface, color.withValues(alpha: 0.15)]);
 
     return SizedBox(
+      key: key,
       width: 156,
       height: 180,
       child: Material(
@@ -702,6 +707,7 @@ class _HomeScreenState extends State<HomeScreen> {
             : 'Just now';
 
         return Padding(
+          key: ValueKey('activity_${r.reportId ?? i}'),
           padding: const EdgeInsets.only(bottom: 12),
           child: Material(
             color: Colors.transparent,
