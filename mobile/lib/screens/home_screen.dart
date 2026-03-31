@@ -508,7 +508,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(width: 16),
           _buildToolCard(context,
               title: 'Report Incident',
-              icon: Icons.add_a_photo_outlined,
+              icon: Icons.campaign_outlined,
               color: const Color(0xFFFF6B35),
               route: '/report',
               delay: 200,
@@ -677,7 +677,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
               ),
-              icon: const Icon(Icons.add_a_photo_outlined, size: 18),
+              icon: const Icon(Icons.campaign_outlined, size: 18),
               label: const Text('File a Report'),
               onPressed: () => Navigator.pushNamed(context, '/report'),
             ),

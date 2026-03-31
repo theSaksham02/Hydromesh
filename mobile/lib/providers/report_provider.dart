@@ -61,10 +61,14 @@ class ReportProvider with ChangeNotifier {
     _socket?.on('new_report', (data) {
       if (data != null) {
         final newReport = FloodReport.fromJson(data);
-        _reports.insert(0, newReport);
-        _fromCache = false;
-        _saveCache(_reports);
-        notifyListeners();
+        // Avoid duplicates if the sender receives their own broadcast
+        final exists = _reports.any((r) => r.reportId == newReport.reportId);
+        if (!exists) {
+          _reports.insert(0, newReport);
+          _fromCache = false;
+          _saveCache(_reports);
+          notifyListeners();
+        }
       }
     });
   }

@@ -8,7 +8,7 @@ class AuthProvider with ChangeNotifier {
   User? _user;
   String? _token;
   bool _isLoading = false;
-  bool _isRestoring = true; // true until first session restore attempt completes
+  bool _isRestoring = true;
   String? _error;
 
   User? get user => _user;
@@ -28,10 +28,9 @@ class AuthProvider with ChangeNotifier {
       final saved = prefs.getString('auth_token');
       if (saved != null) {
         _token = saved;
-        ApiService.setToken(saved); // restore into HTTP client too
+        ApiService.setToken(saved);
       }
     } catch (_) {
-      // If SharedPreferences fails, proceed as unauthenticated
     } finally {
       _isRestoring = false;
       notifyListeners();

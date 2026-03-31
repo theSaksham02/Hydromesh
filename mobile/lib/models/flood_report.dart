@@ -46,8 +46,6 @@ class FloodReport {
       'longitude': longitude,
       'waterLevel': waterLevel,
       'description': description,
-      'photoUrl': photoUrl,
-      'voiceUrl': voiceUrl,
     };
   }
 }
