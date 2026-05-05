@@ -1,6 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useInView } from "motion/react";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./components/ui/dialog";
+import { Input } from "./components/ui/input";
+import { Label } from "./components/ui/label";
+import { Textarea } from "./components/ui/textarea";
+import { Button } from "./components/ui/button";
+import {
   ArrowUpRight,
   ArrowRight,
   Radio,
@@ -701,25 +713,80 @@ export default function App() {
               </Reveal>
               <Reveal delay={0.3}>
                 <div className="mt-10 flex flex-wrap items-center gap-3">
-                  <a
-                    href="#"
-                    className="group inline-flex items-center gap-2 bg-[#3BA6A6] text-[#0F1620] px-5 py-3 rounded-sm hover:bg-white transition-colors"
-                  >
-                    Become a Pilot Partner
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </a>
-                  <a
-                    href="#"
-                    className="group inline-flex items-center gap-2 border border-white/25 text-white px-5 py-3 rounded-sm hover:bg-white/10 transition-colors"
-                  >
-                    Fund the Pilot
-                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                  </a>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <button
+                        className="group inline-flex items-center gap-2 bg-[#3BA6A6] text-[#0F1620] px-5 py-3 rounded-sm hover:bg-white transition-colors cursor-pointer"
+                      >
+                        Become a Pilot Partner
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px] bg-[#1B2A41] border-white/10 text-white">
+                      <DialogHeader>
+                        <DialogTitle className="font-display text-2xl">Partner with HydroMesh</DialogTitle>
+                        <DialogDescription className="text-[#A9C0D6]">
+                          Help us deploy street-level flood intelligence to your community.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <form className="grid gap-4 py-4" onSubmit={(e) => e.preventDefault()}>
+                        <div className="grid gap-2">
+                          <Label htmlFor="org-name" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Organization Name</Label>
+                          <Input id="org-name" placeholder="City of..." className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
+                        </div>
+                        <div className="grid gap-2">
+                          <Label htmlFor="org-email" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Contact Email</Label>
+                          <Input id="org-email" type="email" placeholder="contact@org.gov" className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
+                        </div>
+                        <div className="grid gap-2">
+                          <Label htmlFor="org-message" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Deployment Interest</Label>
+                          <Textarea id="org-message" placeholder="Tell us about your region's flood challenges..." className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6] min-h-[100px]" />
+                        </div>
+                        <Button type="submit" className="bg-[#3BA6A6] text-[#0F1620] hover:bg-white transition-colors mt-2">
+                          Send Request
+                        </Button>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <button
+                        className="group inline-flex items-center gap-2 border border-white/25 text-white px-5 py-3 rounded-sm hover:bg-white/10 transition-colors cursor-pointer"
+                      >
+                        Fund the Pilot
+                        <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                      </button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px] bg-[#1B2A41] border-white/10 text-white">
+                      <DialogHeader>
+                        <DialogTitle className="font-display text-2xl">Invest in Resilience</DialogTitle>
+                        <DialogDescription className="text-[#A9C0D6]">
+                          Join us in building a self-healing, community-driven safety network.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <form className="grid gap-4 py-4" onSubmit={(e) => e.preventDefault()}>
+                        <div className="grid gap-2">
+                          <Label htmlFor="invest-name" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Full Name / Entity</Label>
+                          <Input id="invest-name" placeholder="Your name or firm" className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
+                        </div>
+                        <div className="grid gap-2">
+                          <Label htmlFor="invest-email" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Email Address</Label>
+                          <Input id="invest-email" type="email" placeholder="investor@firm.com" className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
+                        </div>
+                        <div className="grid gap-2">
+                          <Label htmlFor="invest-amount" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Interest / Allocation</Label>
+                          <Input id="invest-amount" placeholder="Pilot funding, series, or strategic partnership" className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
+                        </div>
+                        <Button type="submit" className="bg-[#3BA6A6] text-[#0F1620] hover:bg-white transition-colors mt-2">
+                          Initiate Conversation
+                        </Button>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </Reveal>
             </div>
-
-
           </div>
         </div>
       </section>
