@@ -88,7 +88,11 @@ function HeroMap() {
   return (
     <div className="absolute inset-0 overflow-hidden">
       {/* base wash */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_30%,#E9EEF5_0%,#F7F9FB_60%)]" />
+      <motion.div 
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_30%,#E9EEF5_0%,#F7F9FB_60%)]"
+        animate={{ opacity: [0.8, 1, 0.8] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
 
       {/* parallax SVG map */}
       <motion.svg
@@ -527,14 +531,14 @@ export default function App() {
               { k: "Outcomes", copy: "Faster response, safer travel, reduced exposure for at-risk residents." },
               { k: "Impact", copy: "Climate resilience, reduced disruption, durable community safety." },
             ].map((c, i) => (
-              <Reveal key={c.k} delay={i * 0.1} className="col-span-12 md:col-span-6 lg:col-span-3 bg-[#1B2A41] p-8">
+              <Reveal key={c.k} delay={i * 0.1} className="group col-span-12 md:col-span-6 lg:col-span-3 bg-[#1B2A41] p-8 hover:bg-[#1B2A41]/80 transition-colors duration-300">
                 <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-[#3BA6A6]">
                   <span>{String(i + 1).padStart(2, "0")}</span>
                   <span>{c.k}</span>
                 </div>
                 <p className="mt-6 text-[15px] leading-relaxed text-[#E9EEF5]/85">{c.copy}</p>
-                <div className="mt-10 flex items-center text-[#3BA6A6]">
-                  <ArrowRight className="h-4 w-4" />
+                <div className="mt-10 flex items-center text-[#3BA6A6] opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+                  <ArrowRight className="h-4 w-4 transition-transform duration-500 ease-out-expo group-hover:translate-x-1" />
                   <span className="ml-2 font-mono text-[10px] uppercase tracking-[0.18em]">
                     {i < 3 ? "flows to" : "endpoint"}
                   </span>
@@ -658,16 +662,21 @@ export default function App() {
 
       {/* 10. ENGAGEMENT */}
       <section id="engage" className="relative bg-[#1B2A41] text-[#E9EEF5] overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.07]">
+        <motion.div 
+          className="absolute inset-0 opacity-[0.07]"
+          animate={{ x: ["0%", "-50%"], y: ["0%", "-50%"] }}
+          transition={{ repeat: Infinity, duration: 60, ease: "linear" }}
+          style={{ width: "200%", height: "200%" }}
+        >
           <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
             <defs>
               <pattern id="dotgrid" width="20" height="20" patternUnits="userSpaceOnUse">
                 <circle cx="1" cy="1" r="1" fill="#E9EEF5" />
               </pattern>
             </defs>
-            <rect width="600" height="400" fill="url(#dotgrid)" />
+            <rect width="100%" height="100%" fill="url(#dotgrid)" />
           </svg>
-        </div>
+        </motion.div>
         <div className="relative max-w-[1320px] mx-auto px-6 lg:px-10 py-28 lg:py-36">
           <div className="grid grid-cols-12 gap-6">
             <div className="col-span-12 lg:col-span-7">
@@ -739,5 +748,44 @@ export default function App() {
         </div>
       </footer>
     </div>
+  );
+}
+       </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+>
+  );
+}
+   </div>
+      </footer>
+    </div>
+  );
+}
+>
+  );
+}
+v>
+      </footer>
+    </div>
+  );
+}
+       </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+>
+  );
+}
+   </div>
+      </footer>
+    </div>
+  );
+}
+>
   );
 }
