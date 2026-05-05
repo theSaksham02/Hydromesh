@@ -729,23 +729,7 @@ export default function App() {
                           Help us deploy street-level flood intelligence to your community.
                         </DialogDescription>
                       </DialogHeader>
-                      <form className="grid gap-4 py-4" onSubmit={(e) => e.preventDefault()}>
-                        <div className="grid gap-2">
-                          <Label htmlFor="org-name" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Organization Name</Label>
-                          <Input id="org-name" placeholder="City of..." className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
-                        </div>
-                        <div className="grid gap-2">
-                          <Label htmlFor="org-email" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Contact Email</Label>
-                          <Input id="org-email" type="email" placeholder="contact@org.gov" className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
-                        </div>
-                        <div className="grid gap-2">
-                          <Label htmlFor="org-message" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Deployment Interest</Label>
-                          <Textarea id="org-message" placeholder="Tell us about your region's flood challenges..." className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6] min-h-[100px]" />
-                        </div>
-                        <Button type="submit" className="bg-[#3BA6A6] text-[#0F1620] hover:bg-white transition-colors mt-2">
-                          Send Request
-                        </Button>
-                      </form>
+                      <PartnerForm />
                     </DialogContent>
                   </Dialog>
 
