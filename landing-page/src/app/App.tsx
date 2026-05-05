@@ -749,23 +749,7 @@ export default function App() {
                           Join us in building a self-healing, community-driven safety network.
                         </DialogDescription>
                       </DialogHeader>
-                      <form className="grid gap-4 py-4" onSubmit={(e) => e.preventDefault()}>
-                        <div className="grid gap-2">
-                          <Label htmlFor="invest-name" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Full Name / Entity</Label>
-                          <Input id="invest-name" placeholder="Your name or firm" className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
-                        </div>
-                        <div className="grid gap-2">
-                          <Label htmlFor="invest-email" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Email Address</Label>
-                          <Input id="invest-email" type="email" placeholder="investor@firm.com" className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
-                        </div>
-                        <div className="grid gap-2">
-                          <Label htmlFor="invest-amount" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Interest / Allocation</Label>
-                          <Input id="invest-amount" placeholder="Pilot funding, series, or strategic partnership" className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
-                        </div>
-                        <Button type="submit" className="bg-[#3BA6A6] text-[#0F1620] hover:bg-white transition-colors mt-2">
-                          Initiate Conversation
-                        </Button>
-                      </form>
+                      <FundForm />
                     </DialogContent>
                   </Dialog>
                 </div>
