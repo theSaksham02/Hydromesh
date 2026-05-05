@@ -232,6 +232,132 @@ function SectionLabel({ index, children }: { index: string; children: React.Reac
   );
 }
 
+/* -------------------------- Partner Form -------------------------- */
+function PartnerForm() {
+  const [orgName, setOrgName] = useState("");
+  const [orgEmail, setOrgEmail] = useState("");
+  const [orgMessage, setOrgMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    const GFORM_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSeLqMiCvHHlG_aZeyKa1ydxvxT7OO3EdE4mW3vJjPR6BiBZ0A/formResponse";
+    const body = new FormData();
+    body.append("entry.1110557232", orgName);
+    body.append("entry.666769330", orgEmail);
+    body.append("entry.963832188", orgMessage);
+    
+    try {
+      await fetch(GFORM_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: body
+      });
+      setIsSubmitted(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isSubmitted) {
+    return (
+      <div className="py-8 text-center">
+        <Check className="h-10 w-10 text-[#3BA6A6] mx-auto mb-4" />
+        <h3 className="font-display text-xl text-white mb-2">Request Received</h3>
+        <p className="text-[#A9C0D6] text-sm">We'll be in touch shortly to discuss pilot opportunities.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form className="grid gap-4 py-4" onSubmit={handleSubmit}>
+      <div className="grid gap-2">
+        <Label htmlFor="org-name" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Organization Name</Label>
+        <Input id="org-name" required value={orgName} onChange={(e) => setOrgName(e.target.value)} placeholder="City of..." className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="org-email" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Contact Email</Label>
+        <Input id="org-email" required type="email" value={orgEmail} onChange={(e) => setOrgEmail(e.target.value)} placeholder="contact@org.gov" className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="org-message" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Deployment Interest</Label>
+        <Textarea id="org-message" required value={orgMessage} onChange={(e) => setOrgMessage(e.target.value)} placeholder="Tell us about your region's flood challenges..." className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6] min-h-[100px]" />
+      </div>
+      <Button type="submit" disabled={isSubmitting} className="bg-[#3BA6A6] text-[#0F1620] hover:bg-white transition-colors mt-2 disabled:opacity-50">
+        {isSubmitting ? "Sending..." : "Send Request"}
+      </Button>
+    </form>
+  );
+}
+
+/* -------------------------- Fund Form -------------------------- */
+function FundForm() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [amount, setAmount] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    const GFORM_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdV0ociXtA6QR3tquFIpROc9iKr8vuVk40SwkjB9z47-4cFCg/formResponse";
+    const body = new FormData();
+    body.append("entry.236619283", name);
+    body.append("entry.1907360191", email);
+    body.append("entry.1132827542", amount);
+    
+    try {
+      await fetch(GFORM_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: body
+      });
+      setIsSubmitted(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isSubmitted) {
+    return (
+      <div className="py-8 text-center">
+        <Check className="h-10 w-10 text-[#3BA6A6] mx-auto mb-4" />
+        <h3 className="font-display text-xl text-white mb-2">Request Received</h3>
+        <p className="text-[#A9C0D6] text-sm">We'll be in touch shortly to discuss pilot opportunities.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form className="grid gap-4 py-4" onSubmit={handleSubmit}>
+      <div className="grid gap-2">
+        <Label htmlFor="invest-name" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Full Name / Entity</Label>
+        <Input id="invest-name" required value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name or firm" className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="invest-email" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Email Address</Label>
+        <Input id="invest-email" required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="investor@firm.com" className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="invest-amount" className="text-xs uppercase tracking-widest text-[#A9C0D6]">Interest / Allocation</Label>
+        <Input id="invest-amount" required value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Pilot funding, series, or strategic partnership" className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-[#3BA6A6]" />
+      </div>
+      <Button type="submit" disabled={isSubmitting} className="bg-[#3BA6A6] text-[#0F1620] hover:bg-white transition-colors mt-2 disabled:opacity-50">
+        {isSubmitting ? "Sending..." : "Initiate Conversation"}
+      </Button>
+    </form>
+  );
+}
+
 /* -------------------------- Main -------------------------- */
 export default function App() {
   return (
