@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, useInView } from "motion/react";
+import { useState } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
 import {
   Dialog,
   DialogContent,
@@ -23,60 +23,17 @@ import {
   Github,
   Waves,
   ShieldCheck,
-  LifeBuoy,
-  Home,
-  Bus,
-  Siren,
+  Landmark,
+  Award,
+  GraduationCap,
+  Building2,
   HeartHandshake,
+  Users,
   Layers,
-  Quote,
   Clock,
   Navigation,
   X,
 } from "lucide-react";
-
-/* ------------------------------------------------------------------ */
-/* Animated Counter (supports decimals)                                */
-/* ------------------------------------------------------------------ */
-function Counter({
-  to,
-  suffix = "",
-  prefix = "",
-  duration = 1800,
-  decimals = 0,
-}: {
-  to: number;
-  suffix?: string;
-  prefix?: string;
-  duration?: number;
-  decimals?: number;
-}) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-10%" });
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    if (!inView) return;
-    let raf = 0;
-    const start = performance.now();
-    const tick = (t: number) => {
-      const p = Math.min(1, (t - start) / duration);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setVal(to * eased);
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [inView, to, duration]);
-  const display =
-    decimals > 0 ? (val as number).toFixed(decimals) : Math.round(val as number).toLocaleString();
-  return (
-    <span ref={ref} className="tabular-nums">
-      {prefix}
-      {display}
-      {suffix}
-    </span>
-  );
-}
 
 /* ------------------------------------------------------------------ */
 /* Reveal wrapper                                                      */
@@ -271,7 +228,7 @@ function HeroMap() {
 function PhonePreview() {
   return (
     <div className="relative mx-auto w-full max-w-[320px]" aria-hidden="true">
-      <div className="absolute -inset-8 rounded-full bg-[#00C6A7]/10 blur-3xl" />
+      <div className="absolute -inset-4 rounded-full bg-[#00C6A7]/10 blur-3xl" />
       <div className="relative rounded-[2.4rem] border border-white/10 bg-[#081526] p-2.5 shadow-[0_40px_90px_-24px_rgba(0,0,0,0.65)]">
         <div className="overflow-hidden rounded-[1.8rem] bg-[#0B1F3A]">
           {/* status row */}
@@ -586,8 +543,8 @@ export default function App() {
             <a href="#problem" className="hover:text-white transition-colors">Problem</a>
             <a href="#solution" className="hover:text-white transition-colors">Solution</a>
             <a href="#how" className="hover:text-white transition-colors">How it works</a>
-            <a href="#impact" className="hover:text-white transition-colors">Impact</a>
             <a href="#pilot" className="hover:text-white transition-colors">Pilot</a>
+            <a href="#who" className="hover:text-white transition-colors">Who it's for</a>
           </nav>
           <a
             href="#engage"
@@ -602,7 +559,7 @@ export default function App() {
       {/* 1. HERO */}
       <section id="top" className="relative min-h-screen supports-[height:100dvh]:min-h-[100dvh] pt-16 flex items-center bg-[#0B1F3A]">
         <HeroMap />
-        <div className="relative max-w-[1320px] mx-auto px-6 lg:px-10 py-16 lg:py-20 w-full">
+        <div className="relative max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-10 py-16 lg:py-20 w-full">
           <div className="max-w-4xl">
             <Reveal>
               <div className="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.05] backdrop-blur px-3.5 py-1.5 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.08em] sm:tracking-[0.16em] text-[#00C6A7]">
@@ -614,16 +571,17 @@ export default function App() {
               </div>
             </Reveal>
             <Reveal delay={0.08}>
-              <h1 className="font-display mt-8 text-[clamp(2.4rem,6vw,5.2rem)] leading-[1.02] tracking-[-0.03em] text-white font-bold">
-                Floods strike in minutes.
+              <h1 className="font-display mt-8 text-[clamp(2.2rem,5.4vw,4.8rem)] leading-[1.04] tracking-[-0.03em] text-white font-bold">
+                <span className="text-[#00C6A7]">Street-level</span> flood intelligence
                 <br />
-                Warnings arrive in <span className="text-[#00C6A7]">hours.</span>
+                for cities and communities.
               </h1>
             </Reveal>
             <Reveal delay={0.16}>
               <p className="mt-7 max-w-xl text-[17px] leading-[1.6] text-[#A9BCD4]">
-                HydroMesh turns community reports into live, street-level risk maps and safe routes
-                in under 90 seconds, so people act before the water does.
+                HydroMesh turns community reports into live risk maps and safe routes in under 90
+                seconds, helping agencies respond faster and residents reach safety before the
+                water rises.
               </p>
             </Reveal>
             <Reveal delay={0.24}>
@@ -646,18 +604,18 @@ export default function App() {
             </Reveal>
           </div>
 
-          {/* hero stats */}
-          <Reveal delay={0.3} className="mt-16 lg:mt-20">
+          {/* hero stats (static, sourced) */}
+          <Reveal delay={0.3} className="mt-14 lg:mt-20">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 border border-white/10 rounded-xl overflow-hidden">
               {[
-                { to: 1.5, decimals: 1, suffix: "B", label: "people live in flood-prone areas", src: "UNDRR" },
-                { to: 44, decimals: 0, suffix: "%", label: "of all disasters are flood-related", src: "UNDRR 2000-2019" },
-                { range: "6-12h", label: "average delay in flood warnings", src: "Global average" },
-                { to: 90, decimals: 0, suffix: "s", label: "report to safe route", src: "HydroMesh" },
+                { stat: "47%", label: "of weather-related disasters are floods", src: "UNDRR" },
+                { stat: "8×", label: "higher disaster mortality without early warning", src: "WMO" },
+                { stat: "1/2", label: "of countries lack early warning systems", src: "UN" },
+                { stat: "90s", label: "from report to safe route", src: "HydroMesh" },
               ].map((s) => (
                 <div key={s.label} className="bg-[#0E2440]/80 backdrop-blur-sm px-4 sm:px-5 py-6">
-                  <div className="font-display text-[clamp(2rem,3.4vw,2.9rem)] leading-none tracking-[-0.02em] text-[#00C6A7] font-bold">
-                    {s.range ? s.range : <Counter to={s.to!} suffix={s.suffix} decimals={s.decimals} />}
+                  <div className="font-display text-[clamp(1.9rem,3.2vw,2.9rem)] leading-none tracking-[-0.02em] text-[#00C6A7] font-bold">
+                    {s.stat}
                   </div>
                   <div className="mt-3 text-[13px] leading-snug text-[#C7D5E6]">{s.label}</div>
                   <div className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-[#7E93AB]">
@@ -670,52 +628,77 @@ export default function App() {
         </div>
       </section>
 
-      {/* 2. PROBLEM */}
+      {/* 2. TRUST */}
+      <section className="relative bg-[#0B1F3A] border-t border-white/10">
+        <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-10 py-6">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-center">
+            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#7E93AB]">
+              A project of
+            </span>
+            <span className="inline-flex items-center gap-2 text-[14px] font-medium text-[#E6EDF5]">
+              <Landmark className="h-4 w-4 text-[#00C6A7]" strokeWidth={1.8} />
+              University of Birmingham Dubai
+            </span>
+            <span className="hidden sm:block h-4 w-px bg-white/15" />
+            <span className="inline-flex items-center gap-2 text-[14px] text-[#C7D5E6]">
+              <Award className="h-4 w-4 text-[#7E93AB]" strokeWidth={1.8} />
+              FII/MIT Finalist
+            </span>
+            <span className="hidden sm:block h-4 w-px bg-white/15" />
+            <span className="inline-flex items-center gap-2 text-[14px] text-[#C7D5E6]">
+              <GraduationCap className="h-4 w-4 text-[#7E93AB]" strokeWidth={1.8} />
+              MCN/UN Fellowship
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. PROBLEM */}
       <section id="problem" className="relative bg-white scroll-mt-16">
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-10 py-24 lg:py-32">
+        <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-10 py-24 lg:py-32">
           <div className="max-w-3xl">
             <Reveal>
-              <h2 className="font-display text-[clamp(2rem,3.8vw,3.4rem)] leading-[1.08] tracking-[-0.025em] text-[#0B1F3A] font-bold">
+              <h2 className="font-display text-[clamp(1.9rem,3.6vw,3.2rem)] leading-[1.1] tracking-[-0.025em] text-[#0B1F3A] font-bold">
                 Floods are the most common disaster on Earth. Early warning is still a privilege.
               </h2>
             </Reveal>
             <Reveal delay={0.1}>
-              <p className="mt-6 text-[18px] leading-[1.6] text-[#5B6B7C] max-w-2xl">
+              <p className="mt-6 text-[17px] leading-[1.6] text-[#5B6B7C] max-w-2xl">
                 Communities and responders still lack real-time, street-level information. Alerts
                 are broad, delayed, and hard to act on, leaving people exposed when it matters most.
               </p>
             </Reveal>
           </div>
 
-          {/* 3 stat cards */}
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* 3 sourced fact cards */}
+          <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                stat: "1.5B",
-                title: "people live in flood-prone areas",
-                body: "Nearly one in five people worldwide faces direct exposure to flood risk.",
-                src: "UNDRR",
+                stat: "47%",
+                title: "of weather-related disasters are floods",
+                body: "Floods affected 2.3 billion people between 1995 and 2015, more than any other hazard.",
+                src: "UNDRR / CRED",
               },
               {
-                stat: "6-12 hrs",
-                title: "warnings arrive too late",
-                body: "Flood warnings reach communities 6-12 hours too late on average, after water has already cut off streets.",
-                src: "Global average",
+                stat: "8×",
+                title: "higher mortality without early warning",
+                body: "Countries with limited early warning coverage suffer eight times the disaster deaths of covered countries.",
+                src: "WMO / UNDRR",
               },
               {
-                stat: "< 5%",
-                title: "of low-income cities are covered",
-                body: "Street-level early warning systems are absent exactly where exposure is highest.",
-                src: "Cities assessment",
+                stat: "1/2",
+                title: "of countries lack early warning",
+                body: "Half of the world's countries still have no adequate multi-hazard early warning systems.",
+                src: "UN Early Warnings for All",
               },
             ].map((c, i) => (
               <Reveal key={c.title} delay={i * 0.1}>
-                <div className="h-full rounded-xl border border-[#0B1F3A]/10 bg-white p-8 transition-colors hover:border-[#00C6A7]/60">
+                <div className="h-full rounded-xl border border-[#0B1F3A]/10 bg-white p-7 sm:p-8 transition-colors hover:border-[#00C6A7]/60">
                   <div className="h-[3px] w-12 rounded-full bg-[#00C6A7]" />
-                  <div className="mt-6 font-display text-[clamp(2.2rem,4vw,3.4rem)] leading-none tracking-[-0.03em] text-[#0B1F3A] font-bold">
+                  <div className="mt-6 font-display text-[clamp(2.4rem,4vw,3.2rem)] leading-none tracking-[-0.03em] text-[#0B1F3A] font-bold">
                     {c.stat}
                   </div>
-                  <h3 className="mt-5 text-[19px] leading-snug font-semibold text-[#0B1F3A]">{c.title}</h3>
+                  <h3 className="mt-5 text-[18px] leading-snug font-semibold text-[#0B1F3A]">{c.title}</h3>
                   <p className="mt-2.5 text-[15px] leading-relaxed text-[#5B6B7C]">{c.body}</p>
                   <div className="mt-6 font-mono text-[10px] uppercase tracking-[0.14em] text-[#9FB3C8]">
                     {c.src}
@@ -726,7 +709,7 @@ export default function App() {
           </div>
 
           <Reveal delay={0.15}>
-            <p className="mt-16 font-display text-[clamp(1.6rem,3vw,2.4rem)] leading-[1.2] tracking-[-0.015em] text-[#0B1F3A] font-semibold max-w-3xl">
+            <p className="mt-14 font-display text-[clamp(1.5rem,2.8vw,2.2rem)] leading-[1.2] tracking-[-0.015em] text-[#0B1F3A] font-semibold max-w-3xl">
               The data exists. The infrastructure does not.{" "}
               <span className="text-[#007A66]">HydroMesh bridges that gap.</span>
             </p>
@@ -734,14 +717,14 @@ export default function App() {
         </div>
       </section>
 
-      {/* 3. SOLUTION */}
+      {/* 4. SOLUTION */}
       <section id="solution" className="relative border-y border-[#0B1F3A]/8 scroll-mt-16">
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-10 py-24 lg:py-32">
+        <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-10 py-24 lg:py-32">
           <div className="grid grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="col-span-12 lg:col-span-6">
               <Reveal>
-                <h2 className="font-display text-[clamp(2rem,3.8vw,3.4rem)] leading-[1.08] tracking-[-0.025em] text-[#0B1F3A] font-bold">
-                  Street-level flood intelligence, delivered in under 90 seconds.
+                <h2 className="font-display text-[clamp(1.9rem,3.6vw,3.2rem)] leading-[1.1] tracking-[-0.025em] text-[#0B1F3A] font-bold">
+                  Live risk maps and safe routes, in under 90 seconds.
                 </h2>
               </Reveal>
               <Reveal delay={0.08}>
@@ -757,7 +740,7 @@ export default function App() {
                   <div className="h-full rounded-xl border border-[#0B1F3A]/10 bg-white/70 p-6">
                     <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[#8A6A6A]">
                       <X className="h-3.5 w-3.5" strokeWidth={2.6} />
-                      Before HydroMesh
+                      Before
                     </div>
                     <ul className="mt-4 space-y-3 text-[14px] leading-relaxed text-[#7A8899]">
                       <li>Broad alerts that reach everyone late</li>
@@ -770,7 +753,7 @@ export default function App() {
                   <div className="h-full rounded-xl bg-[#0B1F3A] p-6 shadow-[0_20px_50px_-20px_rgba(11,31,58,0.5)]">
                     <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[#00C6A7]">
                       <Check className="h-3.5 w-3.5" strokeWidth={2.6} />
-                      After HydroMesh
+                      After
                     </div>
                     <ul className="mt-4 space-y-3 text-[14px] leading-relaxed text-[#E6EDF5]">
                       <li>Real-time reports from people on the ground</li>
@@ -794,17 +777,17 @@ export default function App() {
         </div>
       </section>
 
-      {/* 4. HOW IT WORKS */}
+      {/* 5. HOW IT WORKS (incl. outcome strip) */}
       <section id="how" className="relative bg-white scroll-mt-16">
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-10 py-24 lg:py-32">
+        <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-10 py-24 lg:py-32">
           <div className="max-w-3xl">
             <Reveal>
-              <h2 className="font-display text-[clamp(2rem,3.8vw,3.4rem)] leading-[1.08] tracking-[-0.025em] text-[#0B1F3A] font-bold">
+              <h2 className="font-display text-[clamp(1.9rem,3.6vw,3.2rem)] leading-[1.1] tracking-[-0.025em] text-[#0B1F3A] font-bold">
                 From signal to safe route in 90 seconds.
               </h2>
             </Reveal>
             <Reveal delay={0.1}>
-              <p className="mt-6 text-[18px] leading-[1.6] text-[#5B6B7C] max-w-2xl">
+              <p className="mt-6 text-[17px] leading-[1.6] text-[#5B6B7C] max-w-2xl">
                 A three-stage pipeline turns a phone report into a verified, routed alert. Each
                 stage has a clock on it.
               </p>
@@ -812,19 +795,16 @@ export default function App() {
           </div>
 
           {/* timeline rail */}
-          <Reveal delay={0.12} className="mt-16">
+          <Reveal delay={0.12} className="mt-14">
             <div className="relative hidden md:block mb-12 h-8">
               <div className="absolute inset-x-0 top-[14px] h-px bg-[#0B1F3A]/10" />
-              {/* teal segments */}
               <div className="absolute top-[13px] left-0 w-[33.333%] h-[3px] rounded-full bg-[#00C6A7]" />
               <div className="absolute top-[13px] left-[33.333%] w-[33.333%] h-[3px] rounded-full bg-[#00C6A7]/60" />
               <div className="absolute top-[13px] left-[66.666%] w-[33.333%] h-[3px] rounded-full bg-[#00C6A7]/30" />
-              {/* ticks */}
               {["left-0", "left-1/3", "left-2/3"].map((pos) => (
                 <div key={pos} className={`absolute ${pos} top-[9px] h-[10px] w-px bg-[#0B1F3A]/25`} />
               ))}
               <div className="absolute right-0 top-[9px] h-[10px] w-px bg-[#0B1F3A]/25" />
-              {/* labels */}
               <span className="absolute left-0 top-0 font-mono text-[11px] text-[#5B6B7C]">0s</span>
               <span className="absolute left-1/3 -translate-x-1/2 top-0 font-mono text-[11px] text-[#5B6B7C]">30s</span>
               <span className="absolute left-2/3 -translate-x-1/2 top-0 font-mono text-[11px] text-[#5B6B7C]">60s</span>
@@ -857,7 +837,7 @@ export default function App() {
               const Icon = s.icon;
               return (
                 <Reveal key={s.name} delay={0.1 + i * 0.12}>
-                  <div className="relative md:pl-0 pl-0">
+                  <div>
                     <div className="inline-flex h-[60px] w-[60px] items-center justify-center rounded-xl border border-[#0B1F3A]/10 bg-[#F4F6F8]">
                       <Icon className="h-6 w-6 text-[#007A66]" strokeWidth={1.6} />
                     </div>
@@ -874,125 +854,123 @@ export default function App() {
               );
             })}
           </div>
-        </div>
-      </section>
 
-      {/* 5. THEORY OF CHANGE (impact ladder) */}
-      <section id="impact" className="relative bg-[#0B1F3A] text-white scroll-mt-16">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,#14325C_0%,transparent_55%)]" aria-hidden="true" />
-        <div className="relative max-w-[1320px] mx-auto px-6 lg:px-10 py-24 lg:py-32">
-          <div className="max-w-3xl">
-            <Reveal>
-              <h2 className="font-display text-[clamp(2rem,3.8vw,3.4rem)] leading-[1.08] tracking-[-0.025em] font-bold">
-                From community signal to safer city.
-              </h2>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <p className="mt-6 text-[18px] leading-[1.6] text-[#A9BCD4] max-w-2xl">
-                Every report travels a chain of cause and effect, from raw signal to durable
-                resilience.
-              </p>
-            </Reveal>
-          </div>
-
-          {/* impact ladder */}
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                icon: Waves,
-                step: "Inputs",
-                outcome: "Community signals",
-                body: "Reports, weather feeds, and local map layers feed a continuous pipeline.",
-                fill: "w-1/4",
-              },
-              {
-                icon: Map,
-                step: "Outputs",
-                outcome: "Live street-level maps",
-                body: "Verified incident maps, safe routes, and prioritized response alerts.",
-                fill: "w-1/2",
-              },
-              {
-                icon: ShieldCheck,
-                step: "Outcomes",
-                outcome: "Minutes that matter",
-                body: "Faster response, safer travel, reduced exposure for at-risk residents.",
-                fill: "w-3/4",
-              },
-              {
-                icon: LifeBuoy,
-                step: "Impact",
-                outcome: "Lives protected",
-                body: "Climate resilience, reduced disruption, durable community safety.",
-                fill: "w-full",
-              },
-            ].map((c, i) => {
-              const Icon = c.icon;
-              return (
-                <Reveal key={c.step} delay={i * 0.1}>
-                  <div className="h-full rounded-xl border border-white/10 bg-white/[0.04] p-7">
-                    <div className={`h-[3px] rounded-full bg-[#00C6A7] ${c.fill}`} />
-                    <Icon className="mt-6 h-6 w-6 text-[#00C6A7]" strokeWidth={1.6} />
-                    <h3 className="mt-5 font-mono text-[11px] uppercase tracking-[0.16em] text-[#7E93AB]">
-                      {c.step}
-                    </h3>
-                    <p className="mt-1.5 text-[19px] font-bold tracking-[-0.01em] text-white">{c.outcome}</p>
-                    <p className="mt-2.5 text-[14px] leading-relaxed text-[#A9BCD4]">{c.body}</p>
+          {/* outcome strip (theory of change, compressed) */}
+          <Reveal delay={0.1} className="mt-16">
+            <div className="rounded-xl bg-[#0B1F3A] px-6 sm:px-10 py-8 lg:py-10">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-y-6 md:gap-x-6 lg:gap-x-8">
+                <div className="flex items-center gap-3.5">
+                  <Waves className="h-5 w-5 shrink-0 text-[#00C6A7]" strokeWidth={1.7} />
+                  <div>
+                    <p className="text-[15px] font-semibold text-white">Community signals in</p>
+                    <p className="text-[13px] text-[#A9BCD4]">Reports, weather, map layers</p>
                   </div>
-                </Reveal>
-              );
-            })}
-          </div>
+                </div>
+                <ArrowRight className="hidden md:block h-4 w-4 shrink-0 text-[#00C6A7]/70" strokeWidth={2} />
+                <div className="flex items-center gap-3.5">
+                  <Map className="h-5 w-5 shrink-0 text-[#00C6A7]" strokeWidth={1.7} />
+                  <div>
+                    <p className="text-[15px] font-semibold text-white">Verified maps out</p>
+                    <p className="text-[13px] text-[#A9BCD4]">Live risk zones, safe routes, alerts</p>
+                  </div>
+                </div>
+                <ArrowRight className="hidden md:block h-4 w-4 shrink-0 text-[#00C6A7]/70" strokeWidth={2} />
+                <div className="flex items-center gap-3.5">
+                  <ShieldCheck className="h-5 w-5 shrink-0 text-[#00C6A7]" strokeWidth={1.7} />
+                  <div>
+                    <p className="text-[15px] font-semibold text-white">Safer cities</p>
+                    <p className="text-[13px] text-[#A9BCD4]">Faster response, reduced exposure</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* 6. PILOT READINESS */}
-      <section id="pilot" className="relative bg-white scroll-mt-16">
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-10 py-24 lg:py-32">
-          <div className="grid grid-cols-12 gap-12">
-            <div className="col-span-12 lg:col-span-5">
-              <Reveal>
-                <h2 className="font-display text-[clamp(2rem,3.8vw,3.4rem)] leading-[1.08] tracking-[-0.025em] text-[#0B1F3A] font-bold">
-                  Ready to deploy in your city.
-                </h2>
-              </Reveal>
-              <Reveal delay={0.1}>
-                <p className="mt-6 text-[17px] leading-[1.6] text-[#5B6B7C] max-w-md">
-                  The prototype is built, tested, and open source. Here is exactly where we stand.
-                </p>
-              </Reveal>
-            </div>
+      <section id="pilot" className="relative border-y border-[#0B1F3A]/8 scroll-mt-16">
+        <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-10 py-24 lg:py-32">
+          <div className="max-w-3xl">
+            <Reveal>
+              <h2 className="font-display text-[clamp(1.9rem,3.6vw,3.2rem)] leading-[1.1] tracking-[-0.025em] text-[#0B1F3A] font-bold">
+                Ready to deploy in your city.
+              </h2>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p className="mt-6 text-[17px] leading-[1.6] text-[#5B6B7C] max-w-2xl">
+                Here is exactly what works today, and what is still running on simulated data. No
+                inflation, no roadmap dressed up as a product.
+              </p>
+            </Reveal>
+          </div>
 
-            <div className="col-span-12 lg:col-span-7">
-              <ul className="divide-y divide-[#0B1F3A]/8 border-y border-[#0B1F3A]/8">
-                {[
-                  "Full-stack prototype completed (Flutter + Node.js + PostGIS)",
-                  "Core workflows validated across simulated scenarios",
-                  "Accessibility layer: TTS, high contrast, haptic alerts",
-                  "GDPR-compliant data minimization",
-                  "Open-source core (MIT licence)",
-                ].map((t, i) => (
-                  <Reveal key={t} delay={i * 0.06}>
-                    <li className="flex items-start gap-4 py-5">
-                      <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#00C6A7]">
-                        <Check className="h-3.5 w-3.5 text-[#06322B]" strokeWidth={3} />
+          <div className="mt-14 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* working today */}
+            <Reveal delay={0.05}>
+              <div className="h-full rounded-xl border border-[#00C6A7]/40 bg-white p-7 sm:p-8">
+                <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[#007A66]">
+                  <span className="h-2 w-2 rounded-full bg-[#00C6A7]" />
+                  Working today
+                </div>
+                <ul className="mt-6 space-y-4">
+                  {[
+                    ["Flutter mobile app", "Live flood map, community reporting, SOS"],
+                    ["Node.js backend + PostGIS", "Spatial clustering and hazard zone queries"],
+                    ["Safe-route guidance", "Walking routes steered around active hazards"],
+                    ["Real-time alerts", "WebSocket push to residents and responders"],
+                    ["Responder dashboard", "Live incidents with accept/resolve workflow"],
+                    ["Weather intelligence", "Hyper-local rainfall and risk scoring (Open-Meteo)"],
+                    ["Accessibility layer", "TTS, high contrast mode, haptic alerts"],
+                    ["Open-source core", "MIT licence, auditable by any partner"],
+                  ].map(([t, d]) => (
+                    <li key={t} className="flex items-start gap-3.5">
+                      <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#00C6A7]">
+                        <Check className="h-3 w-3 text-[#06322B]" strokeWidth={3} />
                       </span>
-                      <span className="text-[16px] leading-snug text-[#0B1F3A]">{t}</span>
+                      <div>
+                        <span className="text-[15px] font-semibold text-[#0B1F3A]">{t}</span>
+                        <span className="block text-[13.5px] leading-snug text-[#5B6B7C]">{d}</span>
+                      </div>
                     </li>
-                  </Reveal>
-                ))}
-              </ul>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
 
-              <Reveal delay={0.1}>
-                <div className="mt-10 rounded-xl bg-[#0B1F3A] p-8">
-                  <h3 className="text-[18px] font-bold text-white">What a pilot looks like</h3>
-                  <p className="mt-3 text-[15px] leading-relaxed text-[#A9BCD4]">
-                    An 8-week deployment: we onboard your local map layers and data feeds, stand up
+            {/* demo only */}
+            <Reveal delay={0.12}>
+              <div className="h-full rounded-xl border border-[#0B1F3A]/10 bg-[#F4F6F8] p-7 sm:p-8">
+                <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[#5B6B7C]">
+                  <span className="h-2 w-2 rounded-full border border-[#5B6B7C]" />
+                  Demo or simulated today
+                </div>
+                <ul className="mt-6 space-y-4">
+                  {[
+                    ["Sensor telemetry", "Runs on simulated feeds, not physical sensors"],
+                    ["City-scale validation", "Workflows tested in simulated scenarios, not a live city"],
+                    ["City onboarding", "Manual setup: map layers and data feeds configured per deployment"],
+                  ].map(([t, d]) => (
+                    <li key={t} className="flex items-start gap-3.5">
+                      <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#5B6B7C]/50">
+                        <Clock className="h-3 w-3 text-[#5B6B7C]" strokeWidth={2.4} />
+                      </span>
+                      <div>
+                        <span className="text-[15px] font-semibold text-[#0B1F3A]">{t}</span>
+                        <span className="block text-[13.5px] leading-snug text-[#5B6B7C]">{d}</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-8 rounded-xl bg-[#0B1F3A] p-6 sm:p-7">
+                  <h3 className="text-[17px] font-bold text-white">What a pilot looks like</h3>
+                  <p className="mt-2.5 text-[14.5px] leading-relaxed text-[#A9BCD4]">
+                    An 8-week deployment: we onboard your map layers and data feeds, stand up
                     community reporting with your teams, and track KPIs on warning speed, route
-                    adoption, and response time together. You bring the streets. We bring the
-                    platform.
+                    adoption, and response time together.
                   </p>
-                  <div className="mt-6 flex flex-wrap gap-2">
+                  <div className="mt-5 flex flex-wrap gap-2">
                     {["Weeks 1-2 · Onboarding", "Weeks 3-6 · Live deployment", "Weeks 7-8 · KPI review"].map(
                       (p) => (
                         <span
@@ -1005,48 +983,48 @@ export default function App() {
                     )}
                   </div>
                 </div>
-              </Reveal>
-            </div>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      {/* 7. WHO WE SERVE */}
-      <section id="serve" className="relative border-y border-[#0B1F3A]/8 scroll-mt-16">
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-10 py-24 lg:py-32">
+      {/* 7. WHO IT'S FOR */}
+      <section id="who" className="relative bg-white scroll-mt-16">
+        <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-10 py-24 lg:py-32">
           <div className="max-w-3xl">
             <Reveal>
-              <h2 className="font-display text-[clamp(2rem,3.8vw,3.4rem)] leading-[1.08] tracking-[-0.025em] text-[#0B1F3A] font-bold">
-                Built for the people most exposed.
+              <h2 className="font-display text-[clamp(1.9rem,3.6vw,3.2rem)] leading-[1.1] tracking-[-0.025em] text-[#0B1F3A] font-bold">
+                Built for cities, organizations, and the people they protect.
               </h2>
             </Reveal>
           </div>
 
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
-                icon: Home,
-                t: "Residents",
-                l1: "Households in flood-prone neighborhoods.",
-                l2: "Timely, street-level guidance when every minute counts.",
-              },
-              {
-                icon: Bus,
-                t: "Commuters & workers",
-                l1: "People moving through disrupted streets.",
-                l2: "Safe routes around active hazards, not into them.",
-              },
-              {
-                icon: Siren,
-                t: "Responders & agencies",
-                l1: "Emergency teams coordinating live response.",
-                l2: "One shared picture of the flood front.",
+                icon: Building2,
+                t: "Municipal agencies",
+                l1: "Live street-level risk picture.",
+                l2: "Coordinate response with one shared flood front.",
               },
               {
                 icon: HeartHandshake,
-                t: "Community organizations",
-                l1: "NGOs and local networks on the ground.",
-                l2: "Tools to warn, organize, and support neighbors.",
+                t: "NGOs & community organizations",
+                l1: "Tools to warn, organize, and support.",
+                l2: "Reach the neighborhoods most exposed.",
+              },
+              {
+                icon: GraduationCap,
+                t: "Universities & researchers",
+                l1: "An open platform for resilience research.",
+                l2: "Study real deployments, publish the results.",
+              },
+              {
+                icon: Users,
+                t: "Residents & commuters",
+                l1: "The people the platform protects.",
+                l2: "Safe routes and alerts that arrive in time.",
               },
             ].map((s, i) => {
               const Icon = s.icon;
@@ -1054,7 +1032,7 @@ export default function App() {
                 <Reveal key={s.t} delay={i * 0.08}>
                   <div className="h-full rounded-xl border border-[#0B1F3A]/10 bg-white p-7 transition-colors hover:border-[#00C6A7]/60">
                     <Icon className="h-6 w-6 text-[#007A66]" strokeWidth={1.6} />
-                    <h3 className="mt-6 text-[19px] font-bold tracking-[-0.01em] text-[#0B1F3A]">
+                    <h3 className="mt-6 text-[18px] font-bold tracking-[-0.01em] text-[#0B1F3A]">
                       {s.t}
                     </h3>
                     <p className="mt-2.5 text-[14px] leading-relaxed text-[#5B6B7C]">{s.l1}</p>
@@ -1066,7 +1044,7 @@ export default function App() {
           </div>
 
           <Reveal delay={0.12}>
-            <p className="mt-16 font-display text-[clamp(1.5rem,2.6vw,2rem)] leading-[1.25] tracking-[-0.015em] text-[#0B1F3A] font-semibold max-w-3xl">
+            <p className="mt-14 font-display text-[clamp(1.4rem,2.4vw,1.9rem)] leading-[1.25] tracking-[-0.015em] text-[#0B1F3A] font-semibold max-w-3xl">
               HydroMesh is not a product for sale. It is a public-interest platform built for the
               people most exposed.
             </p>
@@ -1074,58 +1052,15 @@ export default function App() {
         </div>
       </section>
 
-      {/* 8. TESTIMONIALS */}
-      <section id="voices" className="relative bg-white scroll-mt-16">
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-10 py-24 lg:py-32">
-          <div className="max-w-3xl">
-            <Reveal>
-              <h2 className="font-display text-[clamp(2rem,3.8vw,3.4rem)] leading-[1.08] tracking-[-0.025em] text-[#0B1F3A] font-bold">
-                What partners and communities can expect.
-              </h2>
-            </Reveal>
-          </div>
-
-          {/* TODO: Replace with real testimonials post-pilot. */}
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Reveal delay={0.05}>
-              <figure className="h-full rounded-xl border border-[#0B1F3A]/10 bg-[#F4F6F8] p-9">
-                <Quote className="h-8 w-8 text-[#00C6A7]" strokeWidth={1.5} />
-                <blockquote className="mt-6 text-[19px] leading-[1.55] text-[#0B1F3A] font-medium">
-                  "Street-level flood visibility is exactly what our response has been missing.
-                  The pilot plan and KPI tracking made it an easy yes."
-                </blockquote>
-                <figcaption className="mt-7 text-[14px] text-[#5B6B7C]">
-                  Municipal disaster management lead
-                  <span className="text-[#9FB3C8]"> · Pilot partner (illustrative)</span>
-                </figcaption>
-              </figure>
-            </Reveal>
-            <Reveal delay={0.12}>
-              <figure className="h-full rounded-xl border border-[#0B1F3A]/10 bg-[#F4F6F8] p-9">
-                <Quote className="h-8 w-8 text-[#00C6A7]" strokeWidth={1.5} />
-                <blockquote className="mt-6 text-[19px] leading-[1.55] text-[#0B1F3A] font-medium">
-                  "When the water rises, knowing which street is safe changes everything. This
-                  puts that knowledge in the hands of the people who live here."
-                </blockquote>
-                <figcaption className="mt-7 text-[14px] text-[#5B6B7C]">
-                  Community field researcher
-                  <span className="text-[#9FB3C8]"> · Illustrative</span>
-                </figcaption>
-              </figure>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* 9. FOOTER CTA */}
+      {/* 8. FINAL CTA */}
       <section id="engage" className="relative bg-[#0B1F3A] text-white overflow-hidden scroll-mt-16">
         <div
           className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_125%,rgba(0,198,167,0.22),transparent_62%)]"
           aria-hidden="true"
         />
-        <div className="relative max-w-[1320px] mx-auto px-6 lg:px-10 py-28 lg:py-36 text-center">
+        <div className="relative max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-10 py-24 lg:py-32 text-center">
           <Reveal>
-            <h2 className="mx-auto max-w-3xl font-display text-[clamp(2.2rem,4.6vw,3.8rem)] leading-[1.06] tracking-[-0.025em] font-bold">
+            <h2 className="mx-auto max-w-3xl font-display text-[clamp(2rem,4.4vw,3.6rem)] leading-[1.06] tracking-[-0.025em] font-bold">
               Urban flooding is getting worse. The tools to respond haven't kept up.
             </h2>
           </Reveal>
@@ -1161,11 +1096,11 @@ export default function App() {
         </div>
       </section>
 
-      {/* 10. FOOTER */}
+      {/* 9. FOOTER */}
       <footer className="bg-[#081526] border-t border-white/10 text-[#9FB3C8]">
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-10 py-14">
+        <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-10 py-14">
           <div className="grid grid-cols-12 gap-10">
-            <div className="col-span-12 lg:col-span-5">
+            <div className="col-span-12 lg:col-span-6">
               <a href="#top" className="flex items-center gap-2.5">
                 <LogoMark />
                 <span className="font-display text-[18px] font-bold tracking-tight text-white">
@@ -1176,6 +1111,13 @@ export default function App() {
                 A climate-resilience initiative building community-driven flood intelligence for
                 safer cities. A project of the University of Birmingham Dubai.
               </p>
+              <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#00C6A7]/40 bg-[#00C6A7]/10 px-3.5 py-1.5 text-[13px] font-medium text-[#00C6A7]">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00C6A7] opacity-60" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#00C6A7]" />
+                </span>
+                Seeking pilot partners
+              </div>
             </div>
             <div className="col-span-12 sm:col-span-6 lg:col-span-3">
               <h4 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white">Project</h4>
@@ -1200,11 +1142,6 @@ export default function App() {
                     0x142857@gmail.com
                   </a>
                 </li>
-              </ul>
-            </div>
-            <div className="col-span-12 sm:col-span-6 lg:col-span-3">
-              <h4 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white">Programme</h4>
-              <ul className="mt-4 space-y-3 text-[15px]">
                 <li>
                   <Dialog>
                     <DialogTrigger asChild>
@@ -1223,17 +1160,32 @@ export default function App() {
                     </DialogContent>
                   </Dialog>
                 </li>
+              </ul>
+            </div>
+            <div className="col-span-12 sm:col-span-6 lg:col-span-3">
+              <h4 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white">Programme</h4>
+              <ul className="mt-4 space-y-3 text-[15px]">
                 <li>
                   <a href="#pilot" className="hover:text-white transition-colors">
-                    Pilot programme
+                    Pilot readiness
                   </a>
                 </li>
                 <li>
-                  <a href="#impact" className="hover:text-white transition-colors">
-                    Theory of change
+                  <a href="#how" className="hover:text-white transition-colors">
+                    How it works
+                  </a>
+                </li>
+                <li>
+                  <a href="#who" className="hover:text-white transition-colors">
+                    Who it's for
                   </a>
                 </li>
               </ul>
+              <h4 className="mt-8 font-mono text-[11px] uppercase tracking-[0.16em] text-white">Privacy</h4>
+              <p className="mt-3 text-[13.5px] leading-relaxed max-w-xs">
+                HydroMesh collects the minimum data needed to route alerts. Community reports are
+                anonymized and handled under GDPR-aligned data minimization.
+              </p>
             </div>
           </div>
 
