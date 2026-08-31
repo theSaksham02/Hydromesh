@@ -270,7 +270,7 @@ function HeroMap() {
 /* ------------------------------------------------------------------ */
 function PhonePreview() {
   return (
-    <div className="relative mx-auto w-[300px] sm:w-[330px]" aria-hidden="true">
+    <div className="relative mx-auto w-full max-w-[320px]" aria-hidden="true">
       <div className="absolute -inset-8 rounded-full bg-[#00C6A7]/10 blur-3xl" />
       <div className="relative rounded-[2.4rem] border border-white/10 bg-[#081526] p-2.5 shadow-[0_40px_90px_-24px_rgba(0,0,0,0.65)]">
         <div className="overflow-hidden rounded-[1.8rem] bg-[#0B1F3A]">
@@ -574,15 +574,15 @@ function FundForm() {
 /* ------------------------------------------------------------------ */
 export default function App() {
   return (
-    <div className="min-h-screen w-full bg-background text-foreground font-sans">
+    <div className="min-h-screen w-full bg-background text-foreground font-sans overflow-x-clip">
       {/* NAV */}
       <header className="fixed top-0 inset-x-0 z-40 backdrop-blur-md bg-[#0B1F3A]/90 border-b border-white/10">
-        <div className="max-w-[1320px] mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
+        <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between gap-3">
           <a href="#top" className="flex items-center gap-2.5">
             <LogoMark />
             <span className="font-display text-[18px] font-bold tracking-tight text-white">HydroMesh</span>
           </a>
-          <nav className="hidden md:flex items-center gap-8 text-sm text-[#A9BCD4]">
+          <nav className="hidden lg:flex items-center gap-8 text-sm text-[#A9BCD4]">
             <a href="#problem" className="hover:text-white transition-colors">Problem</a>
             <a href="#solution" className="hover:text-white transition-colors">Solution</a>
             <a href="#how" className="hover:text-white transition-colors">How it works</a>
@@ -591,7 +591,7 @@ export default function App() {
           </nav>
           <a
             href="#engage"
-            className="group inline-flex items-center gap-2 text-sm font-medium bg-[#00C6A7] text-[#06322B] px-4 py-2 rounded-md hover:bg-white transition-colors"
+            className="group inline-flex items-center gap-1.5 text-[13px] sm:text-sm font-medium bg-[#00C6A7] text-[#06322B] px-3 sm:px-4 py-2 sm:py-2.5 rounded-md hover:bg-white transition-colors whitespace-nowrap"
           >
             Request a Pilot
             <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -600,21 +600,21 @@ export default function App() {
       </header>
 
       {/* 1. HERO */}
-      <section id="top" className="relative min-h-[100dvh] pt-16 flex items-center bg-[#0B1F3A]">
+      <section id="top" className="relative min-h-screen supports-[height:100dvh]:min-h-[100dvh] pt-16 flex items-center bg-[#0B1F3A]">
         <HeroMap />
         <div className="relative max-w-[1320px] mx-auto px-6 lg:px-10 py-16 lg:py-20 w-full">
           <div className="max-w-4xl">
             <Reveal>
-              <div className="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.05] backdrop-blur px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.16em] text-[#00C6A7]">
+              <div className="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.05] backdrop-blur px-3.5 py-1.5 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.08em] sm:tracking-[0.16em] text-[#00C6A7]">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00C6A7] opacity-60" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#00C6A7]" />
                 </span>
-                Community-powered flood intelligence
+                Community flood intelligence
               </div>
             </Reveal>
             <Reveal delay={0.08}>
-              <h1 className="font-display mt-8 text-[clamp(2.6rem,6vw,5.2rem)] leading-[1.02] tracking-[-0.03em] text-white font-bold">
+              <h1 className="font-display mt-8 text-[clamp(2.4rem,6vw,5.2rem)] leading-[1.02] tracking-[-0.03em] text-white font-bold">
                 Floods strike in minutes.
                 <br />
                 Warnings arrive in <span className="text-[#00C6A7]">hours.</span>
@@ -655,7 +655,7 @@ export default function App() {
                 { range: "6-12h", label: "average delay in flood warnings", src: "Global average" },
                 { to: 90, decimals: 0, suffix: "s", label: "report to safe route", src: "HydroMesh" },
               ].map((s) => (
-                <div key={s.label} className="bg-[#0E2440]/80 backdrop-blur-sm px-5 py-6">
+                <div key={s.label} className="bg-[#0E2440]/80 backdrop-blur-sm px-4 sm:px-5 py-6">
                   <div className="font-display text-[clamp(2rem,3.4vw,2.9rem)] leading-none tracking-[-0.02em] text-[#00C6A7] font-bold">
                     {s.range ? s.range : <Counter to={s.to!} suffix={s.suffix} decimals={s.decimals} />}
                   </div>
@@ -712,7 +712,7 @@ export default function App() {
               <Reveal key={c.title} delay={i * 0.1}>
                 <div className="h-full rounded-xl border border-[#0B1F3A]/10 bg-white p-8 transition-colors hover:border-[#00C6A7]/60">
                   <div className="h-[3px] w-12 rounded-full bg-[#00C6A7]" />
-                  <div className="mt-6 font-display text-[clamp(2.6rem,4vw,3.4rem)] leading-none tracking-[-0.03em] text-[#0B1F3A] font-bold">
+                  <div className="mt-6 font-display text-[clamp(2.2rem,4vw,3.4rem)] leading-none tracking-[-0.03em] text-[#0B1F3A] font-bold">
                     {c.stat}
                   </div>
                   <h3 className="mt-5 text-[19px] leading-snug font-semibold text-[#0B1F3A]">{c.title}</h3>
@@ -735,7 +735,7 @@ export default function App() {
       </section>
 
       {/* 3. SOLUTION */}
-      <section id="solution" className="relative border-y border-[#0B1F3A]/8">
+      <section id="solution" className="relative border-y border-[#0B1F3A]/8 scroll-mt-16">
         <div className="max-w-[1320px] mx-auto px-6 lg:px-10 py-24 lg:py-32">
           <div className="grid grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="col-span-12 lg:col-span-6">
@@ -1012,7 +1012,7 @@ export default function App() {
       </section>
 
       {/* 7. WHO WE SERVE */}
-      <section id="serve" className="relative border-y border-[#0B1F3A]/8">
+      <section id="serve" className="relative border-y border-[#0B1F3A]/8 scroll-mt-16">
         <div className="max-w-[1320px] mx-auto px-6 lg:px-10 py-24 lg:py-32">
           <div className="max-w-3xl">
             <Reveal>
@@ -1138,7 +1138,7 @@ export default function App() {
             <div className="mt-10 flex flex-col items-center gap-4">
               <Dialog>
                 <DialogTrigger asChild>
-                  <button className="group inline-flex items-center gap-2 bg-[#00C6A7] text-[#06322B] px-8 py-4 rounded-md text-[16px] font-bold hover:bg-white transition-colors cursor-pointer">
+                  <button className="group inline-flex items-center justify-center gap-2 w-full sm:w-auto bg-[#00C6A7] text-[#06322B] px-6 sm:px-8 py-4 rounded-md text-[16px] font-bold hover:bg-white transition-colors cursor-pointer">
                     Request a Pilot Conversation
                     <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                   </button>
@@ -1177,7 +1177,7 @@ export default function App() {
                 safer cities. A project of the University of Birmingham Dubai.
               </p>
             </div>
-            <div className="col-span-6 lg:col-span-3">
+            <div className="col-span-12 sm:col-span-6 lg:col-span-3">
               <h4 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white">Project</h4>
               <ul className="mt-4 space-y-3 text-[15px]">
                 <li>
@@ -1202,7 +1202,7 @@ export default function App() {
                 </li>
               </ul>
             </div>
-            <div className="col-span-6 lg:col-span-3">
+            <div className="col-span-12 sm:col-span-6 lg:col-span-3">
               <h4 className="font-mono text-[11px] uppercase tracking-[0.16em] text-white">Programme</h4>
               <ul className="mt-4 space-y-3 text-[15px]">
                 <li>
