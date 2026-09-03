@@ -233,9 +233,7 @@ class _RouteScreenState extends State<RouteScreen> {
             ),
             children: [
               TileLayer(
-                urlTemplate: isDark 
-                  ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
-                  : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 subdomains: const ['a', 'b', 'c', 'd'],
                 userAgentPackageName: 'com.hydromesh.app',
               ),

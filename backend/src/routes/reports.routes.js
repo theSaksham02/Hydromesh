@@ -16,4 +16,8 @@ router.get('/:id', validateIdParam, reportsController.getReportById);
 // Create report (protected + validated)
 router.post('/', authMiddleware, validateCreateReport, reportsController.createReport);
 
+// Clear all reports (for demo testing cleanup)
+router.delete('/clear-all', require('../controllers/simulation.controller').stopSimulation);
+router.post('/clear-all', require('../controllers/simulation.controller').stopSimulation);
+
 module.exports = router;

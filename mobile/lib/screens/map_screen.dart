@@ -546,7 +546,7 @@ class _MapScreenState extends State<MapScreen> {
       case MapLayer.light:
         return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
       case MapLayer.dark:
-        return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
+        return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
     }
   }
 

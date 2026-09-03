@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../services/api_service.dart';
+import 'package:http/http.dart' as http;
 
 class WeatherProvider with ChangeNotifier {
   Map<String, dynamic>? _currentWeather;
@@ -44,15 +44,21 @@ class WeatherProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await ApiService.get('/weather/current?latitude=$lat&longitude=$lng');
-      
-      if (result['success'] && result['data'] != null && result['data'] is Map) {
-        _currentWeather = Map<String, dynamic>.from(result['data'] as Map);
+      // Call Open-Meteo directly — free, no API key, avoids Render IPv6 issues
+      final uri = Uri.parse(
+        'https://api.open-meteo.com/v1/forecast'
+        '?latitude=$lat&longitude=$lng'
+        '&current_weather=true&hourly=precipitation,rain'
+      );
+      final response = await http.get(uri).timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        _currentWeather = data;
         _fromCache = false;
         await _saveCache(_currentWeather!);
       } else {
-        _error = result['error'] as String? ?? 'Failed to load weather';
-        // Keep cached data if available
+        _error = 'Weather service returned ${response.statusCode}';
       }
     } catch (e) {
       _error = 'Connection error. Check your network.';

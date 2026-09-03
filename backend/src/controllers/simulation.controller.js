@@ -144,6 +144,31 @@ const simulationController = {
       console.error('Simulation error:', error);
       // We don't call next(error) here because we already sent a 200 OK response to avoid timeout
     }
+  },
+
+  async stopSimulation(req, res, next) {
+    try {
+      const sb = require('../config/supabase').getSupabase();
+      const { useRest, query } = require('../config/database');
+
+      if (useRest && sb) {
+        await sb.from('flood_reports').delete().neq('report_id', '00000000-0000-0000-0000-000000000000');
+        await sb.from('emergency_requests').delete().neq('request_id', '00000000-0000-0000-0000-000000000000');
+      } else {
+        await query('DELETE FROM flood_reports');
+        await query('DELETE FROM emergency_requests');
+      }
+
+      const io = getIO();
+      if (io) {
+        io.emit('activities_cleared', { message: 'All reports and SOS requests cleared' });
+      }
+
+      return res.status(200).json({ success: true, message: 'All test activities and emergency requests cleared successfully' });
+    } catch (error) {
+      console.error('Stop simulation error:', error);
+      return res.status(500).json({ success: false, error: error.message });
+    }
   }
 };
 
