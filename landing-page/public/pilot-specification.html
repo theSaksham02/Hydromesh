@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HydroMesh — Pilot specification</title>
+    <style>
+      :root {
+        --ink: #1a1a1a;
+        --muted: #55606e;
+        --rule: #d4d7dc;
+        --teal: #006eb5;
+        --paper: #ffffff;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font: 16px/1.55 "Source Sans 3", system-ui, sans-serif;
+        padding: 2.5rem 1.5rem 4rem;
+      }
+      h1, h2 { font-family: "Source Sans 3", system-ui, sans-serif; font-weight: 700; letter-spacing: -0.025em; }
+      h1 { font-size: 1.85rem; line-height: 1.15; margin: 0 0 0.5rem; }
+      h2 { font-size: 1.15rem; margin: 1.75rem 0 0.5rem; }
+      p, li { color: var(--muted); }
+      .meta { font: 500 11px/1.4 ui-monospace, "JetBrains Mono", monospace; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+      table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 0.75rem 0 0; }
+      th, td { border-bottom: 1px solid color-mix(in srgb, var(--rule) 70%, transparent); text-align: left; padding: 0.5rem 0.6rem 0.5rem 0; vertical-align: top; }
+      th { font: 500 11px/1.3 ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+      a { color: var(--teal); }
+      .wrap { max-width: 42rem; margin: 0 auto; }
+      @media print {
+        body { padding: 12mm 14mm; }
+        a { color: inherit; text-decoration: none; }
+        .no-print { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <p class="meta">HydroMesh · Pilot specification · 2 pages · SDG 11 Target 11.5</p>
+      <h1>Street-level flood intelligence using existing mobile hardware</h1>
+      <p>
+        For city engineers, disaster coordinators, and municipal CIOs evaluating an 8-week evidence pilot.
+        This is a specification, not a sales deck.
+      </p>
+
+      <h2>1. Problem the pilot addresses</h2>
+      <p>
+        Municipalities lack street-level drainage visibility in the 2–6 hour window that decides routing and
+        dispatch. Traditional IoT flood sensors cost $15,000–$50,000 per kilometre and depend on cellular
+        backhaul. HydroMesh uses phones already in circulation, PostGIS clustering, Open-Meteo rainfall, OSRM
+        hazard-aware walking routes, and WebSocket SOS.
+      </p>
+
+      <h2>2. What is already built (prototype)</h2>
+      <ul>
+        <li>F-07 Live risk map — PostGIS <code>ST_DWithin</code> / <code>ST_MakePoint</code>, Socket.io</li>
+        <li>F-11 Predictive safe routes — OSRM filtered by active hazard geometry</li>
+        <li>F-15 Emergency SOS — one-tap location broadcast to nearby responders</li>
+        <li>F-17 Accessible reporting — icon and voice, GPS water-level capture</li>
+        <li>F-25 Weather intelligence — Open-Meteo</li>
+        <li>Stack: Flutter client, Node.js/Express, PostgreSQL/PostGIS, GitHub Actions CI, MIT License</li>
+      </ul>
+      <p>
+        Not built: municipal cooperation dashboard (in development). Not built (research): LSTM forecasting,
+        news-signal analysis, RL resource allocation.
+      </p>
+
+      <h2>3. Pilot shape (8 weeks)</h2>
+      <table>
+        <thead>
+          <tr><th>Window</th><th>Work</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>W1–2</td><td>Map layers, data feeds, operator training, reporting protocol</td></tr>
+          <tr><td>W3–6</td><td>Live community reporting + responder accept/resolve</td></tr>
+          <tr><td>W7–8</td><td>Joint review: warning latency, route use, dispatch time — as measured in-pilot</td></tr>
+        </tbody>
+      </table>
+      <p>
+        Engineering targets (not claimed live traffic): 1,000+ concurrent field reports per city; new-city
+        onboard under 48 hours.
+      </p>
+
+      <h2>4. Credentials</h2>
+      <p>
+        Distinction-grade University of Birmingham capstone, SDG 11. FII–MIT competition final rounds. MCN UN
+        Fellowship. Source:
+        <a href="https://github.com/theSaksham02/Hydromesh">github.com/theSaksham02/Hydromesh</a>
+      </p>
+
+      <h2>5. Contact</h2>
+      <p>
+        Saksham Mishra, founder.<br />
+        <a href="mailto:0x142857@gmail.com">0x142857@gmail.com</a><br />
+        Landing: <a href="https://hydromesh.vercel.app/">hydromesh.vercel.app</a>
+      </p>
+      <p class="no-print"><button type="button" onclick="window.print()">Print / Save as PDF</button></p>
+    </div>
+  </body>
+</html>
