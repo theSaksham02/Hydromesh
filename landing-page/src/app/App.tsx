@@ -50,7 +50,7 @@ const PORTRAIT_YAMAN =
   "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80";
 
 const GITHUB = "https://github.com/theSaksham02/Hydromesh";
-const FOUNDER_EMAIL = "0x142857@gmail.com";
+const FOUNDER_EMAIL = "sxm2114@student.bham.ac.uk";
 const FOUNDER_LINKEDIN = "https://www.linkedin.com/in/saksham-mishra-91696222b/";
 
 type PageType = "home" | "about" | "join" | "blog" | "contact";
@@ -74,36 +74,13 @@ function ExtLink({
 /* ------------------------------------------------------------------ */
 /* Official HydroMesh Logo Component (Droplet Mesh Network Mark)      */
 /* ------------------------------------------------------------------ */
-function HydroMeshLogo({ className = "h-10 w-10 text-[#002456]" }: { className?: string }) {
+function HydroMeshLogo({ className = "h-11 w-auto object-contain" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 100 120" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M50 8 C50 8 18 52 18 76 C18 94 32 108 50 108 C68 108 82 94 82 76 C82 52 50 8 50 8 Z"
-        stroke="currentColor"
-        strokeWidth="5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <line x1="50" y1="36" x2="35" y2="52" stroke="currentColor" strokeWidth="2.5" />
-      <line x1="50" y1="36" x2="65" y2="52" stroke="currentColor" strokeWidth="2.5" />
-      <line x1="35" y1="52" x2="65" y2="52" stroke="currentColor" strokeWidth="2.5" />
-      <line x1="35" y1="52" x2="28" y2="70" stroke="currentColor" strokeWidth="2.5" />
-      <line x1="35" y1="52" x2="50" y2="68" stroke="currentColor" strokeWidth="2.5" />
-      <line x1="65" y1="52" x2="50" y2="68" stroke="currentColor" strokeWidth="2.5" />
-      <line x1="65" y1="52" x2="72" y2="70" stroke="currentColor" strokeWidth="2.5" />
-      <line x1="28" y1="70" x2="50" y2="68" stroke="currentColor" strokeWidth="2.5" />
-      <line x1="72" y1="70" x2="50" y2="68" stroke="currentColor" strokeWidth="2.5" />
-
-      <circle cx="50" cy="36" r="4" fill="currentColor" />
-      <circle cx="35" cy="52" r="4" fill="currentColor" />
-      <circle cx="65" cy="52" r="4" fill="currentColor" />
-      <circle cx="28" cy="70" r="4" fill="currentColor" />
-      <circle cx="50" cy="68" r="4" fill="currentColor" />
-      <circle cx="72" cy="70" r="4" fill="currentColor" />
-
-      <path d="M26 84 C34 80 42 86 50 82 C58 78 66 84 74 80" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
-      <path d="M30 92 C38 88 46 94 54 90 C60 87 66 91 70 89" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-    </svg>
+    <img
+      src="/logo-navy.png"
+      alt="HydroMesh Water Droplet Mesh Logo"
+      className={className}
+    />
   );
 }
 
