@@ -544,9 +544,9 @@ class _MapScreenState extends State<MapScreen> {
       case MapLayer.satellite:
         return 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
       case MapLayer.light:
-        return 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png';
+        return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
       case MapLayer.dark:
-        return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png';
+        return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
     }
   }
 
