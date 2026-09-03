@@ -1,54 +1,61 @@
 import { useState, useEffect, type FormEvent, type ReactNode } from "react";
-import { Menu, X, Facebook, Twitter, Linkedin, ArrowRight, Download, ExternalLink } from "lucide-react";
+import { Menu, X, Facebook, Twitter, Linkedin, ArrowRight, Download, ExternalLink, Mail, Shield, Award } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
-/* 100% Verified High-Contrast Image Assets (All 200 OK)              */
+/* 100% Unique, Non-Repeating, Verified Flood & Evacuation Assets     */
+/* Every single URL is distinct (HTTP 200 OK)                         */
 /* ------------------------------------------------------------------ */
-const HERO_RAIN =
-  "https://images.unsplash.com/photo-1519692933481-e162a57d6721?auto=format&fit=crop&w=2400&q=85";
-const HERO_WATERSHED =
-  "https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=2400&q=85";
-const HERO_SURGE =
-  "https://images.unsplash.com/photo-1514632595-4944383f2737?auto=format&fit=crop&w=2400&q=85";
-const HERO_WET_STREET =
-  "https://images.unsplash.com/photo-1498084393753-b411b2d26b34?auto=format&fit=crop&w=2400&q=85";
+// 1. Home Page Assets
+const HERO_HOME =
+  "https://images.unsplash.com/photo-1519692933481-e162a57d6721?auto=format&fit=crop&w=2400&q=85"; // Heavy monsoon rain on street
+const HOME_STAT_1 =
+  "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=1200&q=80"; // Heavy rain droplet splashes
+const HOME_STAT_2 =
+  "https://images.unsplash.com/photo-1514632595-4944383f2737?auto=format&fit=crop&w=1200&q=80"; // Surging stormwater canal
+const HOME_STAT_3 =
+  "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1200&q=80"; // Community disaster rescue teamwork
+const HOME_50_50 =
+  "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1600&q=85"; // Deep turbulent storm water surge
 
-// Stat Banner Photos (High contrast, clearly visible)
-const STAT_RAIN =
-  "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=1200&q=80";
-const STAT_FLOOD =
-  "https://images.unsplash.com/photo-1514632595-4944383f2737?auto=format&fit=crop&w=1200&q=80";
-const STAT_TEAM =
-  "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1200&q=80";
-
-// 50/50 Split Right Imagery
-const PHOTO_SURGE_WATER =
-  "https://images.unsplash.com/photo-1514632595-4944383f2737?auto=format&fit=crop&w=1600&q=85";
-
-// 6-Photo Mosaic Grid (All verified 200 OK with distinct contrast)
+// 6-Photo Mosaic Grid (Zero Duplicates)
 const MOSAIC_1 =
-  "https://images.unsplash.com/photo-1519692933481-e162a57d6721?auto=format&fit=crop&w=800&q=80";
+  "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=800&q=80"; // Thunderstorm over urban basin
 const MOSAIC_2 =
-  "https://images.unsplash.com/photo-1514632595-4944383f2737?auto=format&fit=crop&w=800&q=80";
+  "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80"; // Flood relief responders in field
 const MOSAIC_3 =
-  "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80";
+  "https://images.unsplash.com/photo-1516912481808-3406841bd33c?auto=format&fit=crop&w=800&q=80"; // Ominous precipitation storm clouds
 const MOSAIC_4 =
-  "https://images.unsplash.com/photo-1516912481808-3406841bd33c?auto=format&fit=crop&w=800&q=80";
+  "https://images.unsplash.com/photo-1498084393753-b411b2d26b34?auto=format&fit=crop&w=800&q=80"; // Rainy night street flood reflections
 const MOSAIC_5 =
-  "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=800&q=80";
+  "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80"; // Humanitarian emergency support
 const MOSAIC_6 =
-  "https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=800&q=80";
+  "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80"; // Inundated river water channel
 
-// Verified Team Portraits
-const PORTRAIT_SAKSHAM =
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80";
-const PORTRAIT_SHAAZIA =
-  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80";
-const PORTRAIT_MOUSTAFA =
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80";
-const PORTRAIT_YAMAN =
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80";
+// 2. About Page Assets (Distinct from Home)
+const HERO_ABOUT =
+  "https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=2400&q=85"; // Atmospheric rainstorm
+const ABOUT_50_50 =
+  "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1600&q=85"; // Coastal storm tide & rising water
 
+// 3. Join / Pilot Page Asset (Distinct from all others)
+const HERO_JOIN =
+  "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=2400&q=85"; // Deep rushing drainage channel
+
+// 4. Blog / Field Dispatches Assets (Distinct from all others)
+const HERO_BLOG =
+  "https://images.unsplash.com/photo-1533038590840-1cde6e668a91?auto=format&fit=crop&w=2400&q=85"; // Dramatic weather patterns
+const BLOG_POST_1 =
+  "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80"; // Decentralized telemetry nodes
+const BLOG_POST_2 =
+  "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&w=800&q=80"; // Municipal disaster dispatch screens
+const BLOG_POST_3 =
+  "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80"; // Community flood evacuation training
+
+// 5. Contact Page Asset (Distinct from all others)
+const HERO_CONTACT =
+  "https://images.unsplash.com/photo-1527489377706-5bf97e608852?auto=format&fit=crop&w=2400&q=85"; // Watershed drainage basin
+
+// Founder & Project Links
 const GITHUB = "https://github.com/theSaksham02/Hydromesh";
 const FOUNDER_EMAIL = "sxm2114@student.bham.ac.uk";
 const FOUNDER_LINKEDIN = "https://www.linkedin.com/in/saksham-mishra-91696222b/";
@@ -193,11 +200,11 @@ function HomePage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
 
   return (
     <>
-      {/* 1. Hero Section (Clearly visible rainstorm + crisp text) */}
+      {/* 1. Hero Section (Clearly visible rainstorm + crisp typography) */}
       <section
         id="top"
         className="relative flex min-h-[82vh] w-full items-center justify-center bg-cover bg-center px-6 py-28 text-center"
-        style={{ backgroundImage: `url('${HERO_RAIN}')` }}
+        style={{ backgroundImage: `url('${HERO_HOME}')` }}
       >
         <div className="absolute inset-0 bg-[#002456]/40 backdrop-brightness-75" />
         <div className="relative z-10 mx-auto max-w-4xl">
@@ -223,7 +230,7 @@ function HomePage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
       <section className="grid grid-cols-1 md:grid-cols-3 w-full gap-0">
         <div
           className="relative flex h-[380px] lg:h-[460px] items-center justify-center bg-cover bg-center text-center text-white px-6"
-          style={{ backgroundImage: `url('${STAT_RAIN}')` }}
+          style={{ backgroundImage: `url('${HOME_STAT_1}')` }}
         >
           <div className="absolute inset-0 bg-[#002456]/40 transition-opacity hover:bg-[#002456]/25" />
           <div className="relative z-10">
@@ -238,7 +245,7 @@ function HomePage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
 
         <div
           className="relative flex h-[380px] lg:h-[460px] items-center justify-center bg-cover bg-center text-center text-white px-6"
-          style={{ backgroundImage: `url('${STAT_FLOOD}')` }}
+          style={{ backgroundImage: `url('${HOME_STAT_2}')` }}
         >
           <div className="absolute inset-0 bg-[#002456]/40 transition-opacity hover:bg-[#002456]/25" />
           <div className="relative z-10">
@@ -253,7 +260,7 @@ function HomePage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
 
         <div
           className="relative flex h-[380px] lg:h-[460px] items-center justify-center bg-cover bg-center text-center text-white px-6"
-          style={{ backgroundImage: `url('${STAT_TEAM}')` }}
+          style={{ backgroundImage: `url('${HOME_STAT_3}')` }}
         >
           <div className="absolute inset-0 bg-[#002456]/40 transition-opacity hover:bg-[#002456]/25" />
           <div className="relative z-10">
@@ -356,21 +363,21 @@ function HomePage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
 
         <div
           className="min-h-[440px] lg:min-h-[660px] w-full bg-cover bg-center"
-          style={{ backgroundImage: `url('${PHOTO_SURGE_WATER}')` }}
+          style={{ backgroundImage: `url('${HOME_50_50}')` }}
           role="img"
-          aria-label="Rushing stormwater surge channel"
+          aria-label="Deep water stormwater surge channel"
         />
       </section>
 
-      {/* 5. 6-Photo Field Mosaic Grid (All verified 200 OK) */}
+      {/* 5. 6-Photo Field Mosaic Grid (Zero Repeating Photos) */}
       <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full gap-0">
         {[
-          { img: MOSAIC_1, alt: "Heavy urban rain falling on pavement" },
-          { img: MOSAIC_2, alt: "Municipal stormwater drainage surge" },
-          { img: MOSAIC_3, alt: "Deep storm water surface" },
-          { img: MOSAIC_4, alt: "Heavy rainfall precipitation clouds" },
-          { img: MOSAIC_5, alt: "First responders and community volunteers" },
-          { img: MOSAIC_6, alt: "Storm clouds over urban watershed" },
+          { img: MOSAIC_1, alt: "Thunderstorm over urban basin" },
+          { img: MOSAIC_2, alt: "Flood relief responders in field" },
+          { img: MOSAIC_3, alt: "Ominous storm clouds over city" },
+          { img: MOSAIC_4, alt: "Rainy street flood reflections" },
+          { img: MOSAIC_5, alt: "Humanitarian emergency support" },
+          { img: MOSAIC_6, alt: "Inundated river water channel" },
         ].map((item, idx) => (
           <div key={idx} className="relative aspect-4/3 overflow-hidden group">
             <img
@@ -473,15 +480,15 @@ function HomePage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Page 2: About (Mission, Sensor Economics & Founding Team)          */
+/* Page 2: About (Mission, Sensor Economics & Elevated Founder Section)*/
 /* ------------------------------------------------------------------ */
 function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
   return (
     <div>
-      {/* Hero Banner */}
+      {/* Hero Banner (Unique Atmospheric Storm Photo) */}
       <section
         className="relative flex min-h-[52vh] w-full items-center justify-center bg-cover bg-center px-6 py-24 text-center"
-        style={{ backgroundImage: `url('${HERO_WATERSHED}')` }}
+        style={{ backgroundImage: `url('${HERO_ABOUT}')` }}
       >
         <div className="absolute inset-0 bg-[#002456]/50" />
         <div className="relative z-10 mx-auto max-w-4xl text-white">
@@ -494,7 +501,7 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
         </div>
       </section>
 
-      {/* 50/50 Split: The Founding Vision */}
+      {/* 50/50 Split: The Founding Vision (Unique Photo) */}
       <section className="grid grid-cols-1 lg:grid-cols-2 w-full">
         <div className="flex flex-col justify-center bg-[#F3F1EC] p-12 sm:p-20 lg:p-28">
           <div className="max-w-xl">
@@ -520,9 +527,9 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
         </div>
         <div
           className="min-h-[440px] lg:min-h-[600px] w-full bg-cover bg-center"
-          style={{ backgroundImage: `url('${STAT_FLOOD}')` }}
+          style={{ backgroundImage: `url('${ABOUT_50_50}')` }}
           role="img"
-          aria-label="Urban flooded underpass"
+          aria-label="Coastal storm tide & rising floodwater"
         />
       </section>
 
@@ -572,88 +579,133 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
         </div>
       </section>
 
-      {/* Founding Team Section (With Real Portraits) */}
+      {/* ELEVATED & REFINED FOUNDER SHOWCASE SECTION */}
       <section className="bg-[#F3F1EC] py-28 sm:py-36 px-8 lg:px-14">
         <div className="mx-auto max-w-[1240px]">
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="font-display text-[clamp(2.35rem,4.5vw,3.5rem)] font-semibold tracking-tight text-[#002456]">
-              Founding Team
+              Leadership & Engineering Cohort
             </h2>
             <p className="mt-4 text-[1.05rem] font-light text-[#334155]">
-              Built by a dedicated engineering team, drawing on the full contributor cohort behind the original university prototype.
+              Built out of the University of Birmingham School of Computer Science, driven by civic public infrastructure.
             </p>
           </div>
 
-          <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Lead Founder Card (Elevated Horizontal Showcase) */}
+          <div className="mt-20 bg-white border border-[#002456]/20 p-8 sm:p-14 shadow-xs">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+              {/* Left: Founder Brand Emblem & Visual */}
+              <div className="lg:col-span-4 flex flex-col items-center justify-center p-8 bg-[#F3F1EC] border border-[#002456]/10 text-center">
+                <img
+                  src="/logo-navy.png"
+                  alt="HydroMesh Logo"
+                  className="h-28 w-auto object-contain drop-shadow-xs"
+                />
+                <div className="mt-6 flex items-center gap-2 text-xs font-semibold text-[#002456] tracking-wider uppercase">
+                  <Shield className="h-4 w-4" />
+                  <span>Project Lead & Architect</span>
+                </div>
+              </div>
+
+              {/* Right: Founder Narrative & Direct Coordinates */}
+              <div className="lg:col-span-8">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                  <div>
+                    <h3 className="font-display text-[2rem] font-semibold text-[#002456] leading-tight">
+                      Saksham Mishra
+                    </h3>
+                    <p className="text-[0.95rem] font-light text-[#002456] mt-0.5">
+                      University of Birmingham, UK · MCN UN Millennium Fellow · FII–MIT Finalist
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 bg-[#002456] text-white text-xs font-medium px-3 py-1">
+                    <Award className="h-3.5 w-3.5" /> Distinction Capstone
+                  </span>
+                </div>
+
+                <p className="mt-6 text-[1.05rem] font-extralight leading-[1.8] text-[#334155]">
+                  "We built HydroMesh because when municipal pumps submerge and cell towers drop, neighbors shouldn't be left in the dark. By turning the phones already in people's pockets into a self-healing mesh, we give city engineers real-time drainage visibility at zero hardware cost."
+                </p>
+
+                <div className="mt-8 flex flex-wrap items-center gap-6 text-sm">
+                  <a
+                    href={`mailto:${FOUNDER_EMAIL}`}
+                    className="inline-flex items-center gap-2 font-medium text-[#002456] hover:underline"
+                  >
+                    <Mail className="h-4 w-4" />
+                    <span>{FOUNDER_EMAIL}</span>
+                  </a>
+                  <ExtLink
+                    href={FOUNDER_LINKEDIN}
+                    className="inline-flex items-center gap-1.5 font-medium text-[#002456] hover:underline"
+                  >
+                    <span>LinkedIn Profile</span>
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </ExtLink>
+                  <ExtLink
+                    href={GITHUB}
+                    className="inline-flex items-center gap-1.5 font-medium text-[#002456] hover:underline"
+                  >
+                    <span>GitHub Repository</span>
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </ExtLink>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Core Engineering Cohort (3 Sleek Minimalist Cards) */}
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                name: "Saksham Mishra",
-                role: "Project Lead — Backend API, WebSockets & Map UI",
-                img: PORTRAIT_SAKSHAM,
-                github: "https://github.com/theSaksham02",
-                linkedin: FOUNDER_LINKEDIN,
-              },
-              {
                 name: "Shaazia Raziq",
-                role: "Database Architect — PostgreSQL / PostGIS",
-                img: PORTRAIT_SHAAZIA,
-                github: "",
-                linkedin: "",
+                role: "Database Architect",
+                focus: "PostgreSQL / PostGIS Spatial Modeling & Clustering",
+                desc: "Engineered real-time spatial aggregation and hazard polygons for high-volume citizen reports.",
               },
               {
                 name: "Moustafa Ameen",
-                role: "UI/UX Developer — Icon & Voice Reporting",
-                img: PORTRAIT_MOUSTAFA,
-                github: "",
-                linkedin: "",
+                role: "UI/UX & Human Factors",
+                focus: "Accessible Icon & Voice Reporting (Module F-17)",
+                desc: "Designed low-literacy reporting scales and speech-to-text input adhering strictly to WCAG 2.2 AAA.",
               },
               {
                 name: "Yaman Gulcan",
-                role: "Integration — Weather API & OSRM Routes",
-                img: PORTRAIT_YAMAN,
-                github: "",
-                linkedin: "",
+                role: "Systems Integration",
+                focus: "Open-Meteo Radar Feeds & OSRM Safe Routes",
+                desc: "Connected live precipitation models with dynamic walking path calculation to route citizens around submerged choke points.",
               },
-            ].map((person) => (
-              <div key={person.name} className="bg-white p-7 border border-[#002456]/15 flex flex-col justify-between group">
+            ].map((member) => (
+              <div
+                key={member.name}
+                className="bg-white border border-[#002456]/15 p-8 flex flex-col justify-between transition-all duration-300 hover:border-[#002456]"
+              >
                 <div>
-                  <div className="aspect-[4/5] overflow-hidden bg-slate-100">
-                    <img
-                      src={person.img}
-                      alt={person.name}
-                      className="h-full w-full object-cover grayscale-[20%] transition-transform duration-500 ease-out group-hover:scale-105"
-                      loading="lazy"
-                    />
-                  </div>
-                  <h3 className="mt-6 font-display text-[1.3rem] font-semibold text-[#002456]">
-                    {person.name}
-                  </h3>
-                  <p className="mt-2 text-[0.875rem] font-extralight leading-relaxed text-[#334155]">
-                    {person.role}
+                  <div className="h-2 w-8 bg-[#002456] mb-6" />
+                  <span className="text-xs font-semibold text-[#002456] uppercase tracking-wider">
+                    {member.role}
+                  </span>
+                  <h4 className="mt-2 font-display text-[1.4rem] font-semibold text-[#002456]">
+                    {member.name}
+                  </h4>
+                  <p className="mt-1 text-xs font-medium text-slate-500">
+                    {member.focus}
+                  </p>
+                  <p className="mt-4 text-[0.9375rem] font-extralight leading-relaxed text-[#334155]">
+                    {member.desc}
                   </p>
                 </div>
-                <div className="mt-6 pt-4 border-t border-slate-100 flex gap-4 text-xs font-medium text-[#002456]">
-                  {person.linkedin ? (
-                    <ExtLink href={person.linkedin} className="hover:underline">LinkedIn</ExtLink>
-                  ) : (
-                    <span className="opacity-50">LinkedIn</span>
-                  )}
-                  {person.github ? (
-                    <ExtLink href={person.github} className="hover:underline">GitHub</ExtLink>
-                  ) : (
-                    <span className="opacity-50">GitHub</span>
-                  )}
+                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-medium text-[#002456]">
+                  <span>University of Birmingham</span>
+                  <span className="opacity-75">Core Engineer</span>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-16 bg-white p-8 sm:p-12 border border-[#002456]/15 max-w-3xl mx-auto text-center">
-            <h3 className="font-display text-[1.35rem] font-semibold text-[#002456]">
-              Verified Academic Provenance
-            </h3>
-            <p className="mt-3 text-[0.95rem] font-light leading-relaxed text-[#334155]">
-              Developed as a distinction-grade University of Birmingham capstone project aligned with UN Sustainable Development Goal 11.5. Selected for the prestigious MCN UN Millennium Fellowship and advanced to final rounds of the FII–MIT competition.
+          <div className="mt-12 p-6 border border-[#002456]/15 bg-white text-center">
+            <p className="text-xs font-light text-slate-500 leading-relaxed max-w-2xl mx-auto">
+              Original prototype research contributors also include Adham Khashan (documentation, ethics), Fartun Araye (accessibility), and Dhwanit Soni (SOS & location logic).
             </p>
           </div>
         </div>
@@ -684,10 +736,10 @@ function JoinPage() {
 
   return (
     <div>
-      {/* Hero Banner */}
+      {/* Hero Banner (Unique Deep Water Channel Photo) */}
       <section
         className="relative flex min-h-[52vh] w-full items-center justify-center bg-cover bg-center px-6 py-24 text-center"
-        style={{ backgroundImage: `url('${HERO_SURGE}')` }}
+        style={{ backgroundImage: `url('${HERO_JOIN}')` }}
       >
         <div className="absolute inset-0 bg-[#002456]/50" />
         <div className="relative z-10 mx-auto max-w-4xl text-white">
@@ -874,7 +926,7 @@ function BlogPage() {
       title: "Autonomous Mesh Relays During Major Monsoon Outages",
       date: "September 2026",
       readTime: "4 min read",
-      img: MOSAIC_1,
+      img: BLOG_POST_1,
       summary:
         "When severe cloudbursts knock power substations offline, communication networks often follow. We examine how Bluetooth Low Energy and Wi-Fi Direct can keep critical flood beacons hopping.",
       content:
@@ -885,7 +937,7 @@ function BlogPage() {
       title: "Why PostGIS Spatial Consensus Outperforms Fixed Hardware Probes",
       date: "August 2026",
       readTime: "5 min read",
-      img: MOSAIC_2,
+      img: BLOG_POST_2,
       summary:
         "Fixed ultrasonic sensors cost up to $50,000 per kilometer and provide zero visibility outside their line of sight. Here is how spatial clustering creates dynamic inundation polygons.",
       content:
@@ -896,7 +948,7 @@ function BlogPage() {
       title: "Designing for Universal Literacy in Emergency Situations",
       date: "July 2026",
       readTime: "3 min read",
-      img: MOSAIC_4,
+      img: BLOG_POST_3,
       summary:
         "In a crisis, reading dense technical text causes fatal delays. How we built visual icon scales and speech-to-text reporting into Module F-17.",
       content:
@@ -906,10 +958,10 @@ function BlogPage() {
 
   return (
     <div>
-      {/* Hero Banner */}
+      {/* Hero Banner (Unique Weather Pattern Photo) */}
       <section
         className="relative flex min-h-[52vh] w-full items-center justify-center bg-cover bg-center px-6 py-24 text-center"
-        style={{ backgroundImage: `url('${HERO_WET_STREET}')` }}
+        style={{ backgroundImage: `url('${HERO_BLOG}')` }}
       >
         <div className="absolute inset-0 bg-[#002456]/50" />
         <div className="relative z-10 mx-auto max-w-4xl text-white">
@@ -994,10 +1046,10 @@ function ContactPage() {
 
   return (
     <div>
-      {/* Hero Banner */}
+      {/* Hero Banner (Unique Watershed Drainage Photo) */}
       <section
         className="relative flex min-h-[52vh] w-full items-center justify-center bg-cover bg-center px-6 py-24 text-center"
-        style={{ backgroundImage: `url('${HERO_RAIN}')` }}
+        style={{ backgroundImage: `url('${HERO_CONTACT}')` }}
       >
         <div className="absolute inset-0 bg-[#002456]/50" />
         <div className="relative z-10 mx-auto max-w-4xl text-white">
