@@ -2,8 +2,6 @@ import { useState, useEffect, type FormEvent, type ReactNode } from "react";
 import {
   Menu,
   X,
-  Facebook,
-  Twitter,
   Linkedin,
   ArrowRight,
   Download,
@@ -1724,14 +1722,8 @@ export default function App() {
           <p className="font-extralight text-center">©2026 HydroMesh · University of Birmingham — SDG 11.5</p>
 
           <div className="flex items-center gap-5 text-[#002456]">
-            <ExtLink href={GITHUB} className="hover:opacity-75 transition-opacity" aria-label="Facebook">
-              <Facebook className="h-4 w-4 fill-current" />
-            </ExtLink>
-            <ExtLink href={GITHUB} className="hover:opacity-75 transition-opacity" aria-label="Twitter">
-              <Twitter className="h-4 w-4 fill-current" />
-            </ExtLink>
             <ExtLink href={FOUNDER_LINKEDIN} className="hover:opacity-75 transition-opacity" aria-label="LinkedIn">
-              <Linkedin className="h-4 w-4 fill-current" />
+              <Linkedin className="h-5 w-5 fill-current" />
             </ExtLink>
           </div>
         </div>
