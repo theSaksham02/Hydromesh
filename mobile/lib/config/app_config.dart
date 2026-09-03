@@ -5,7 +5,7 @@ class AppConfig {
   static const String appName = 'HydroMesh';
 
   // Switch between: 'local', 'render', 'azure'
-  static const String _env = 'local';
+  static const String _env = 'render';
 
   // If using a PHYSICAL DEVICE, change this to your computer's LAN IP (e.g. 192.168.1.5)
   // If using an EMULATOR, keep it as '10.0.2.2'
