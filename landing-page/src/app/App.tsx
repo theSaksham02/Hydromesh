@@ -675,7 +675,7 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
                       Saksham Mishra
                     </h3>
                     <p className="text-[0.92rem] font-light text-[#002456] mt-0.5">
-                      University of Birmingham, UK · MCN UN Millennium Fellow · FII–MIT Finalist
+                      University of Birmingham, UK · FII–MIT Finalist
                     </p>
                   </div>
                   <span className="inline-flex items-center gap-1.5 bg-[#002456] text-white text-xs font-medium px-3 py-1">
@@ -722,18 +722,21 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
                 role: "Database Architect",
                 focus: "PostgreSQL / PostGIS Spatial Modeling & Clustering",
                 desc: "Engineered real-time spatial aggregation and hazard polygons for high-density citizen reporting across municipal catchments.",
+                linkedin: "https://www.linkedin.com/in/shaazia-raziq",
               },
               {
                 name: "Adham Khashan",
                 role: "Systems Reliability",
                 focus: "Blackout Mesh Failover & Operational Verification",
                 desc: "Spearheaded disaster protocol verification, ethical safety frameworks, and store-and-forward peer relay resilience.",
+                linkedin: "https://www.linkedin.com/in/adhamkhashan",
               },
               {
                 name: "Yaman Gulcan",
                 role: "Systems Integration",
                 focus: "Open-Meteo Radar Feeds & OSRM Safe Routes",
                 desc: "Connected live precipitation models with dynamic routing engines to navigate citizens around submerged underpasses.",
+                linkedin: "https://www.linkedin.com/in/yamanglcn",
               },
             ].map((member) => (
               <div
@@ -757,7 +760,13 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
                 </div>
                 <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-medium text-[#002456]">
                   <span>University of Birmingham</span>
-                  <span className="opacity-75">Core Engineering Cohort</span>
+                  <ExtLink
+                    href={member.linkedin}
+                    className="inline-flex items-center gap-1 font-semibold hover:underline"
+                  >
+                    <span>LinkedIn</span>
+                    <ExternalLink className="h-3 w-3" />
+                  </ExtLink>
                 </div>
               </div>
             ))}
@@ -1073,7 +1082,7 @@ function ImpactPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
           <div className="mt-8 p-6 bg-[#F3F1EC] border border-[#002456]/15 inline-block text-left">
             <p className="text-xs font-medium text-[#002456] uppercase tracking-wider">Academic Provenance</p>
             <p className="mt-1 text-sm font-light text-[#334155]">
-              Developed under the MCN United Nations Millennium Fellowship at the University of Birmingham School of Computer Science.
+              Developed at the University of Birmingham School of Computer Science in direct alignment with UN SDG 11.5.
             </p>
           </div>
         </div>
