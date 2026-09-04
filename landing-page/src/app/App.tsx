@@ -656,13 +656,15 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
           {/* Lead Founder Card: Saksham Mishra */}
           <div className="mt-16 sm:mt-20 bg-white border border-[#002456]/20 p-6 sm:p-12 lg:p-14">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-              <div className="lg:col-span-4 flex flex-col items-center justify-center p-8 bg-[#F3F1EC] border border-[#002456]/10 text-center">
-                <img
-                  src="/logo-navy.png"
-                  alt="HydroMesh Logo"
-                  className="h-24 sm:h-28 w-auto object-contain"
-                />
-                <div className="mt-5 flex items-center gap-2 text-xs font-semibold text-[#002456] tracking-wider uppercase">
+              <div className="lg:col-span-4 flex flex-col items-center justify-center p-4 sm:p-6 bg-[#F3F1EC] border border-[#002456]/10 text-center group">
+                <div className="aspect-square w-full max-w-[280px] overflow-hidden bg-slate-950 border border-[#002456]/15">
+                  <img
+                    src="/team-saksham.png"
+                    alt="Saksham Mishra"
+                    className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
+                </div>
+                <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-[#002456] tracking-wider uppercase">
                   <Shield className="h-4 w-4" />
                   <span>Project Lead & Architect</span>
                 </div>
@@ -714,8 +716,8 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
             </div>
           </div>
 
-          {/* Core Engineering Cohort: Shaazia, Adham, Yaman */}
-          <div className="mt-8 sm:mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          {/* Core Engineering Cohort: Shaazia & Adham */}
+          <div className="mt-8 sm:mt-10 grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-6 sm:gap-8">
             {[
               {
                 name: "Shaazia Raziq",
@@ -723,6 +725,7 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
                 focus: "PostgreSQL / PostGIS Spatial Modeling & Clustering",
                 desc: "Engineered real-time spatial aggregation and hazard polygons for high-density citizen reporting across municipal catchments.",
                 linkedin: "https://www.linkedin.com/in/shaazia-raziq",
+                image: "/team-shaazia.png",
               },
               {
                 name: "Adham Khashan",
@@ -730,21 +733,28 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
                 focus: "Blackout Mesh Failover & Operational Verification",
                 desc: "Spearheaded disaster protocol verification, ethical safety frameworks, and store-and-forward peer relay resilience.",
                 linkedin: "https://www.linkedin.com/in/adhamkhashan",
-              },
-              {
-                name: "Yaman Gulcan",
-                role: "Systems Integration",
-                focus: "Open-Meteo Radar Feeds & OSRM Safe Routes",
-                desc: "Connected live precipitation models with dynamic routing engines to navigate citizens around submerged underpasses.",
-                linkedin: "https://www.linkedin.com/in/yamanglcn",
+                image: "/team-adham.png",
               },
             ].map((member) => (
               <div
                 key={member.name}
-                className="bg-white border border-[#002456]/15 p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:border-[#002456]"
+                className="bg-white border border-[#002456]/15 p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:border-[#002456] group"
               >
                 <div>
-                  <div className="h-2 w-8 bg-[#002456] mb-5" />
+                  {member.image ? (
+                    <div className="aspect-square overflow-hidden bg-slate-100 mb-6 border border-[#002456]/10">
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                      />
+                    </div>
+                  ) : (
+                    <div className="aspect-square bg-[#F3F1EC] mb-6 flex flex-col items-center justify-center border border-[#002456]/10 text-center p-4">
+                      <HydroMeshLogo className="h-12 w-auto opacity-30" />
+                      <span className="mt-2 text-xs font-light text-slate-400">Headshot Pending</span>
+                    </div>
+                  )}
                   <span className="text-xs font-semibold text-[#002456] uppercase tracking-wider">
                     {member.role}
                   </span>
@@ -770,6 +780,17 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
                 </div>
               </div>
             ))}
+          </div>
+
+          <div className="mt-14 p-6 sm:p-8 border border-[#002456]/15 bg-white flex flex-col sm:flex-row items-center gap-6 max-w-3xl mx-auto">
+            <img
+              src="/sdg-11-banner.png"
+              alt="UN Sustainable Cities and Communities"
+              className="h-16 w-auto object-contain shrink-0"
+            />
+            <p className="text-xs sm:text-sm font-light text-slate-600 leading-relaxed text-center sm:text-left">
+              HydroMesh was developed as an academic capstone at the University of Birmingham School of Computer Science, engineering accessible mobile telemetry to protect vulnerable urban communities from flash floods in direct alignment with UN SDG 11.
+            </p>
           </div>
         </div>
       </section>
@@ -1069,21 +1090,30 @@ function ImpactPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
 
       {/* UN Sustainable Development Goals Alignment */}
       <section className="bg-white py-24 sm:py-36 px-6 sm:px-8 lg:px-14 border-b border-slate-100">
-        <div className="mx-auto max-w-3xl text-center">
-          <span className="text-xs font-semibold text-[#002456] tracking-widest uppercase">
-            Global Agenda Alignment
-          </span>
-          <h2 className="mt-3 font-display text-[clamp(2.1rem,3.8vw,3.25rem)] font-semibold tracking-tight text-[#002456]">
-            UN Sustainable Development Goal 11.5
-          </h2>
-          <p className="mt-5 text-[1rem] sm:text-[1.05rem] font-extralight leading-relaxed text-[#334155]">
-            "By 2030, significantly reduce the number of deaths and the number of people affected and substantially decrease the direct economic losses relative to global gross domestic product caused by disasters, including water-related disasters, with a focus on protecting the poor and people in vulnerable situations."
-          </p>
-          <div className="mt-8 p-6 bg-[#F3F1EC] border border-[#002456]/15 inline-block text-left">
-            <p className="text-xs font-medium text-[#002456] uppercase tracking-wider">Academic Provenance</p>
-            <p className="mt-1 text-sm font-light text-[#334155]">
-              Developed at the University of Birmingham School of Computer Science in direct alignment with UN SDG 11.5.
-            </p>
+        <div className="mx-auto max-w-4xl">
+          <div className="flex flex-col sm:flex-row items-center gap-8 sm:gap-12 bg-[#F3F1EC] p-8 sm:p-12 lg:p-14 border border-[#002456]/15">
+            <div className="shrink-0">
+              <img
+                src="/sdg-11-square.png"
+                alt="UN SDG 11: Sustainable Cities and Communities"
+                className="h-32 w-32 sm:h-40 sm:w-40 object-contain shadow-xs border border-amber-500/20"
+              />
+            </div>
+            <div className="text-left">
+              <span className="text-xs font-semibold text-[#002456] tracking-widest uppercase">
+                Global Agenda Alignment
+              </span>
+              <h2 className="mt-2 font-display text-[clamp(1.75rem,3.2vw,2.5rem)] font-semibold tracking-tight text-[#002456]">
+                UN Sustainable Development Goal 11.5
+              </h2>
+              <p className="mt-4 text-[0.95rem] sm:text-[1rem] font-extralight leading-relaxed text-[#334155]">
+                "By 2030, significantly reduce the number of deaths and the number of people affected and substantially decrease the direct economic losses relative to global gross domestic product caused by disasters, including water-related disasters, with a focus on protecting the poor and people in vulnerable situations."
+              </p>
+              <div className="mt-5 pt-4 border-t border-[#002456]/10 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+                <span className="font-medium text-[#002456] uppercase tracking-wider">Academic Provenance</span>
+                <span className="font-light">University of Birmingham School of Computer Science</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1728,7 +1758,14 @@ export default function App() {
             </ExtLink>
           </div>
 
-          <p className="font-extralight text-center">©2026 HydroMesh · University of Birmingham — SDG 11.5</p>
+          <div className="flex items-center gap-2.5">
+            <img
+              src="/sdg-11-square.png"
+              alt="UN SDG 11"
+              className="h-5 w-5 object-contain"
+            />
+            <p className="font-extralight text-center">©2026 HydroMesh · University of Birmingham — SDG 11.5</p>
+          </div>
 
           <div className="flex items-center gap-5 text-[#002456]">
             <ExtLink href={FOUNDER_LINKEDIN} className="hover:opacity-75 transition-opacity" aria-label="LinkedIn">
