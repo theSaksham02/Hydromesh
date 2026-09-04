@@ -90,10 +90,22 @@ const HERO_FAQ =
 const HERO_CONTACT =
   "https://images.unsplash.com/photo-1527489377706-5bf97e608852?auto=format&fit=crop&w=2400&q=85"; // Watershed drainage basin
 
+// Pilot Phase HD Imagery
+const PILOT_PHASE_1 = "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80"; // Aerial catchment & topographical GIS contours
+const PILOT_PHASE_2 = "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=1200&q=80"; // Field response volunteers with mobile devices
+const PILOT_PHASE_3 = "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80"; // Network telecom command center telemetry diagnostics
+const PILOT_PHASE_4 = "https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=1200&q=80"; // Torrential monsoon rain & civic flood response
+
+// Technology Architecture HD Imagery
+const TECH_PILLAR_1 = "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80"; // BLE mesh radio packet broadcast
+const TECH_PILLAR_2 = "https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?auto=format&fit=crop&w=1200&q=80"; // Geospatial GIS danger polygons & clustering
+const TECH_PILLAR_3 = "https://images.unsplash.com/photo-1508873535684-277a3cbcc4e8?auto=format&fit=crop&w=1200&q=80"; // Water depth measurement gauge calibration
+const TECH_PILLAR_4 = "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80"; // Municipal Emergency Operations Center (EOC) console
+
 // Founder & Project Coordinates
 const GITHUB = "https://github.com/theSaksham02/Hydromesh";
 const FOUNDER_EMAIL = "sxm2114@student.bham.ac.uk";
-const FOUNDER_LINKEDIN = "https://www.linkedin.com/in/saksham-mishra-91696222b/";
+const FOUNDER_LINKEDIN = "https://www.linkedin.com/in/saksham-mishra-7b1930345/";
 
 type PageType = "home" | "about" | "technology" | "impact" | "join" | "blog" | "faq" | "contact";
 
@@ -552,12 +564,12 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
         className="relative flex min-h-[50vh] w-full items-center justify-center bg-cover bg-center px-6 py-24 text-center"
         style={{ backgroundImage: `url('${HERO_ABOUT}')` }}
       >
-        <div className="absolute inset-0 bg-[#002456]/50" />
-        <div className="relative z-10 mx-auto max-w-4xl text-white">
-          <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.1] drop-shadow-md">
+        <div className="absolute inset-0 bg-[#001838]/75 backdrop-blur-[1px]" />
+        <div className="relative z-10 mx-auto max-w-4xl">
+          <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.1] text-white drop-shadow-lg">
             About HydroMesh
           </h1>
-          <p className="mt-5 text-[clamp(1.05rem,2vw,1.4rem)] font-light tracking-wide drop-shadow-md">
+          <p className="mt-5 text-[clamp(1.05rem,2vw,1.4rem)] font-light tracking-wide text-slate-100 drop-shadow-md">
             Decentralized Climate Resilience for Vulnerable Cities
           </p>
         </div>
@@ -802,6 +814,114 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
 /* Page 3: Technology (New - Strict Save Our Shores Design Language)  */
 /* ------------------------------------------------------------------ */
 function TechnologyPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
+  const [activeCodeTab, setActiveCodeTab] = useState<"postgis" | "ble" | "socket" | "cap">("postgis");
+  const [copied, setCopied] = useState(false);
+
+  const TECH_SCRIPTS = {
+    postgis: {
+      title: "PostGIS Spatial Consensus & Hazard Polygons",
+      file: "database/schema.sql",
+      lang: "SQL / PostGIS",
+      desc: "Executes spatial density clustering across citizen depth reports and computes real-time convex hull danger zones.",
+      code: `-- Enable PostGIS Spatial Extension
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+-- Dynamic Hazard Polygon & Density Aggregation
+SELECT 
+    ST_AsGeoJSON(ST_ConvexHull(ST_Collect(geom))) AS hazard_polygon,
+    water_level,
+    COUNT(*) AS cluster_reports
+FROM (
+    SELECT 
+        (ST_MakePoint(longitude, latitude)::geography)::geometry AS geom,
+        water_level
+    FROM flood_reports
+    WHERE created_at >= NOW() - INTERVAL '3 hours'
+) reports
+GROUP BY 
+    ST_ClusterDBSCAN(geom, eps := 0.005, minpoints := 3) OVER (),
+    water_level;`,
+    },
+    ble: {
+      title: "Autonomous Offline Store-and-Forward Mesh Node",
+      file: "mobile/lib/models/mesh_packet.dart",
+      lang: "Dart / Flutter",
+      desc: "Enforces 7-hop packet propagation over Bluetooth Low Energy (BLE) and Wi-Fi Direct with tamper-proof signatures.",
+      code: `// HydroMesh Decentralized Packet Schema
+class MeshPacket {
+  final String packetId;      // UUIDv4 deduplication
+  final double latitude;      // WGS84 coordinates
+  final double longitude;
+  final String waterLevel;    // [ankle, knee, waist, chest, above_head]
+  final int ttlHops;          // max 7 intermediate relays
+  final int rssiThreshold;    // -85 dBm proximity limit
+  final DateTime timestamp;
+  final Uint8List signature;  // Ed25519 payload verification
+
+  bool canRelay() => ttlHops > 0;
+  MeshPacket decrementHop() => copyWith(ttlHops: ttlHops - 1);
+}`,
+    },
+    socket: {
+      title: "Real-Time Emergency Dispatch WebSocket Loop",
+      file: "backend/src/index.js",
+      lang: "Node.js / Express",
+      desc: "Orchestrates instant radius-based alert dispatching to certified responders within 5km of an SOS signal.",
+      code: `// Socket.io Emergency Namespace Routing
+io.of('/emergency').on('connection', (socket) => {
+  socket.on('sos_broadcast', async (payload) => {
+    // Spatial query: find all responders within 5km radius via ST_DWithin
+    const responders = await db.query(
+      \`SELECT user_id FROM user_locations 
+       WHERE ST_DWithin(
+         (ST_MakePoint(longitude, latitude)::geography),
+         ST_MakePoint($1, $2)::geography, 
+         5000
+       )\`,
+      [payload.longitude, payload.latitude]
+    );
+
+    // Relay SOS alert to proximate emergency personnel
+    responders.rows.forEach((r) => {
+      socket.to(r.user_id).emit('critical_dispatch', payload);
+    });
+  });
+});`,
+    },
+    cap: {
+      title: "OASIS Common Alerting Protocol v1.2 Feed",
+      file: "docs/API.md (CAP Export)",
+      lang: "XML / OASIS CAP v1.2",
+      desc: "Universal civic format ingesting directly into municipal emergency radio networks and city operations dashboards.",
+      code: `<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>HYDROMESH-BHAM-2026-09</identifier>
+  <sender>sxm2114@student.bham.ac.uk</sender>
+  <sent>2026-09-04T15:30:00+01:00</sent>
+  <status>Actual</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <info>
+    <category>Met</category>
+    <event>Flash Inundation Hazard</event>
+    <urgency>Immediate</urgency>
+    <severity>Severe</severity>
+    <certainty>Observed</certainty>
+    <area>
+      <areaDesc>Catchment Sector 12 - Submerged Underpass</areaDesc>
+      <polygon>52.450,-1.930 52.455,-1.925 52.448,-1.920 52.450,-1.930</polygon>
+    </area>
+  </info>
+</alert>`,
+    },
+  };
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div>
       {/* Hero Banner */}
@@ -809,12 +929,12 @@ function TechnologyPage({ onNavigate }: { onNavigate: (page: PageType) => void }
         className="relative flex min-h-[50vh] w-full items-center justify-center bg-cover bg-center px-6 py-24 text-center"
         style={{ backgroundImage: `url('${HERO_TECH}')` }}
       >
-        <div className="absolute inset-0 bg-[#002456]/50" />
-        <div className="relative z-10 mx-auto max-w-4xl text-white">
-          <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.1] drop-shadow-md">
+        <div className="absolute inset-0 bg-[#001838]/75 backdrop-blur-[1px]" />
+        <div className="relative z-10 mx-auto max-w-4xl">
+          <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.1] text-white drop-shadow-lg">
             Decentralized Mesh Architecture
           </h1>
-          <p className="mt-5 text-[clamp(1.05rem,2vw,1.4rem)] font-light tracking-wide drop-shadow-md">
+          <p className="mt-5 text-[clamp(1.05rem,2vw,1.4rem)] font-light tracking-wide text-slate-100 drop-shadow-md">
             High-Performance Emergency Telemetry Without Cell Towers
           </p>
         </div>
@@ -863,7 +983,7 @@ function TechnologyPage({ onNavigate }: { onNavigate: (page: PageType) => void }
         />
       </section>
 
-      {/* 4 Architectural Pillars */}
+      {/* 4 Architectural Pillars with HD Visuals & Code Snippets */}
       <section className="bg-white py-24 sm:py-36 px-6 sm:px-8 lg:px-14 border-b border-slate-100">
         <div className="mx-auto max-w-[1240px]">
           <div className="text-center max-w-2xl mx-auto">
@@ -875,45 +995,128 @@ function TechnologyPage({ onNavigate }: { onNavigate: (page: PageType) => void }
             </p>
           </div>
 
-          <div className="mt-16 sm:mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
-            <div className="border-t-2 border-[#002456] pt-6">
-              <span className="font-display text-3xl font-semibold text-[#002456]">01</span>
-              <h3 className="mt-4 font-display text-[1.25rem] font-semibold text-[#002456]">
-                Sub-Second Peer Discovery
-              </h3>
-              <p className="mt-3 text-[0.92rem] font-extralight leading-relaxed text-[#334155]">
-                Optimized BLE beacon intervals discover neighboring citizen devices within 800ms while consuming less than 1.8% device battery per hour.
-              </p>
+          <div className="mt-16 sm:mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 text-left">
+            {[
+              {
+                num: "01",
+                title: "Sub-Second Peer Discovery",
+                desc: "Optimized BLE beacon intervals discover neighboring citizen devices within 800ms while consuming less than 1.8% device battery per hour.",
+                image: TECH_PILLAR_1,
+                tag: "BLE Mesh Protocol",
+                snippet: "MeshPacket(ttl: 7, rssi: -85dBm)",
+              },
+              {
+                num: "02",
+                title: "Dynamic Spatial Consensus",
+                desc: "PostGIS clustering algorithms (ST_ClusterDBSCAN) group overlapping citizen reports with digital elevation models to eliminate fraudulent or erroneous alerts.",
+                image: TECH_PILLAR_2,
+                tag: "PostGIS Spatial Engine",
+                snippet: "ST_ClusterDBSCAN(geom, eps: 0.005)",
+              },
+              {
+                num: "03",
+                title: "Universal Reporting Scale",
+                desc: "Standardized anatomical depth markers (Ankle, Knee, Waist, Chest, Submerged) ensure instant, accurate reporting without measuring tapes or complex tools.",
+                image: TECH_PILLAR_3,
+                tag: "Universal Depth Enum",
+                snippet: "CHECK(water_level IN ('ankle'..'above_head'))",
+              },
+              {
+                num: "04",
+                title: "Open Civic Standards",
+                desc: "Full support for OASIS Common Alerting Protocol (CAP v1.2) and GeoJSON outputs, integrating directly with city dispatch centers and emergency radio networks.",
+                image: TECH_PILLAR_4,
+                tag: "OASIS CAP v1.2 XML",
+                snippet: "<alert xmlns='urn:oasis:names:tc:emergency:cap:1.2'>",
+              },
+            ].map((pillar) => (
+              <div
+                key={pillar.num}
+                className="bg-[#F3F1EC] border border-[#002456]/15 flex flex-col justify-between overflow-hidden group hover:border-[#002456] transition-all duration-300"
+              >
+                <div>
+                  <div className="h-44 w-full overflow-hidden bg-slate-900 relative">
+                    <img
+                      src={pillar.image}
+                      alt={pillar.title}
+                      className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-[#001838]/25 group-hover:bg-transparent transition-colors duration-300" />
+                    <span className="absolute bottom-2.5 left-3 text-[0.68rem] font-medium tracking-wider uppercase bg-[#002456]/85 text-white px-2.5 py-0.5 backdrop-blur-[2px]">
+                      {pillar.tag}
+                    </span>
+                  </div>
+                  <div className="p-6">
+                    <span className="font-display text-2xl font-semibold text-[#002456]">{pillar.num}</span>
+                    <h3 className="mt-2 font-display text-[1.2rem] font-semibold text-[#002456] leading-tight">
+                      {pillar.title}
+                    </h3>
+                    <p className="mt-3 text-[0.88rem] font-extralight leading-relaxed text-[#334155]">
+                      {pillar.desc}
+                    </p>
+                    <div className="mt-4 bg-[#001838] p-2.5 text-[0.72rem] font-mono text-cyan-300 border border-[#002456]/20 truncate">
+                      <code>{pillar.snippet}</code>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Interactive Code & Script Inspector */}
+          <div className="mt-16 bg-[#001838] border border-[#002456]/20 p-6 sm:p-10 text-white">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
+              <div>
+                <span className="text-xs font-semibold text-cyan-400 tracking-wider uppercase">
+                  Production Code Inspector
+                </span>
+                <h3 className="mt-1 font-display text-xl sm:text-2xl font-semibold text-white">
+                  {TECH_SCRIPTS[activeCodeTab].title}
+                </h3>
+                <p className="mt-1 text-xs text-slate-300">
+                  Source: <span className="font-mono text-cyan-300">{TECH_SCRIPTS[activeCodeTab].file}</span> · {TECH_SCRIPTS[activeCodeTab].desc}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleCopy(TECH_SCRIPTS[activeCodeTab].code)}
+                  className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-medium text-white transition-colors cursor-pointer border border-white/15"
+                >
+                  <span>{copied ? "Copied!" : "Copy Code"}</span>
+                </button>
+              </div>
             </div>
 
-            <div className="border-t-2 border-[#002456] pt-6">
-              <span className="font-display text-3xl font-semibold text-[#002456]">02</span>
-              <h3 className="mt-4 font-display text-[1.25rem] font-semibold text-[#002456]">
-                Dynamic Spatial Consensus
-              </h3>
-              <p className="mt-3 text-[0.92rem] font-extralight leading-relaxed text-[#334155]">
-                PostGIS clustering algorithms (ST_ClusterDBSCAN) group overlapping citizen reports with digital elevation models to eliminate fraudulent or erroneous alerts.
-              </p>
+            {/* Script Tabs */}
+            <div className="mt-6 flex flex-wrap gap-2">
+              {(
+                [
+                  { id: "postgis", label: "PostGIS Clustering (SQL)" },
+                  { id: "ble", label: "BLE Mesh Protocol (Dart)" },
+                  { id: "socket", label: "Emergency Dispatch (Node.js)" },
+                  { id: "cap", label: "OASIS CAP v1.2 (XML)" },
+                ] as const
+              ).map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveCodeTab(tab.id)}
+                  className={`px-4 py-2 text-xs font-medium transition-colors cursor-pointer ${
+                    activeCodeTab === tab.id
+                      ? "bg-cyan-500 text-slate-950 font-semibold"
+                      : "bg-white/5 text-slate-300 hover:bg-white/10"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
 
-            <div className="border-t-2 border-[#002456] pt-6">
-              <span className="font-display text-3xl font-semibold text-[#002456]">03</span>
-              <h3 className="mt-4 font-display text-[1.25rem] font-semibold text-[#002456]">
-                Universal Reporting Scale
-              </h3>
-              <p className="mt-3 text-[0.92rem] font-extralight leading-relaxed text-[#334155]">
-                Standardized anatomical depth markers (Ankle, Knee, Waist, Chest, Submerged) ensure instant, accurate reporting without measuring tapes or complex tools.
-              </p>
-            </div>
-
-            <div className="border-t-2 border-[#002456] pt-6">
-              <span className="font-display text-3xl font-semibold text-[#002456]">04</span>
-              <h3 className="mt-4 font-display text-[1.25rem] font-semibold text-[#002456]">
-                Open Civic Standards
-              </h3>
-              <p className="mt-3 text-[0.92rem] font-extralight leading-relaxed text-[#334155]">
-                Full support for OASIS Common Alerting Protocol (CAP v1.2) and GeoJSON outputs, integrating directly with city dispatch centers and emergency radio networks.
-              </p>
+            {/* Code Body */}
+            <div className="mt-6 bg-slate-950/80 p-5 rounded-none border border-white/10 overflow-x-auto text-[0.82rem] font-mono text-cyan-200 leading-relaxed max-h-[340px] overflow-y-auto">
+              <pre>{TECH_SCRIPTS[activeCodeTab].code}</pre>
             </div>
           </div>
         </div>
@@ -997,12 +1200,12 @@ function ImpactPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
         className="relative flex min-h-[50vh] w-full items-center justify-center bg-cover bg-center px-6 py-24 text-center"
         style={{ backgroundImage: `url('${HERO_IMPACT}')` }}
       >
-        <div className="absolute inset-0 bg-[#002456]/50" />
-        <div className="relative z-10 mx-auto max-w-4xl text-white">
-          <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.1] drop-shadow-md">
+        <div className="absolute inset-0 bg-[#001838]/75 backdrop-blur-[1px]" />
+        <div className="relative z-10 mx-auto max-w-4xl">
+          <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.1] text-white drop-shadow-lg">
             Field Impact & Empirical Trials
           </h1>
-          <p className="mt-5 text-[clamp(1.05rem,2vw,1.4rem)] font-light tracking-wide drop-shadow-md">
+          <p className="mt-5 text-[clamp(1.05rem,2vw,1.4rem)] font-light tracking-wide text-slate-100 drop-shadow-md">
             Measuring Life Safety and Resilience in Vulnerable Communities
           </p>
         </div>
@@ -1148,12 +1351,12 @@ function JoinPage() {
         className="relative flex min-h-[50vh] w-full items-center justify-center bg-cover bg-center px-6 py-24 text-center"
         style={{ backgroundImage: `url('${HERO_JOIN}')` }}
       >
-        <div className="absolute inset-0 bg-[#002456]/50" />
-        <div className="relative z-10 mx-auto max-w-4xl text-white">
-          <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.1] drop-shadow-md">
+        <div className="absolute inset-0 bg-[#001838]/75 backdrop-blur-[1px]" />
+        <div className="relative z-10 mx-auto max-w-4xl">
+          <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.1] text-white drop-shadow-lg">
             Initiate a Municipal Pilot
           </h1>
-          <p className="mt-5 text-[clamp(1.05rem,2vw,1.4rem)] font-light tracking-wide drop-shadow-md">
+          <p className="mt-5 text-[clamp(1.05rem,2vw,1.4rem)] font-light tracking-wide text-slate-100 drop-shadow-md">
             From City Catchment to Active Telemetry in 8 Weeks
           </p>
         </div>
@@ -1178,38 +1381,62 @@ function JoinPage() {
                 weeks: "Weeks 1–2",
                 title: "Catchment & GIS Topology",
                 desc: "Ingesting municipal drainage maps, topographical digital elevation models, and historic flood inundation zones into PostGIS.",
+                image: PILOT_PHASE_1,
+                tag: "GIS Topography",
               },
               {
                 step: "Phase 02",
                 weeks: "Weeks 3–4",
                 title: "Field Node Seeding",
                 desc: "Equipping local sanitation crews, ward volunteers, and municipal dispatchers with the offline-first HydroMesh reporting tool.",
+                image: PILOT_PHASE_2,
+                tag: "Volunteer Mobilization",
               },
               {
                 step: "Phase 03",
                 weeks: "Weeks 5–6",
                 title: "Blackout Simulation",
                 desc: "Stress-testing peer-to-peer Bluetooth and Wi-Fi Direct packet routing under controlled cellular dropout conditions.",
+                image: PILOT_PHASE_3,
+                tag: "Radio Telemetry",
               },
               {
                 step: "Phase 04",
                 weeks: "Weeks 7–8",
                 title: "Live Monsoon Evaluation",
                 desc: "Full operational audit during seasonal rainfall events, assessing evacuation route safety and emergency SOS response times.",
+                image: PILOT_PHASE_4,
+                tag: "Monsoon Deluge",
               },
             ].map((item) => (
-              <div key={item.step} className="bg-[#F3F1EC] p-7 sm:p-8 border border-[#002456]/15 flex flex-col justify-between">
+              <div
+                key={item.step}
+                className="bg-[#F3F1EC] border border-[#002456]/15 flex flex-col justify-between overflow-hidden group hover:border-[#002456] transition-all duration-300"
+              >
                 <div>
-                  <div className="flex justify-between items-center text-xs font-semibold text-[#002456]">
-                    <span>{item.step}</span>
-                    <span>{item.weeks}</span>
+                  <div className="h-44 sm:h-48 w-full overflow-hidden bg-slate-900 relative">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-[#001838]/20 group-hover:bg-transparent transition-colors duration-300" />
+                    <span className="absolute bottom-2.5 left-3 text-[0.68rem] font-medium tracking-wider uppercase bg-[#002456]/85 text-white px-2 py-0.5 backdrop-blur-[2px]">
+                      {item.tag}
+                    </span>
                   </div>
-                  <h3 className="mt-5 font-display text-[1.25rem] font-semibold text-[#002456]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-3 text-[0.92rem] font-extralight leading-relaxed text-[#334155]">
-                    {item.desc}
-                  </p>
+                  <div className="p-6 sm:p-7">
+                    <div className="flex justify-between items-center text-xs font-semibold text-[#002456]">
+                      <span>{item.step}</span>
+                      <span>{item.weeks}</span>
+                    </div>
+                    <h3 className="mt-4 font-display text-[1.2rem] font-semibold text-[#002456] leading-tight">
+                      {item.title}
+                    </h3>
+                    <p className="mt-3 text-[0.9rem] font-extralight leading-relaxed text-[#334155]">
+                      {item.desc}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -1370,12 +1597,12 @@ function BlogPage() {
         className="relative flex min-h-[50vh] w-full items-center justify-center bg-cover bg-center px-6 py-24 text-center"
         style={{ backgroundImage: `url('${HERO_BLOG}')` }}
       >
-        <div className="absolute inset-0 bg-[#002456]/50" />
-        <div className="relative z-10 mx-auto max-w-4xl text-white">
-          <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.1] drop-shadow-md">
+        <div className="absolute inset-0 bg-[#001838]/75 backdrop-blur-[1px]" />
+        <div className="relative z-10 mx-auto max-w-4xl">
+          <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.1] text-white drop-shadow-lg">
             Field Dispatches
           </h1>
-          <p className="mt-5 text-[clamp(1.05rem,2vw,1.4rem)] font-light tracking-wide drop-shadow-md">
+          <p className="mt-5 text-[clamp(1.05rem,2vw,1.4rem)] font-light tracking-wide text-slate-100 drop-shadow-md">
             Operational Insights, Spatial Engineering & Field Notes
           </p>
         </div>
@@ -1470,12 +1697,12 @@ function FaqPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
         className="relative flex min-h-[50vh] w-full items-center justify-center bg-cover bg-center px-6 py-24 text-center"
         style={{ backgroundImage: `url('${HERO_FAQ}')` }}
       >
-        <div className="absolute inset-0 bg-[#002456]/50" />
-        <div className="relative z-10 mx-auto max-w-4xl text-white">
-          <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.1] drop-shadow-md">
+        <div className="absolute inset-0 bg-[#001838]/75 backdrop-blur-[1px]" />
+        <div className="relative z-10 mx-auto max-w-4xl">
+          <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.1] text-white drop-shadow-lg">
             Frequently Asked Questions
           </h1>
-          <p className="mt-5 text-[clamp(1.05rem,2vw,1.4rem)] font-light tracking-wide drop-shadow-md">
+          <p className="mt-5 text-[clamp(1.05rem,2vw,1.4rem)] font-light tracking-wide text-slate-100 drop-shadow-md">
             Operational, Technical & Privacy Guidelines for Cities and Citizens
           </p>
         </div>
@@ -1558,12 +1785,12 @@ function ContactPage() {
         className="relative flex min-h-[50vh] w-full items-center justify-center bg-cover bg-center px-6 py-24 text-center"
         style={{ backgroundImage: `url('${HERO_CONTACT}')` }}
       >
-        <div className="absolute inset-0 bg-[#002456]/50" />
-        <div className="relative z-10 mx-auto max-w-4xl text-white">
-          <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.1] drop-shadow-md">
+        <div className="absolute inset-0 bg-[#001838]/75 backdrop-blur-[1px]" />
+        <div className="relative z-10 mx-auto max-w-4xl">
+          <h1 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] font-semibold tracking-tight leading-[1.1] text-white drop-shadow-lg">
             Contact Us
           </h1>
-          <p className="mt-5 text-[clamp(1.05rem,2vw,1.4rem)] font-light tracking-wide drop-shadow-md">
+          <p className="mt-5 text-[clamp(1.05rem,2vw,1.4rem)] font-light tracking-wide text-slate-100 drop-shadow-md">
             Direct Coordination for Municipalities, Responders & Donors
           </p>
         </div>
