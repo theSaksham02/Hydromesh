@@ -11,7 +11,21 @@ import {
   Award,
   ChevronDown,
   ChevronUp,
+  CheckCircle2,
+  Database,
+  Sparkles,
 } from "lucide-react";
+import { toast } from "sonner";
+import { Toaster } from "./components/ui/sonner";
+import { SubmissionModal } from "./components/SubmissionModal";
+import {
+  submitNewsletter,
+  submitPilot,
+  submitContact,
+  getSavedMember,
+  getStoredSubmissions,
+  type StoredSubmission,
+} from "./services/forms";
 
 /* ------------------------------------------------------------------ */
 /* 100% Unique, Non-Repeating, Verified Flood & Evacuation Assets     */
@@ -144,9 +158,13 @@ function HydroMeshLogo({ className = "h-11 w-auto object-contain" }: { className
 function Header({
   currentPage,
   onNavigate,
+  savedMember,
+  onOpenMemberModal,
 }: {
   currentPage: PageType;
   onNavigate: (page: PageType) => void;
+  savedMember: { name: string; email: string; type: string } | null;
+  onOpenMemberModal: () => void;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -211,15 +229,31 @@ function Header({
           })}
         </nav>
 
-        {/* Mobile Hamburger Button */}
-        <button
-          type="button"
-          onClick={() => setOpen(!open)}
-          className="flex h-12 w-12 items-center justify-center text-[#002456] lg:hidden cursor-pointer focus:outline-none"
-          aria-label="Toggle navigation menu"
-        >
-          {open ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
-        </button>
+        <div className="flex items-center gap-3">
+          {savedMember && (
+            <button
+              type="button"
+              onClick={onOpenMemberModal}
+              className="inline-flex items-center gap-2 rounded-full border border-[#10B981]/40 bg-[#10B981]/10 px-3.5 py-1.5 text-[0.8rem] font-medium text-[#047857] hover:bg-[#10B981]/20 transition-all cursor-pointer shadow-xs"
+              title="View your saved HydroMesh submission"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
+              </span>
+              <span>Joined ({savedMember.name.split(" ")[0]})</span>
+            </button>
+          )}
+          {/* Mobile Hamburger Button */}
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            className="flex h-12 w-12 items-center justify-center text-[#002456] lg:hidden cursor-pointer focus:outline-none"
+            aria-label="Toggle navigation menu"
+          >
+            {open ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
+          </button>
+        </div>
       </div>
 
       {/* Touch-Friendly Mobile Navigation Drawer */}
@@ -653,20 +687,72 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
         </div>
       </section>
 
-      {/* CONFIRMED 4-MEMBER LEADERSHIP & ENGINEERING COHORT */}
+      {/* CONFIRMED 3-MEMBER LEADERSHIP & OPERATIONAL REGIONAL STRATEGY */}
       <section className="bg-[#F3F1EC] py-24 sm:py-36 px-6 sm:px-8 lg:px-14">
         <div className="mx-auto max-w-[1240px]">
-          <div className="text-center max-w-2xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto">
+            <span className="inline-flex items-center gap-2 bg-[#002456] text-white text-xs font-semibold px-3.5 py-1 tracking-wider uppercase mb-4">
+              Regional Insight · Local Validation
+            </span>
             <h2 className="font-display text-[clamp(2.2rem,4vw,3.5rem)] font-semibold tracking-tight text-[#002456]">
-              Leadership & Engineering Cohort
+              Operational Leadership & Regional Strategy
             </h2>
             <p className="mt-3 text-[1rem] sm:text-[1.05rem] font-light text-[#334155]">
               Developed out of the University of Birmingham School of Computer Science.
             </p>
           </div>
 
+          {/* Operational Team Strategy Card */}
+          <div className="mt-14 bg-white border border-[#002456]/20 p-8 sm:p-12 shadow-sm">
+            <div className="max-w-3xl">
+              <span className="text-xs font-bold text-[#002456] uppercase tracking-widest">
+                Team Strategy & Operational Scope
+              </span>
+              <blockquote className="mt-3 font-display text-[1.25rem] sm:text-[1.45rem] font-semibold text-[#002456] leading-snug">
+                “Our team brings lived and regional insight from flood-vulnerable communities across Asia and Africa. We are beginning validation through focused local partnerships.”
+              </blockquote>
+              <p className="mt-3 text-[0.95rem] font-extralight leading-relaxed text-[#334155]">
+                Rather than diffuse claims, HydroMesh translates our founders' lived and regional perspectives into four concrete, operational mandates:
+              </p>
+            </div>
+
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-6 border-t border-slate-100">
+              <div className="border-l-2 border-[#002456] pl-4">
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Technical Lead</span>
+                <h4 className="mt-1 font-display text-[1.05rem] font-semibold text-[#002456]">Core Platform & Data</h4>
+                <p className="mt-2 text-xs font-light leading-relaxed text-[#334155]">
+                  Maintains a single stable app and backend release, ensures zero-latency local caching, and curates live simulated telemetry data for demonstrations.
+                </p>
+              </div>
+
+              <div className="border-l-2 border-[#002456] pl-4">
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">India Lead</span>
+                <h4 className="mt-1 font-display text-[1.05rem] font-semibold text-[#002456]">Field Validation</h4>
+                <p className="mt-2 text-xs font-light leading-relaxed text-[#334155]">
+                  Secures first municipal drainage and ward testing partners in flood-prone Indian catchments, gathering direct citizen user feedback loops.
+                </p>
+              </div>
+
+              <div className="border-l-2 border-[#002456] pl-4">
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Africa-Region Lead</span>
+                <h4 className="mt-1 font-display text-[1.05rem] font-semibold text-[#002456]">Community Partners</h4>
+                <p className="mt-2 text-xs font-light leading-relaxed text-[#334155]">
+                  Identifies realistic NGO and community test partners across vulnerable African catchments, mapping local drainage workflows and language accessibility.
+                </p>
+              </div>
+
+              <div className="border-l-2 border-[#002456] pl-4">
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">UAE Lead</span>
+                <h4 className="mt-1 font-display text-[1.05rem] font-semibold text-[#002456]">Ecosystem & Funding</h4>
+                <p className="mt-2 text-xs font-light leading-relaxed text-[#334155]">
+                  Drives regional university partnerships, climate resilience innovation networks, and international fellowship and disaster tech grant funding.
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Lead Founder Card: Saksham Mishra */}
-          <div className="mt-16 sm:mt-20 bg-white border border-[#002456]/20 p-6 sm:p-12 lg:p-14">
+          <div className="mt-10 sm:mt-12 bg-white border border-[#002456]/20 p-6 sm:p-12 lg:p-14 shadow-sm">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               <div className="lg:col-span-4 flex flex-col items-center justify-center p-4 sm:p-6 bg-[#F3F1EC] border border-[#002456]/10 text-center group">
                 <div className="aspect-square w-full max-w-[280px] overflow-hidden bg-slate-950 border border-[#002456]/15">
@@ -678,7 +764,7 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
                 </div>
                 <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-[#002456] tracking-wider uppercase">
                   <Shield className="h-4 w-4" />
-                  <span>Project Lead & Architect</span>
+                  <span>Project Lead & System Architect</span>
                 </div>
               </div>
 
@@ -689,17 +775,21 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
                       Saksham Mishra
                     </h3>
                     <p className="text-[0.92rem] font-light text-[#002456] mt-0.5">
-                      University of Birmingham, UK · FII–MIT Finalist
+                      University of Birmingham, UK · Technical Lead & India Field Validation Lead
                     </p>
                   </div>
                   <span className="inline-flex items-center gap-1.5 bg-[#002456] text-white text-xs font-medium px-3 py-1">
-                    <Award className="h-3.5 w-3.5" /> Distinction Capstone
+                    <Award className="h-3.5 w-3.5" /> FII–MIT Finalist & Distinction
                   </span>
                 </div>
 
                 <p className="mt-5 text-[1rem] sm:text-[1.05rem] font-extralight leading-[1.8] text-[#334155]">
                   "We built HydroMesh because when municipal pumps submerge and cell towers drop, neighbors shouldn't be left in the dark. By turning the phones already in people's pockets into a self-healing mesh, we give city engineers real-time drainage visibility at zero hardware cost."
                 </p>
+
+                <div className="mt-4 p-4 bg-[#F3F1EC] border border-[#002456]/10 text-xs font-light text-[#334155]">
+                  <strong className="font-medium text-[#002456]">Operational Focus:</strong> Maintains a single, reliable application and backend release; maintains live telemetry demo data; and leads outreach for our first municipal field-testing partnership in Indian monsoon catchments.
+                </div>
 
                 <div className="mt-6 sm:mt-8 flex flex-wrap items-center gap-6 text-sm">
                   <a
@@ -728,29 +818,29 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
             </div>
           </div>
 
-          {/* Core Engineering Cohort: Shaazia & Adham */}
+          {/* Core Engineering & Regional Cohort: Shaazia & Adham */}
           <div className="mt-8 sm:mt-10 grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-6 sm:gap-8">
             {[
               {
                 name: "Shaazia Raziq",
-                role: "Database Architect",
-                focus: "PostgreSQL / PostGIS Spatial Modeling & Clustering",
-                desc: "Engineered real-time spatial aggregation and hazard polygons for high-density citizen reporting across municipal catchments.",
+                role: "Database Architect & Africa-Region Lead",
+                focus: "PostgreSQL / PostGIS Spatial Modeling & African Community Outreach",
+                desc: "Engineers real-time PostGIS spatial clustering and hazard polygons while identifying realistic African NGO and community test partners to tailor local drainage workflows and multilingual accessibility.",
                 linkedin: "https://www.linkedin.com/in/shaazia-raziq",
                 image: "/team-shaazia.png",
               },
               {
                 name: "Adham Khashan",
-                role: "Systems Reliability",
-                focus: "Blackout Mesh Failover & Operational Verification",
-                desc: "Spearheaded disaster protocol verification, ethical safety frameworks, and store-and-forward peer relay resilience.",
+                role: "Systems Reliability & UAE Ecosystem Lead",
+                focus: "Blackout Mesh Failover & Regional University Partnerships",
+                desc: "Spearheads blackout mesh verification, failover disaster protocols, UAE university ecosystem relationships, and international climate resilience grant funding.",
                 linkedin: "https://www.linkedin.com/in/adhamkhashan",
                 image: "/team-adham.png",
               },
             ].map((member) => (
               <div
                 key={member.name}
-                className="bg-white border border-[#002456]/15 p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:border-[#002456] group"
+                className="bg-white border border-[#002456]/15 p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:border-[#002456] group shadow-sm"
               >
                 <div>
                   {member.image ? (

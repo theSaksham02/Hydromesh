@@ -2,3 +2,26 @@
 # Environment variables
 .env
 backend/.env
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# IDEs
+.vscode/
+.idea/
+
+# Vite caches
+.vite/
+**/.vite/
+node_modules/.vite/
+**/node_modules/.vite/
+
+# Pitch Deck local venv & packages
+pitch-deck/.venv/
+pitch-deck/node_modules/
+
+# Mobile
+mobile/.dart_tool/
+mobile/build/
+

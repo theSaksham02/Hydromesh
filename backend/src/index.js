@@ -72,6 +72,7 @@ app.use('/api/reports', require('./routes/reports.routes'));
 app.use('/api/emergency', require('./routes/emergency.routes'));
 app.use('/api/weather', require('./routes/weather.routes'));
 app.use('/api/simulation', require('./routes/simulation.routes'));
+app.use('/api/forms', require('./routes/forms.routes'));
 
 // Landing page
 app.get('/', (req, res) => {
