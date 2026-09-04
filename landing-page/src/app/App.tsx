@@ -121,7 +121,7 @@ const GITHUB = "https://github.com/theSaksham02/Hydromesh";
 const FOUNDER_EMAIL = "sxm2114@student.bham.ac.uk";
 const FOUNDER_LINKEDIN = "https://www.linkedin.com/in/saksham-mishra-7b1930345/";
 
-type PageType = "home" | "about" | "technology" | "impact" | "join" | "blog" | "faq" | "contact";
+type PageType = "home" | "about" | "technology" | "impact" | "join" | "blog" | "faq" | "contact" | "legal";
 
 function ExtLink({
   href,
@@ -506,14 +506,40 @@ function HomePage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
             Sign up to Our Mailing List
           </h2>
 
-          {subscribed ? (
-            <div className="mt-12 border border-[#002456] bg-[#F3F1EC] p-8 text-center">
-              <h3 className="font-display text-[1.35rem] font-semibold text-[#002456]">
-                Thank You for Subscribing!
+          {subscribed || (savedMember && savedMember.type === "newsletter") ? (
+            <div className="mt-12 border border-[#10B981]/30 bg-[#10B981]/5 p-8 text-center shadow-xs">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#10B981]/20 text-[#10B981]">
+                <CheckCircle2 className="h-6 w-6" />
+              </div>
+              <h3 className="mt-4 font-display text-[1.35rem] font-semibold text-[#002456]">
+                You are Registered on the Network!
               </h3>
-              <p className="mt-3 text-[1rem] font-light text-[#334155]">
-                You have been added to our network. We will send you updates on municipal pilot deployments and flood resilience briefs.
+              <p className="mt-2 text-[1rem] font-light text-[#334155]">
+                Your subscription has been stored in our Supabase database and saved on this website. You will receive updates on municipal pilot deployments and flood resilience briefs.
               </p>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => onFormSubmitted(getStoredSubmissions()[0])}
+                  className="inline-flex items-center gap-2 border border-[#002456] bg-white px-5 py-2.5 text-xs font-medium text-[#002456] hover:bg-[#F3F1EC] transition-colors cursor-pointer"
+                >
+                  <Database className="h-3.5 w-3.5 text-[#0284C7]" />
+                  <span>View Stored Supabase Record</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSubscribed(false);
+                    setFirstName("");
+                    setLastName("");
+                    setEmail("");
+                    setConsent(false);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs text-[#64748B] hover:text-[#002456] transition-colors cursor-pointer underline"
+                >
+                  Register another email
+                </button>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubscribe} className="mt-14 text-left">
@@ -574,9 +600,17 @@ function HomePage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
               <div className="mt-10">
                 <button
                   type="submit"
-                  className="w-full min-h-[52px] bg-[#002456] text-[1rem] font-medium text-white transition-colors duration-200 hover:bg-[#001838] cursor-pointer"
+                  disabled={isSubmitting}
+                  className="w-full min-h-[52px] bg-[#002456] text-[1rem] font-medium text-white transition-colors duration-200 hover:bg-[#001838] cursor-pointer disabled:opacity-75 flex items-center justify-center gap-2"
                 >
-                  Submit
+                  {isSubmitting ? (
+                    <>
+                      <span className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                      <span>Recording to Supabase...</span>
+                    </>
+                  ) : (
+                    "Submit"
+                  )}
                 </button>
               </div>
             </form>
@@ -904,114 +938,6 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
 /* Page 3: Technology (New - Strict Save Our Shores Design Language)  */
 /* ------------------------------------------------------------------ */
 function TechnologyPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
-  const [activeCodeTab, setActiveCodeTab] = useState<"postgis" | "ble" | "socket" | "cap">("postgis");
-  const [copied, setCopied] = useState(false);
-
-  const TECH_SCRIPTS = {
-    postgis: {
-      title: "PostGIS Spatial Consensus & Hazard Polygons",
-      file: "database/schema.sql",
-      lang: "SQL / PostGIS",
-      desc: "Executes spatial density clustering across citizen depth reports and computes real-time convex hull danger zones.",
-      code: `-- Enable PostGIS Spatial Extension
-CREATE EXTENSION IF NOT EXISTS postgis;
-
--- Dynamic Hazard Polygon & Density Aggregation
-SELECT 
-    ST_AsGeoJSON(ST_ConvexHull(ST_Collect(geom))) AS hazard_polygon,
-    water_level,
-    COUNT(*) AS cluster_reports
-FROM (
-    SELECT 
-        (ST_MakePoint(longitude, latitude)::geography)::geometry AS geom,
-        water_level
-    FROM flood_reports
-    WHERE created_at >= NOW() - INTERVAL '3 hours'
-) reports
-GROUP BY 
-    ST_ClusterDBSCAN(geom, eps := 0.005, minpoints := 3) OVER (),
-    water_level;`,
-    },
-    ble: {
-      title: "Autonomous Offline Store-and-Forward Mesh Node",
-      file: "mobile/lib/models/mesh_packet.dart",
-      lang: "Dart / Flutter",
-      desc: "Enforces 7-hop packet propagation over Bluetooth Low Energy (BLE) and Wi-Fi Direct with tamper-proof signatures.",
-      code: `// HydroMesh Decentralized Packet Schema
-class MeshPacket {
-  final String packetId;      // UUIDv4 deduplication
-  final double latitude;      // WGS84 coordinates
-  final double longitude;
-  final String waterLevel;    // [ankle, knee, waist, chest, above_head]
-  final int ttlHops;          // max 7 intermediate relays
-  final int rssiThreshold;    // -85 dBm proximity limit
-  final DateTime timestamp;
-  final Uint8List signature;  // Ed25519 payload verification
-
-  bool canRelay() => ttlHops > 0;
-  MeshPacket decrementHop() => copyWith(ttlHops: ttlHops - 1);
-}`,
-    },
-    socket: {
-      title: "Real-Time Emergency Dispatch WebSocket Loop",
-      file: "backend/src/index.js",
-      lang: "Node.js / Express",
-      desc: "Orchestrates instant radius-based alert dispatching to certified responders within 5km of an SOS signal.",
-      code: `// Socket.io Emergency Namespace Routing
-io.of('/emergency').on('connection', (socket) => {
-  socket.on('sos_broadcast', async (payload) => {
-    // Spatial query: find all responders within 5km radius via ST_DWithin
-    const responders = await db.query(
-      \`SELECT user_id FROM user_locations 
-       WHERE ST_DWithin(
-         (ST_MakePoint(longitude, latitude)::geography),
-         ST_MakePoint($1, $2)::geography, 
-         5000
-       )\`,
-      [payload.longitude, payload.latitude]
-    );
-
-    // Relay SOS alert to proximate emergency personnel
-    responders.rows.forEach((r) => {
-      socket.to(r.user_id).emit('critical_dispatch', payload);
-    });
-  });
-});`,
-    },
-    cap: {
-      title: "OASIS Common Alerting Protocol v1.2 Feed",
-      file: "docs/API.md (CAP Export)",
-      lang: "XML / OASIS CAP v1.2",
-      desc: "Universal civic format ingesting directly into municipal emergency radio networks and city operations dashboards.",
-      code: `<?xml version="1.0" encoding="UTF-8"?>
-<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
-  <identifier>HYDROMESH-BHAM-2026-09</identifier>
-  <sender>sxm2114@student.bham.ac.uk</sender>
-  <sent>2026-09-04T15:30:00+01:00</sent>
-  <status>Actual</status>
-  <msgType>Alert</msgType>
-  <scope>Public</scope>
-  <info>
-    <category>Met</category>
-    <event>Flash Inundation Hazard</event>
-    <urgency>Immediate</urgency>
-    <severity>Severe</severity>
-    <certainty>Observed</certainty>
-    <area>
-      <areaDesc>Catchment Sector 12 - Submerged Underpass</areaDesc>
-      <polygon>52.450,-1.930 52.455,-1.925 52.448,-1.920 52.450,-1.930</polygon>
-    </area>
-  </info>
-</alert>`,
-    },
-  };
-
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
     <div>
       {/* Hero Banner */}
@@ -1151,63 +1077,6 @@ io.of('/emergency').on('connection', (socket) => {
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Interactive Code & Script Inspector */}
-          <div className="mt-16 bg-[#001838] border border-[#002456]/20 p-6 sm:p-10 text-white">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
-              <div>
-                <span className="text-xs font-semibold text-cyan-400 tracking-wider uppercase">
-                  Production Code Inspector
-                </span>
-                <h3 className="mt-1 font-display text-xl sm:text-2xl font-semibold text-white">
-                  {TECH_SCRIPTS[activeCodeTab].title}
-                </h3>
-                <p className="mt-1 text-xs text-slate-300">
-                  Source: <span className="font-mono text-cyan-300">{TECH_SCRIPTS[activeCodeTab].file}</span> · {TECH_SCRIPTS[activeCodeTab].desc}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => handleCopy(TECH_SCRIPTS[activeCodeTab].code)}
-                  className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-medium text-white transition-colors cursor-pointer border border-white/15"
-                >
-                  <span>{copied ? "Copied!" : "Copy Code"}</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Script Tabs */}
-            <div className="mt-6 flex flex-wrap gap-2">
-              {(
-                [
-                  { id: "postgis", label: "PostGIS Clustering (SQL)" },
-                  { id: "ble", label: "BLE Mesh Protocol (Dart)" },
-                  { id: "socket", label: "Emergency Dispatch (Node.js)" },
-                  { id: "cap", label: "OASIS CAP v1.2 (XML)" },
-                ] as const
-              ).map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveCodeTab(tab.id)}
-                  className={`px-4 py-2 text-xs font-medium transition-colors cursor-pointer ${
-                    activeCodeTab === tab.id
-                      ? "bg-cyan-500 text-slate-950 font-semibold"
-                      : "bg-white/5 text-slate-300 hover:bg-white/10"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Code Body */}
-            <div className="mt-6 bg-slate-950/80 p-5 rounded-none border border-white/10 overflow-x-auto text-[0.82rem] font-mono text-cyan-200 leading-relaxed max-h-[340px] overflow-y-auto">
-              <pre>{TECH_SCRIPTS[activeCodeTab].code}</pre>
-            </div>
           </div>
         </div>
       </section>
@@ -1417,21 +1286,34 @@ function ImpactPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
 /* ------------------------------------------------------------------ */
 /* Page 5: Join / Pilot (Municipal Intake & 4-Stage Roadmap)           */
 /* ------------------------------------------------------------------ */
-function JoinPage() {
+function JoinPage({
+  onFormSubmitted,
+  savedMember,
+}: {
+  onFormSubmitted: (sub: StoredSubmission) => void;
+  savedMember: { name: string; email: string; type: string } | null;
+}) {
   const [submitted, setSubmitted] = useState(false);
   const [agency, setAgency] = useState("");
   const [city, setCity] = useState("");
   const [email, setEmail] = useState("");
   const [notes, setNotes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handlePilotSubmit(e: FormEvent) {
+  async function handlePilotSubmit(e: FormEvent) {
     e.preventDefault();
-    const subject = encodeURIComponent(`HydroMesh Municipal Pilot Inquiry: ${agency} (${city})`);
-    const body = encodeURIComponent(
-      `Agency / Organization: ${agency}\nJurisdiction / City: ${city}\nOfficial Email: ${email}\nOperational Context:\n${notes}\n\nRequesting pilot deployment documentation.`
-    );
-    window.location.href = `mailto:${FOUNDER_EMAIL}?subject=${subject}&body=${body}`;
-    setSubmitted(true);
+    if (!agency || !city || !email) return;
+
+    setIsSubmitting(true);
+    try {
+      const submission = await submitPilot({ agency, city, email, notes });
+      setSubmitted(true);
+      onFormSubmitted(submission);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -1554,17 +1436,40 @@ function JoinPage() {
             Direct technical intake for municipal disaster management cells, NGOs, and humanitarian coordinators.
           </p>
 
-          {submitted ? (
-            <div className="mt-12 border border-[#002456] bg-white p-8 text-center">
-              <h3 className="font-display text-[1.35rem] font-semibold text-[#002456]">
-                Inquiry Prepared
+          {submitted || (savedMember && savedMember.type === "pilot") ? (
+            <div className="mt-12 border border-[#10B981]/30 bg-white p-8 text-center shadow-xs">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#10B981]/20 text-[#10B981]">
+                <CheckCircle2 className="h-6 w-6" />
+              </div>
+              <h3 className="mt-4 font-display text-[1.35rem] font-semibold text-[#002456]">
+                Pilot Deployment Application Recorded
               </h3>
               <p className="mt-3 text-[1rem] font-light text-[#334155]">
-                Your email application has been launched with your pilot details. Our lead engineer will reply within 24 hours.
+                Your deployment request has been stored in our Supabase database and saved on the website. Our municipal deployment engineers will follow up with your technical dossier within 24 hours.
               </p>
-              <p className="mt-4 font-semibold text-[#002456]">
-                <a href={`mailto:${FOUNDER_EMAIL}`}>{FOUNDER_EMAIL}</a>
-              </p>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => onFormSubmitted(getStoredSubmissions()[0])}
+                  className="inline-flex items-center gap-2 border border-[#002456] bg-[#F3F1EC] px-5 py-2.5 text-xs font-medium text-[#002456] hover:bg-white transition-colors cursor-pointer"
+                >
+                  <Database className="h-3.5 w-3.5 text-[#0284C7]" />
+                  <span>View Stored Application</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSubmitted(false);
+                    setAgency("");
+                    setCity("");
+                    setEmail("");
+                    setNotes("");
+                  }}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs text-[#64748B] hover:text-[#002456] transition-colors cursor-pointer underline"
+                >
+                  Submit another municipal intake
+                </button>
+              </div>
             </div>
           ) : (
             <form onSubmit={handlePilotSubmit} className="mt-12 text-left bg-white p-6 sm:p-12 border border-[#002456]/15">
@@ -1625,9 +1530,17 @@ function JoinPage() {
               <div className="mt-10">
                 <button
                   type="submit"
-                  className="w-full min-h-[52px] bg-[#002456] text-[1rem] font-medium text-white transition-colors duration-200 hover:bg-[#001838] cursor-pointer"
+                  disabled={isSubmitting}
+                  className="w-full min-h-[52px] bg-[#002456] text-[1rem] font-medium text-white transition-colors duration-200 hover:bg-[#001838] cursor-pointer disabled:opacity-75 flex items-center justify-center gap-2"
                 >
-                  Submit Pilot Request
+                  {isSubmitting ? (
+                    <>
+                      <span className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                      <span>Recording Application to Supabase...</span>
+                    </>
+                  ) : (
+                    "Submit Pilot Request"
+                  )}
                 </button>
               </div>
             </form>
@@ -1854,18 +1767,33 @@ function FaqPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
 /* ------------------------------------------------------------------ */
 /* Page 8: Contact (Talk to the Founder & Institutional Line)         */
 /* ------------------------------------------------------------------ */
-function ContactPage() {
+function ContactPage({
+  onFormSubmitted,
+  savedMember,
+}: {
+  onFormSubmitted: (sub: StoredSubmission) => void;
+  savedMember: { name: string; email: string; type: string } | null;
+}) {
   const [sent, setSent] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    const subject = encodeURIComponent(`HydroMesh Direct Inquiry from ${name}`);
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
-    window.location.href = `mailto:${FOUNDER_EMAIL}?subject=${subject}&body=${body}`;
-    setSent(true);
+    if (!name || !email || !message) return;
+
+    setIsSubmitting(true);
+    try {
+      const submission = await submitContact({ name, email, message });
+      setSent(true);
+      onFormSubmitted(submission);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -1929,10 +1857,39 @@ function ContactPage() {
             <h2 className="font-display text-[1.85rem] sm:text-[2rem] font-semibold text-[#002456]">
               Send a Message
             </h2>
-            {sent ? (
-              <div className="mt-8 border border-[#002456] bg-[#F3F1EC] p-6 text-center">
-                <p className="font-semibold text-[#002456]">Thank you for reaching out.</p>
-                <p className="mt-2 text-sm font-light text-[#334155]">Your default mail app has been opened with your inquiry.</p>
+            {sent || (savedMember && savedMember.type === "contact") ? (
+              <div className="mt-8 border border-[#10B981]/30 bg-[#10B981]/5 p-8 text-center shadow-xs">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#10B981]/20 text-[#10B981]">
+                  <CheckCircle2 className="h-6 w-6" />
+                </div>
+                <h3 className="mt-4 font-display text-[1.35rem] font-semibold text-[#002456]">
+                  Message Stored & Delivered
+                </h3>
+                <p className="mt-2 text-sm font-light text-[#334155]">
+                  Thank you for reaching out. Your inquiry has been stored in our Supabase database and saved on the website.
+                </p>
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => onFormSubmitted(getStoredSubmissions()[0])}
+                    className="inline-flex items-center gap-2 border border-[#002456] bg-white px-5 py-2 text-xs font-medium text-[#002456] hover:bg-[#F3F1EC] transition-colors cursor-pointer"
+                  >
+                    <Database className="h-3.5 w-3.5 text-[#0284C7]" />
+                    <span>View Stored Message</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSent(false);
+                      setName("");
+                      setEmail("");
+                      setMessage("");
+                    }}
+                    className="inline-flex items-center gap-1 px-3 py-2 text-xs text-[#64748B] hover:text-[#002456] transition-colors cursor-pointer underline"
+                  >
+                    Send another message
+                  </button>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="mt-8">
@@ -1979,9 +1936,17 @@ function ContactPage() {
                 <div className="mt-10">
                   <button
                     type="submit"
-                    className="w-full min-h-[52px] bg-[#002456] text-[1rem] font-medium text-white transition-colors duration-200 hover:bg-[#001838] cursor-pointer"
+                    disabled={isSubmitting}
+                    className="w-full min-h-[52px] bg-[#002456] text-[1rem] font-medium text-white transition-colors duration-200 hover:bg-[#001838] cursor-pointer disabled:opacity-75 flex items-center justify-center gap-2"
                   >
-                    Send Message
+                    {isSubmitting ? (
+                      <>
+                        <span className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                        <span>Delivering to Supabase...</span>
+                      </>
+                    ) : (
+                      "Send Message"
+                    )}
                   </button>
                 </div>
               </form>
@@ -1994,16 +1959,599 @@ function ContactPage() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Page 8: Legal, Privacy & Operational Safety Hub                    */
+/* ------------------------------------------------------------------ */
+function LegalPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
+  const [activeDoc, setActiveDoc] = useState<"privacy" | "terms" | "consent" | "emergency" | "retention" | "escalation">("privacy");
+  const [copiedSection, setCopiedSection] = useState(false);
+
+  const copyNotice = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedSection(true);
+    setTimeout(() => setCopiedSection(false), 2000);
+  };
+
+  return (
+    <div>
+      {/* Hero Header */}
+      <section className="bg-[#001838] py-20 sm:py-28 px-6 sm:px-8 lg:px-14 text-white border-b border-white/10">
+        <div className="mx-auto max-w-[1240px]">
+          <div className="flex flex-wrap items-center gap-3 mb-4">
+            <span className="bg-[#002456] border border-cyan-400/40 text-cyan-300 text-xs font-semibold px-3.5 py-1 uppercase tracking-wider">
+              Legal, Privacy & Product Safety Pack
+            </span>
+            <span className="bg-white/10 text-slate-300 text-xs px-3 py-1 font-mono">
+              Version: Prototype v1.0
+            </span>
+            <span className="bg-white/10 text-slate-300 text-xs px-3 py-1 font-mono">
+              Reviewed: 04 Sep 2026
+            </span>
+          </div>
+          <h1 className="font-display text-[clamp(2.2rem,4vw,3.75rem)] font-semibold tracking-tight text-white max-w-3xl leading-tight">
+            Compliance & Operational Governance Framework
+          </h1>
+          <p className="mt-4 text-[1rem] sm:text-[1.1rem] font-extralight leading-relaxed text-slate-200 max-w-3xl">
+            Plain-language legal and operational policies for the pre-pilot HydroMesh prototype, anchored in the UAE Personal Data Protection Law (PDPL), the India Digital Personal Data Protection Act 2023 (DPDP), and international GDPR best practices.
+          </p>
+        </div>
+      </section>
+
+      {/* Mandatory Emergency Disclaimer Alert Box */}
+      <section className="bg-[#FFF6E0] border-y-2 border-[#FFB703] py-5 px-6 sm:px-8 lg:px-14">
+        <div className="mx-auto max-w-[1240px] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-start gap-3.5">
+            <AlertTriangle className="h-6 w-6 text-[#002456] shrink-0 mt-0.5" />
+            <div>
+              <p className="font-display text-[0.98rem] font-bold tracking-tight text-[#002456] uppercase">
+                Important Notice: Experimental University Prototype — Not an Emergency Service
+              </p>
+              <p className="mt-0.5 text-xs sm:text-sm font-light text-[#334155] leading-relaxed">
+                HydroMesh is developed for research and testing by the Output Outlaws team (University of Birmingham / Dubai-linked). It does NOT dispatch police, medical, fire, or municipal rescue units. If you are in immediate life-threatening danger, dial statutory emergency services: <strong>UAE: 999 (Police) / 997 (Fire)</strong> · <strong>India: 112 / 100</strong> · <strong>UK: 999</strong> · <strong>Global: 112</strong>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content Area: Document Tabs & Reader */}
+      <section className="bg-[#F3F1EC] py-16 sm:py-24 px-6 sm:px-8 lg:px-14">
+        <div className="mx-auto max-w-[1240px]">
+          {/* Navigation Tabs */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 bg-white p-2 border border-[#002456]/15">
+            {[
+              { id: "privacy", label: "1. Privacy Policy" },
+              { id: "terms", label: "2. Terms & Disclaimer" },
+              { id: "consent", label: "3. In-App Consent" },
+              { id: "emergency", label: "4. Emergency Notice" },
+              { id: "retention", label: "5. Data Retention" },
+              { id: "escalation", label: "6. Incident Escalation" },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveDoc(tab.id as any)}
+                className={`px-3.5 py-2.5 text-xs font-medium transition-all text-center cursor-pointer ${
+                  activeDoc === tab.id
+                    ? "bg-[#002456] text-white shadow-sm font-semibold"
+                    : "text-[#334155] hover:bg-[#F3F1EC] hover:text-[#002456]"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Active Document Canvas */}
+          <div className="mt-8 bg-white border border-[#002456]/20 p-8 sm:p-14 shadow-sm">
+            {/* Document 1: Privacy Policy */}
+            {activeDoc === "privacy" && (
+              <article className="space-y-8 text-[#334155]">
+                <div className="border-b border-slate-100 pb-6">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#002456]">
+                    Document 01 · Public-Facing
+                  </span>
+                  <h2 className="mt-1 font-display text-[2rem] font-semibold text-[#002456]">
+                    Privacy Policy
+                  </h2>
+                  <div className="mt-4 flex flex-wrap gap-2 text-[0.75rem]">
+                    <span className="bg-[#F3F1EC] text-[#002456] px-2.5 py-1 font-mono border border-[#002456]/10">
+                      Legal Basis: UAE PDPL Art. 5 · India DPDP Act 2023 §6 · GDPR Art. 6(1)(a)/(d)
+                    </span>
+                    <span className="bg-[#F3F1EC] text-[#002456] px-2.5 py-1 font-mono border border-[#002456]/10">
+                      Cross-Border: UAE (Dubai) ↔ India ↔ Africa/Asia
+                    </span>
+                    <span className="bg-[#F3F1EC] text-[#002456] px-2.5 py-1 font-mono border border-[#002456]/10">
+                      Security: AES-256 at Rest · TLS 1.2+ in Transit
+                    </span>
+                  </div>
+                </div>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">1. Purpose</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    This Privacy Policy explains how the HydroMesh research team collects, handles, stores, and protects personal and geospatial observations during pre-pilot testing of the HydroMesh mobile resilience prototype.
+                  </p>
+                  <div className="mt-3 p-3 bg-[#FFF6E0] border-l-4 border-[#FFB703] text-xs font-semibold text-[#002456]">
+                    Important: This is a prototype, not an emergency service.
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">2. Data Minimisation: What We Collect & Why</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    In strict accordance with data minimisation principles, we collect only information strictly necessary for spatial hazard modeling, safe evacuation routing, and peer-to-peer relay testing:
+                  </p>
+                  <ul className="mt-3 list-disc pl-5 text-[0.92rem] font-light space-y-2">
+                    <li><strong>Geospatial Coordinates:</strong> Ephemeral latitude and longitude points, captured only when a user actively files a flood depth report or initiates an SOS beacon.</li>
+                    <li><strong>Temporal Timestamps:</strong> Exact time of submission to ensure stale reports are expired.</li>
+                    <li><strong>Physical Water Level:</strong> User-selected depth category (Ankle, Knee, Waist).</li>
+                    <li><strong>Optional User Data:</strong> Optional photos of flood water (stripped of EXIF metadata) and temporary ephemeral device tokens for mesh deduplication.</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">3. Cross-Border Data Transfers</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    HydroMesh is built by the Output Outlaws academic cohort (University of Birmingham / Dubai-linked development) with core researchers distributed across <strong>Dubai (UAE)</strong> and <strong>India</strong>, supported by contributors across <strong>Africa and Asia</strong>. Collected test data is synchronized to encrypted PostgreSQL/PostGIS servers and may be accessed by authorized researchers across these jurisdictions under UAE PDPL Art. 22 and India DPDP Act cross-border transfer standards.
+                  </p>
+                </section>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">4. Data Security</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    All stored database records are secured using AES-256 encryption at rest. In-flight API and WebSocket packets are secured using TLS 1.2+ end-to-end encryption. Administrative dashboard access is strictly confined to verified core research team members.
+                  </p>
+                </section>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">5. Children & Vulnerable Users</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    HydroMesh does not knowingly target, market to, or collect data from minors under 18 years of age. If a minor participates in a community trial, verifiable parental or guardian consent must be provided in compliance with India DPDP Act §9 and UAE PDPL regulations.
+                  </p>
+                </section>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">6. Contact & Data Protection Officer (DPO) Note</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    For all data inquiries, deletion requests, or questions, contact us at <strong>[EMAIL]</strong>.
+                  </p>
+                  <p className="mt-2 text-xs font-light text-slate-500">
+                    *DPO Applicability Note:* Under UAE PDPL Art. 10 and India DPDP Act §10, appointing a statutory Data Protection Officer is mandatory only for entities engaged in large-scale processing of sensitive data or regular systematic tracking. As HydroMesh is in pre-pilot academic research, a formal DPO is not currently required; compliance is overseen directly by the project leadership.
+                  </p>
+                </section>
+
+                <div className="pt-6 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-mono">
+                  <span>Reviewed on [DATE]</span>
+                  <span>Version: Prototype v1.0</span>
+                </div>
+              </article>
+            )}
+
+            {/* Document 2: Terms of Use */}
+            {activeDoc === "terms" && (
+              <article className="space-y-8 text-[#334155]">
+                <div className="border-b border-slate-100 pb-6">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#002456]">
+                    Document 02 · Public-Facing
+                  </span>
+                  <h2 className="mt-1 font-display text-[2rem] font-semibold text-[#002456]">
+                    Terms of Use & Prototype Disclaimer
+                  </h2>
+                  <div className="mt-4 flex flex-wrap gap-2 text-[0.75rem]">
+                    <span className="bg-[#F3F1EC] text-[#002456] px-2.5 py-1 font-mono border border-[#002456]/10">
+                      Legal Basis: Voluntary Academic Research Participation
+                    </span>
+                    <span className="bg-[#F3F1EC] text-[#002456] px-2.5 py-1 font-mono border border-[#002456]/10">
+                      Security: AES-256 at Rest · TLS 1.2+ in Transit
+                    </span>
+                  </div>
+                </div>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">1. Purpose</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    These Terms govern your voluntary participation in testing the HydroMesh digital twin mobile application prototype.
+                  </p>
+                  <div className="mt-3 p-3 bg-[#FFF6E0] border-l-4 border-[#FFB703] text-xs font-semibold text-[#002456]">
+                    Important: This is a prototype, not an emergency service.
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">2. Purely Experimental Prototype Scope</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    HydroMesh is developed by the Output Outlaws academic research cohort at the University of Birmingham (Dubai-linked). It is in a pre-pilot, controlled testing stage. There are no commercial fees, paid services, municipal service level agreements, or public consumer availability.
+                  </p>
+                </section>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">3. Absolute Emergency Disclaimer & No Warranty</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    HydroMesh is provided strictly on an <strong>"AS IS" and "AS AVAILABLE"</strong> basis. The software does not guarantee delivery of flood alerts, network connectivity, or physical rescue. In any critical emergency, immediately dial official authorities (UAE: 999; India: 112/100; UK: 999; International: 112).
+                  </p>
+                </section>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">4. User Obligations & Anti-Hoax Policy</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    Testers must only report accurate, observed water levels. Submitting false distress beacons or spoofed coordinates is grounds for immediate exclusion from pilot trials.
+                  </p>
+                </section>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">5. Cross-Border Research & Contact</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    Research testing is coordinated between Dubai (UAE) and India with contributors from Africa and Asia. Data is transmitted securely under TLS 1.2+. Inquiries: <strong>[EMAIL]</strong>.
+                  </p>
+                </section>
+
+                <div className="pt-6 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-mono">
+                  <span>Reviewed on [DATE]</span>
+                  <span>Version: Prototype v1.0</span>
+                </div>
+              </article>
+            )}
+
+            {/* Document 3: In-App Consent Microcopy */}
+            {activeDoc === "consent" && (
+              <article className="space-y-8 text-[#334155]">
+                <div className="border-b border-slate-100 pb-6">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#002456]">
+                    Document 03 · In-App Text
+                  </span>
+                  <h2 className="mt-1 font-display text-[2rem] font-semibold text-[#002456]">
+                    Consent Wording for Flood Reports & SOS
+                  </h2>
+                  <div className="mt-4 flex flex-wrap gap-2 text-[0.75rem]">
+                    <span className="bg-[#F3F1EC] text-[#002456] px-2.5 py-1 font-mono border border-[#002456]/10">
+                      Legal Basis: Explicit In-App Consent (UAE PDPL Art. 5 · India DPDP §6)
+                    </span>
+                  </div>
+                </div>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">1. Purpose</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    Precise, friction-free microcopy implemented in the Flutter mobile application dialogs prior to data transmission.
+                  </p>
+                  <div className="mt-3 p-3 bg-[#FFF6E0] border-l-4 border-[#FFB703] text-xs font-semibold text-[#002456]">
+                    Important: This is a prototype, not an emergency service.
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">2. Flood Report Submission Dialog Microcopy</h3>
+                  <div className="mt-3 bg-[#F8FAFC] border border-slate-200 p-5 font-mono text-xs text-[#002456] leading-relaxed relative">
+                    <p className="font-bold">[ ] SHARE FLOOD OBSERVATION (Pre-Pilot Test)</p>
+                    <p className="mt-2">
+                      By submitting this report, you consent to sharing your approximate GPS coordinates, timestamp, water level (ankle/knee/waist), and optional photo with HydroMesh researchers.
+                    </p>
+                    <p className="mt-2 text-slate-500">
+                      • Purpose: Aggregating local drainage hazard maps.<br />
+                      • Security: Encrypted via TLS 1.2+ / AES-256. Access restricted to core team.<br />
+                      • Cross-border: Telemetry processed by research leads in UAE and India.<br />
+                      • You must be 18+ or have parental consent.
+                    </p>
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">3. Emergency SOS Beacon Modal Microcopy</h3>
+                  <div className="mt-3 bg-[#FFF6E0] border border-[#FFB703] p-5 font-mono text-xs text-[#002456] leading-relaxed relative">
+                    <p className="font-bold text-red-700">⚠️ ACTIVATE EMERGENCY SOS BEACON</p>
+                    <p className="mt-2 font-semibold">
+                      IMPORTANT: HydroMesh is an experimental academic prototype. ACTIVATING THIS BEACON DOES NOT CONTACT POLICE, AMBULANCE, OR FIRE SERVICES.
+                    </p>
+                    <p className="mt-2">
+                      By activating, you consent to broadcasting your live coordinates to nearby peer devices and our research monitoring dashboard. If you are in immediate life-threatening danger, DIAL STATUTORY EMERGENCY SERVICES (UAE: 999 | India: 112) IMMEDIATELY.
+                    </p>
+                    <p className="mt-3 font-bold text-slate-700">[ CONFIRM SOS BROADCAST ] &nbsp;&nbsp;&nbsp; [ CANCEL ]</p>
+                  </div>
+                </section>
+
+                <div className="pt-6 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-mono">
+                  <span>Reviewed on [DATE]</span>
+                  <span>Version: Prototype v1.0</span>
+                </div>
+              </article>
+            )}
+
+            {/* Document 4: Not an Emergency Service Notice */}
+            {activeDoc === "emergency" && (
+              <article className="space-y-8 text-[#334155]">
+                <div className="border-b border-slate-100 pb-6 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#002456]">
+                      Document 04 · Copy-Paste Ready
+                    </span>
+                    <h2 className="mt-1 font-display text-[2rem] font-semibold text-[#002456]">
+                      “Not an Emergency Service” Notice
+                    </h2>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      copyNotice(
+                        "⚠️ NOTICE: NOT AN EMERGENCY SERVICE ⚠️\nHydroMesh is an experimental academic prototype only. It is NOT certified, equipped, or authorized to dispatch statutory emergency response units. DO NOT RELY ON THIS APPLICATION FOR LIFE-SAVING RESCUE. IF IN DANGER, CALL: UAE: 999 | India: 112/100 | UK: 999 | International: 112."
+                      )
+                    }
+                    className="inline-flex items-center gap-1.5 bg-[#002456] text-white px-3.5 py-1.5 text-xs font-medium hover:bg-[#001838] transition-colors cursor-pointer"
+                  >
+                    <span>{copiedSection ? "Copied Notice!" : "Copy Notice Text"}</span>
+                  </button>
+                </div>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">1. Purpose</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    A copy-pasteable, bold statutory notice for mobile splash screens, test agreement headers, and printed field testing cards.
+                  </p>
+                  <div className="mt-3 p-3 bg-[#FFF6E0] border-l-4 border-[#FFB703] text-xs font-semibold text-[#002456]">
+                    Important: This is a prototype, not an emergency service.
+                  </div>
+                </section>
+
+                <div className="bg-[#001838] p-6 text-white font-mono text-xs sm:text-sm leading-relaxed border-2 border-red-500">
+                  <p className="text-red-400 font-bold text-center tracking-widest uppercase">
+                    ⚠️ NOTICE: NOT AN EMERGENCY SERVICE ⚠️
+                  </p>
+                  <p className="text-slate-300 text-center font-light mt-1">
+                    HYDROMESH IS AN EXPERIMENTAL PROTOTYPE ONLY
+                  </p>
+                  <hr className="my-4 border-white/20" />
+                  <p>
+                    HydroMesh is a university research prototype designed to evaluate peer-to-peer flood mapping. It is NOT certified, equipped, or authorized to dispatch statutory emergency response units.
+                  </p>
+                  <p className="mt-3 font-semibold text-amber-300">
+                    DO NOT RELY ON THIS APPLICATION FOR LIFE-SAVING RESCUE OR EVACUATION ASSISTANCE.
+                  </p>
+                  <p className="mt-3">
+                    IF YOU ARE IN IMMEDIATE PHYSICAL DANGER, CONTACT LOCAL STATUTORY AUTHORITIES:
+                  </p>
+                  <ul className="mt-2 space-y-1 pl-4 text-cyan-300">
+                    <li>• UNITED ARAB EMIRATES: 999 (Police) | 997 (Fire / Civil Defence)</li>
+                    <li>• INDIA: 112 (National Unified Emergency) | 100 (Police)</li>
+                    <li>• UNITED KINGDOM: 999 or 112</li>
+                    <li>• EUROPE & GLOBAL: 112</li>
+                  </ul>
+                  <p className="mt-4 text-[0.8rem] text-slate-400">
+                    The Output Outlaws research team, the University of Birmingham, and academic partners accept zero liability for injuries, property loss, or delayed rescue resulting from reliance on this prototype software.
+                  </p>
+                </div>
+
+                <div className="pt-6 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-mono">
+                  <span>Reviewed on [DATE]</span>
+                  <span>Version: Prototype v1.0</span>
+                </div>
+              </article>
+            )}
+
+            {/* Document 5: Data Retention & Deletion */}
+            {activeDoc === "retention" && (
+              <article className="space-y-8 text-[#334155]">
+                <div className="border-b border-slate-100 pb-6">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#002456]">
+                    Document 05 · Internal & Public Policy
+                  </span>
+                  <h2 className="mt-1 font-display text-[2rem] font-semibold text-[#002456]">
+                    Data Retention & Deletion Policy
+                  </h2>
+                  <div className="mt-4 flex flex-wrap gap-2 text-[0.75rem]">
+                    <span className="bg-[#F3F1EC] text-[#002456] px-2.5 py-1 font-mono border border-[#002456]/10">
+                      Legal Basis: Storage Limitation (UAE PDPL Art. 8 · India DPDP §8(7))
+                    </span>
+                    <span className="bg-[#F3F1EC] text-[#002456] px-2.5 py-1 font-mono border border-[#002456]/10">
+                      Security: AES-256 Storage · Audit Logging
+                    </span>
+                  </div>
+                </div>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">1. Purpose</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    Establishes strict operational retention horizons and permanent deletion procedures for volunteer telemetry.
+                  </p>
+                  <div className="mt-3 p-3 bg-[#FFF6E0] border-l-4 border-[#FFB703] text-xs font-semibold text-[#002456]">
+                    Important: This is a prototype, not an emergency service.
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">2. Retention Schedule Summary</h3>
+                  <div className="mt-4 border border-[#002456]/15 overflow-hidden">
+                    <table className="w-full text-left text-xs sm:text-sm">
+                      <thead className="bg-[#F3F1EC] text-[#002456] border-b border-[#002456]/15 font-semibold">
+                        <tr>
+                          <th className="p-3">Data Category</th>
+                          <th className="p-3">Retention Window</th>
+                          <th className="p-3">Action at Window End</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 font-light">
+                        <tr>
+                          <td className="p-3 font-medium text-[#002456]">Raw Flood Observations</td>
+                          <td className="p-3">24 Hours</td>
+                          <td className="p-3 text-slate-500">Auto-deleted via database cron job</td>
+                        </tr>
+                        <tr>
+                          <td className="p-3 font-medium text-[#002456]">SOS Distress Incident Records</td>
+                          <td className="p-3">30 Days</td>
+                          <td className="p-3 text-slate-500">Purged following safety review</td>
+                        </tr>
+                        <tr>
+                          <td className="p-3 font-medium text-[#002456]">Aggregated Hazard Polygons</td>
+                          <td className="p-3">Academic Term</td>
+                          <td className="p-3 text-slate-500">Retained anonymized without device links</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">3. Tester Deletion Requests</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    Any volunteer tester may demand immediate erasure of their submitted observations by emailing <strong>[EMAIL]</strong>. Deletion requests will be fulfilled across primary servers and replicas within <strong>72 hours</strong>.
+                  </p>
+                </section>
+
+                <div className="pt-6 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-mono">
+                  <span>Reviewed on [DATE]</span>
+                  <span>Version: Prototype v1.0</span>
+                </div>
+              </article>
+            )}
+
+            {/* Document 6: Incident Escalation Playbook */}
+            {activeDoc === "escalation" && (
+              <article className="space-y-8 text-[#334155]">
+                <div className="border-b border-slate-100 pb-6">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#002456]">
+                    Document 06 · Operational Playbook
+                  </span>
+                  <h2 className="mt-1 font-display text-[2rem] font-semibold text-[#002456]">
+                    Incident Escalation Rules
+                  </h2>
+                  <div className="mt-4 flex flex-wrap gap-2 text-[0.75rem]">
+                    <span className="bg-[#F3F1EC] text-[#002456] px-2.5 py-1 font-mono border border-[#002456]/10">
+                      Scope: Pre-Pilot Trial On-Call Safety Protocols
+                    </span>
+                    <span className="bg-[#F3F1EC] text-[#002456] px-2.5 py-1 font-mono border border-[#002456]/10">
+                      Cross-Border: UAE & India On-Call Nodes
+                    </span>
+                  </div>
+                </div>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">1. Purpose</h3>
+                  <p className="mt-2 text-[0.95rem] font-light leading-relaxed">
+                    Operational rules governing team conduct when an SOS distress beacon or high-water hazard report is detected during controlled testing.
+                  </p>
+                  <div className="mt-3 p-3 bg-[#FFF6E0] border-l-4 border-[#FFB703] text-xs font-semibold text-[#002456]">
+                    Important: This is a prototype, not an emergency service.
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="font-display text-[1.25rem] font-semibold text-[#002456]">2. Four-Step Escalation Protocol</h3>
+                  <div className="mt-4 space-y-4">
+                    <div className="p-4 bg-[#F8FAFC] border-l-4 border-[#002456]">
+                      <p className="text-xs font-bold uppercase text-[#002456]">Step 1 · Immediate Triage (&lt; 2 Minutes)</p>
+                      <p className="mt-1 text-xs sm:text-sm font-light leading-relaxed">
+                        The monitoring dashboard sounds an audible chime. The designated on-call research lead logs timestamp, GPS coordinates, water stage, and tester ID.
+                      </p>
+                    </div>
+
+                    <div className="p-4 bg-[#F8FAFC] border-l-4 border-cyan-700">
+                      <p className="text-xs font-bold uppercase text-cyan-800">Step 2 · Tester Verification Call (&lt; 3 Minutes)</p>
+                      <p className="mt-1 text-xs sm:text-sm font-light leading-relaxed">
+                        On-call lead places an immediate telephone call to the registered tester. If verified as an accidental tap or test run, cancel beacon and record resolution. If unreachable or in distress: proceed immediately to Step 3.
+                      </p>
+                    </div>
+
+                    <div className="p-4 bg-[#FFF6E0] border-l-4 border-red-500">
+                      <p className="text-xs font-bold uppercase text-red-700">Step 3 · Statutory Dispatch Escalation (&lt; 5 Minutes)</p>
+                      <p className="mt-1 text-xs sm:text-sm font-light leading-relaxed">
+                        On-call lead contacts statutory dispatch (UAE: 999 | India: 112 | UK: 999). State: <em>"We are academic researchers running a flood testing exercise. A participant has triggered a distress signal at [GPS coordinates] and is unresponsive to telephone follow-up."</em>
+                      </p>
+                    </div>
+
+                    <div className="p-4 bg-[#F8FAFC] border-l-4 border-slate-400">
+                      <p className="text-xs font-bold uppercase text-slate-700">Step 4 · Logging & Review (&lt; 24 Hours)</p>
+                      <p className="mt-1 text-xs sm:text-sm font-light leading-relaxed">
+                        Document incident timestamps, authority dispatch reference, and outcome in the encrypted audit log (AES-256). Retain for 30 days for safety review.
+                      </p>
+                    </div>
+                  </div>
+                </section>
+
+                <div className="pt-6 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-mono">
+                  <span>Reviewed on [DATE]</span>
+                  <span>Version: Prototype v1.0</span>
+                </div>
+              </article>
+            )}
+          </div>
+
+          {/* Legal Advisory & Team Operational Summary Box */}
+          <div className="mt-12 bg-white border border-[#002456]/15 p-8 sm:p-10 space-y-6">
+            <div className="flex items-start gap-3">
+              <Shield className="h-5 w-5 text-[#002456] shrink-0 mt-0.5" />
+              <div>
+                <h4 className="font-display text-[1.1rem] font-semibold text-[#002456]">
+                  Prototype Regulatory Advisory
+                </h4>
+                <p className="mt-1 text-xs sm:text-sm font-light text-[#334155] leading-relaxed">
+                  This is a prototype policy pack designed for controlled academic testing; formal professional legal review is strongly recommended prior to any public or commercial launch.
+                </p>
+              </div>
+            </div>
+
+            <div className="border-t border-slate-100 pt-6">
+              <h4 className="font-display text-[1.1rem] font-semibold text-[#002456]">
+                How to Use This Pack (For the HydroMesh Team)
+              </h4>
+              <p className="mt-2 text-xs sm:text-sm font-light text-[#334155] leading-relaxed">
+                This document pack serves as the comprehensive legal and operational baseline for all HydroMesh pre-pilot activities. Deploy Document 1 (Privacy Policy) and Document 2 (Terms of Use) on this landing page under the <code className="bg-[#F3F1EC] text-[#002456] px-1 py-0.5">#legal</code> route; implement Document 3 (Consent Microcopy) verbatim in the Flutter mobile intake and SOS dialogs; embed Document 4 (Emergency Disclaimer) on the mobile splash screen and print it onto field-test briefing cards; enforce Document 5 (Retention Schedule) via database cron jobs running automated 24-hour cleanup routines; and mandate that all researchers on duty during live trials memorize and follow Document 6 (Incident Escalation Playbook).
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Main Application Entry                                              */
 /* ------------------------------------------------------------------ */
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageType>("home");
+  const [savedMember, setSavedMember] = useState(getSavedMember());
+  const [activeModalSubmission, setActiveModalSubmission] = useState<StoredSubmission | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    setSavedMember(getSavedMember());
+  }, []);
+
+  function handleFormSuccess(submission: StoredSubmission) {
+    setActiveModalSubmission(submission);
+    setIsModalOpen(true);
+    setSavedMember(getSavedMember());
+    toast.success(
+      submission.type === "newsletter"
+        ? "🎉 Welcome to the HydroMesh resilience network!"
+        : submission.type === "pilot"
+        ? "🚀 Pilot application recorded in Supabase!"
+        : "✉️ Direct message stored & delivered to founder!"
+    );
+  }
+
+  function openMemberModal() {
+    const subs = getStoredSubmissions();
+    if (subs.length > 0) {
+      setActiveModalSubmission(subs[0]);
+    } else if (savedMember) {
+      setActiveModalSubmission({
+        id: savedMember.id || 'sb-member',
+        type: (savedMember.type as any) || 'newsletter',
+        title: 'HydroMesh Membership',
+        name: savedMember.name,
+        email: savedMember.email,
+        timestamp: savedMember.timestamp || new Date().toISOString(),
+        syncedWithSupabase: true,
+        status: 'Active Member',
+      });
+    }
+    setIsModalOpen(true);
+  }
 
   // Read initial hash & bind hashchange listener
   useEffect(() => {
     function handleHash() {
       const hash = window.location.hash.replace("#", "").toLowerCase() as PageType;
-      const validPages: PageType[] = ["home", "about", "technology", "impact", "join", "blog", "faq", "contact"];
+      const validPages: PageType[] = ["home", "about", "technology", "impact", "join", "blog", "faq", "contact", "legal"];
       if (validPages.includes(hash)) {
         setCurrentPage(hash);
       } else {
@@ -2025,17 +2573,47 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white text-[#002456] antialiased selection:bg-[#002456] selection:text-white overflow-x-hidden">
-      <Header currentPage={currentPage} onNavigate={navigateTo} />
+      <Toaster position="top-right" richColors />
+      <SubmissionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        submission={activeModalSubmission}
+        onAction={() => navigateTo("join")}
+      />
+
+      <Header
+        currentPage={currentPage}
+        onNavigate={navigateTo}
+        savedMember={savedMember}
+        onOpenMemberModal={openMemberModal}
+      />
 
       <main id="main">
-        {currentPage === "home" && <HomePage onNavigate={navigateTo} />}
+        {currentPage === "home" && (
+          <HomePage
+            onNavigate={navigateTo}
+            onFormSubmitted={handleFormSuccess}
+            savedMember={savedMember}
+          />
+        )}
         {currentPage === "about" && <AboutPage onNavigate={navigateTo} />}
         {currentPage === "technology" && <TechnologyPage onNavigate={navigateTo} />}
         {currentPage === "impact" && <ImpactPage onNavigate={navigateTo} />}
-        {currentPage === "join" && <JoinPage />}
+        {currentPage === "join" && (
+          <JoinPage
+            onFormSubmitted={handleFormSuccess}
+            savedMember={savedMember}
+          />
+        )}
         {currentPage === "blog" && <BlogPage />}
         {currentPage === "faq" && <FaqPage onNavigate={navigateTo} />}
-        {currentPage === "contact" && <ContactPage />}
+        {currentPage === "contact" && (
+          <ContactPage
+            onFormSubmitted={handleFormSuccess}
+            savedMember={savedMember}
+          />
+        )}
+        {currentPage === "legal" && <LegalPage onNavigate={navigateTo} />}
       </main>
 
       {/* Shared Minimalist Footer */}
@@ -2069,6 +2647,13 @@ export default function App() {
               className="hover:text-[#002456] transition-colors cursor-pointer"
             >
               About
+            </button>
+            <button
+              type="button"
+              onClick={() => navigateTo("legal")}
+              className="hover:text-[#002456] transition-colors cursor-pointer font-medium text-[#002456]"
+            >
+              Legal & Safety
             </button>
             <ExtLink href={GITHUB} className="hover:text-[#002456] transition-colors">
               GitHub (MIT)
