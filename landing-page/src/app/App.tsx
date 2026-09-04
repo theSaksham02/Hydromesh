@@ -231,20 +231,6 @@ function Header({
         </nav>
 
         <div className="flex items-center gap-3">
-          {savedMember && (
-            <button
-              type="button"
-              onClick={onOpenMemberModal}
-              className="inline-flex items-center gap-2 rounded-full border border-[#10B981]/40 bg-[#10B981]/10 px-3.5 py-1.5 text-[0.8rem] font-medium text-[#047857] hover:bg-[#10B981]/20 transition-all cursor-pointer shadow-xs"
-              title="View your saved HydroMesh submission"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
-              </span>
-              <span>Joined ({savedMember.name.split(" ")[0]})</span>
-            </button>
-          )}
           {/* Mobile Hamburger Button */}
           <button
             type="button"
