@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent, type ReactNode } from "react";
+import { useState, useEffect, Component, type FormEvent, type ReactNode, type ErrorInfo } from "react";
 import {
   Menu,
   X,
@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   Database,
   Sparkles,
+  AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "./components/ui/sonner";
@@ -294,16 +295,40 @@ function Header({
 /* ------------------------------------------------------------------ */
 /* Page 1: Home (The Master Resilience Landing Page)                  */
 /* ------------------------------------------------------------------ */
-function HomePage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
+function HomePage({
+  onNavigate,
+  onFormSubmitted,
+  savedMember,
+}: {
+  onNavigate: (page: PageType) => void;
+  onFormSubmitted: (submission: StoredSubmission) => void;
+  savedMember: { name: string; email: string; type: string } | null;
+}) {
   const [subscribed, setSubscribed] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubscribe(e: FormEvent) {
+  async function handleSubscribe(e: FormEvent) {
     e.preventDefault();
-    setSubscribed(true);
+    if (!email || !consent) return;
+
+    setIsSubmitting(true);
+    try {
+      const submission = await submitNewsletter({
+        firstName,
+        lastName,
+        email,
+      });
+      setSubscribed(true);
+      onFormSubmitted(submission);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -2503,6 +2528,62 @@ function LegalPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Error Boundary to Guarantee Zero White Screens                     */
+/* ------------------------------------------------------------------ */
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("HydroMesh ErrorBoundary caught an error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-[#F3F1EC] flex flex-col items-center justify-center p-6 text-center">
+          <div className="max-w-md bg-white border border-[#002456]/20 p-8 shadow-sm">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center bg-[#002456] text-white">
+              <Shield className="h-6 w-6" />
+            </div>
+            <h2 className="mt-4 font-display text-2xl font-semibold text-[#002456]">HydroMesh Telemetry</h2>
+            <p className="mt-2 text-sm font-light text-[#334155]">
+              The page encountered a minor interface rendering glitch. Please refresh or return to the main dashboard.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                window.location.hash = "home";
+                window.location.reload();
+              }}
+              className="mt-6 inline-flex items-center justify-center bg-[#002456] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#001838] transition-colors"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /* Main Application Entry                                              */
 /* ------------------------------------------------------------------ */
 export default function App() {
@@ -2572,110 +2653,112 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-white text-[#002456] antialiased selection:bg-[#002456] selection:text-white overflow-x-hidden">
-      <Toaster position="top-right" richColors />
-      <SubmissionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        submission={activeModalSubmission}
-        onAction={() => navigateTo("join")}
-      />
+    <ErrorBoundary>
+      <div className="min-h-screen bg-white text-[#002456] antialiased selection:bg-[#002456] selection:text-white overflow-x-hidden">
+        <Toaster position="top-right" richColors />
+        <SubmissionModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          submission={activeModalSubmission}
+          onAction={() => navigateTo("join")}
+        />
 
-      <Header
-        currentPage={currentPage}
-        onNavigate={navigateTo}
-        savedMember={savedMember}
-        onOpenMemberModal={openMemberModal}
-      />
+        <Header
+          currentPage={currentPage}
+          onNavigate={navigateTo}
+          savedMember={savedMember}
+          onOpenMemberModal={openMemberModal}
+        />
 
-      <main id="main">
-        {currentPage === "home" && (
-          <HomePage
-            onNavigate={navigateTo}
-            onFormSubmitted={handleFormSuccess}
-            savedMember={savedMember}
-          />
-        )}
-        {currentPage === "about" && <AboutPage onNavigate={navigateTo} />}
-        {currentPage === "technology" && <TechnologyPage onNavigate={navigateTo} />}
-        {currentPage === "impact" && <ImpactPage onNavigate={navigateTo} />}
-        {currentPage === "join" && (
-          <JoinPage
-            onFormSubmitted={handleFormSuccess}
-            savedMember={savedMember}
-          />
-        )}
-        {currentPage === "blog" && <BlogPage />}
-        {currentPage === "faq" && <FaqPage onNavigate={navigateTo} />}
-        {currentPage === "contact" && (
-          <ContactPage
-            onFormSubmitted={handleFormSuccess}
-            savedMember={savedMember}
-          />
-        )}
-        {currentPage === "legal" && <LegalPage onNavigate={navigateTo} />}
-      </main>
-
-      {/* Shared Minimalist Footer */}
-      <footer id="footer" className="border-t border-slate-200 bg-white py-12 px-6 sm:px-8 lg:px-14">
-        <div className="mx-auto flex max-w-[1360px] flex-col sm:flex-row items-center justify-between gap-6 text-[0.8125rem] text-slate-600">
-          <div className="flex flex-wrap justify-center sm:justify-start gap-5 font-light">
-            <button
-              type="button"
-              onClick={() => navigateTo("technology")}
-              className="hover:text-[#002456] transition-colors cursor-pointer"
-            >
-              Technology
-            </button>
-            <button
-              type="button"
-              onClick={() => navigateTo("impact")}
-              className="hover:text-[#002456] transition-colors cursor-pointer"
-            >
-              Field Impact
-            </button>
-            <button
-              type="button"
-              onClick={() => navigateTo("faq")}
-              className="hover:text-[#002456] transition-colors cursor-pointer"
-            >
-              FAQ
-            </button>
-            <button
-              type="button"
-              onClick={() => navigateTo("about")}
-              className="hover:text-[#002456] transition-colors cursor-pointer"
-            >
-              About
-            </button>
-            <button
-              type="button"
-              onClick={() => navigateTo("legal")}
-              className="hover:text-[#002456] transition-colors cursor-pointer font-medium text-[#002456]"
-            >
-              Legal & Safety
-            </button>
-            <ExtLink href={GITHUB} className="hover:text-[#002456] transition-colors">
-              GitHub (MIT)
-            </ExtLink>
-          </div>
-
-          <div className="flex items-center gap-2.5">
-            <img
-              src="./sdg-11-square.png"
-              alt="UN SDG 11"
-              className="h-5 w-5 object-contain"
+        <main id="main">
+          {currentPage === "home" && (
+            <HomePage
+              onNavigate={navigateTo}
+              onFormSubmitted={handleFormSuccess}
+              savedMember={savedMember}
             />
-            <p className="font-extralight text-center">©2026 HydroMesh · University of Birmingham — SDG 11.5</p>
-          </div>
+          )}
+          {currentPage === "about" && <AboutPage onNavigate={navigateTo} />}
+          {currentPage === "technology" && <TechnologyPage onNavigate={navigateTo} />}
+          {currentPage === "impact" && <ImpactPage onNavigate={navigateTo} />}
+          {currentPage === "join" && (
+            <JoinPage
+              onFormSubmitted={handleFormSuccess}
+              savedMember={savedMember}
+            />
+          )}
+          {currentPage === "blog" && <BlogPage />}
+          {currentPage === "faq" && <FaqPage onNavigate={navigateTo} />}
+          {currentPage === "contact" && (
+            <ContactPage
+              onFormSubmitted={handleFormSuccess}
+              savedMember={savedMember}
+            />
+          )}
+          {currentPage === "legal" && <LegalPage onNavigate={navigateTo} />}
+        </main>
 
-          <div className="flex items-center gap-5 text-[#002456]">
-            <ExtLink href={FOUNDER_LINKEDIN} className="hover:opacity-75 transition-opacity" aria-label="LinkedIn">
-              <Linkedin className="h-5 w-5 fill-current" />
-            </ExtLink>
+        {/* Shared Minimalist Footer */}
+        <footer id="footer" className="border-t border-slate-200 bg-white py-12 px-6 sm:px-8 lg:px-14">
+          <div className="mx-auto flex max-w-[1360px] flex-col sm:flex-row items-center justify-between gap-6 text-[0.8125rem] text-slate-600">
+            <div className="flex flex-wrap justify-center sm:justify-start gap-5 font-light">
+              <button
+                type="button"
+                onClick={() => navigateTo("technology")}
+                className="hover:text-[#002456] transition-colors cursor-pointer"
+              >
+                Technology
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateTo("impact")}
+                className="hover:text-[#002456] transition-colors cursor-pointer"
+              >
+                Field Impact
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateTo("faq")}
+                className="hover:text-[#002456] transition-colors cursor-pointer"
+              >
+                FAQ
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateTo("about")}
+                className="hover:text-[#002456] transition-colors cursor-pointer"
+              >
+                About
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateTo("legal")}
+                className="hover:text-[#002456] transition-colors cursor-pointer font-medium text-[#002456]"
+              >
+                Legal & Safety
+              </button>
+              <ExtLink href={GITHUB} className="hover:text-[#002456] transition-colors">
+                GitHub (MIT)
+              </ExtLink>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <img
+                src="./sdg-11-square.png"
+                alt="UN SDG 11"
+                className="h-5 w-5 object-contain"
+              />
+              <p className="font-extralight text-center">©2026 HydroMesh · University of Birmingham — SDG 11.5</p>
+            </div>
+
+            <div className="flex items-center gap-5 text-[#002456]">
+              <ExtLink href={FOUNDER_LINKEDIN} className="hover:opacity-75 transition-opacity" aria-label="LinkedIn">
+                <Linkedin className="h-5 w-5 fill-current" />
+              </ExtLink>
+            </div>
           </div>
-        </div>
-      </footer>
-    </div>
+        </footer>
+      </div>
+    </ErrorBoundary>
   );
 }
