@@ -145,7 +145,7 @@ function ExtLink({
 function HydroMeshLogo({ className = "h-11 w-auto object-contain" }: { className?: string }) {
   return (
     <img
-      src="/logo-navy.png"
+      src="./logo-navy.png"
       alt="HydroMesh Water Droplet Mesh Logo"
       className={className}
     />
@@ -791,7 +791,7 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
               <div className="lg:col-span-4 flex flex-col items-center justify-center p-4 sm:p-6 bg-[#F3F1EC] border border-[#002456]/10 text-center group">
                 <div className="aspect-square w-full max-w-[280px] overflow-hidden bg-slate-950 border border-[#002456]/15">
                   <img
-                    src="/team-saksham.png"
+                    src="./team-saksham.png"
                     alt="Saksham Mishra"
                     className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                   />
@@ -861,7 +861,7 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
                 focus: "PostgreSQL / PostGIS Spatial Modeling & African Community Outreach",
                 desc: "Engineers real-time PostGIS spatial clustering and hazard polygons while identifying realistic African NGO and community test partners to tailor local drainage workflows and multilingual accessibility.",
                 linkedin: "https://www.linkedin.com/in/shaazia-raziq",
-                image: "/team-shaazia.png",
+                image: "./team-shaazia.png",
               },
               {
                 name: "Adham Khashan",
@@ -869,7 +869,7 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
                 focus: "Blackout Mesh Failover & Regional University Partnerships",
                 desc: "Spearheads blackout mesh verification, failover disaster protocols, UAE university ecosystem relationships, and international climate resilience grant funding.",
                 linkedin: "https://www.linkedin.com/in/adhamkhashan",
-                image: "/team-adham.png",
+                image: "./team-adham.png",
               },
             ].map((member) => (
               <div
@@ -920,7 +920,7 @@ function AboutPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
 
           <div className="mt-14 p-6 sm:p-8 border border-[#002456]/15 bg-white flex flex-col sm:flex-row items-center gap-6 max-w-3xl mx-auto">
             <img
-              src="/sdg-11-banner.png"
+              src="./sdg-11-banner.png"
               alt="UN Sustainable Cities and Communities"
               className="h-16 w-auto object-contain shrink-0"
             />
@@ -1256,7 +1256,7 @@ function ImpactPage({ onNavigate }: { onNavigate: (page: PageType) => void }) {
           <div className="flex flex-col sm:flex-row items-center gap-8 sm:gap-12 bg-[#F3F1EC] p-8 sm:p-12 lg:p-14 border border-[#002456]/15">
             <div className="shrink-0">
               <img
-                src="/sdg-11-square.png"
+                src="./sdg-11-square.png"
                 alt="UN SDG 11: Sustainable Cities and Communities"
                 className="h-32 w-32 sm:h-40 sm:w-40 object-contain shadow-xs border border-amber-500/20"
               />
@@ -1416,7 +1416,7 @@ function JoinPage({
 
           <div className="mt-14 text-center">
             <a
-              href="/pilot-specification.html"
+              href="./pilot-specification.html"
               className="inline-flex items-center gap-2 border border-[#002456] px-8 py-3.5 text-[0.95rem] font-light text-[#002456] hover:bg-[#002456] hover:text-white transition-colors"
             >
               <span>Download Full Pilot Specification (PDF)</span>
@@ -2662,7 +2662,7 @@ export default function App() {
 
           <div className="flex items-center gap-2.5">
             <img
-              src="/sdg-11-square.png"
+              src="./sdg-11-square.png"
               alt="UN SDG 11"
               className="h-5 w-5 object-contain"
             />
